@@ -71,7 +71,7 @@ float SongRenderer::get_grand_staff_height() const {
 
 float SongRenderer::get_measure_width() const
 {
-	return get_music_size() * 4;
+	return get_music_size() * 8;
 }
 
 float SongRenderer::get_bar_margin() const
