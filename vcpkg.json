@@ -1,0 +1,7 @@
+{
+  "dependencies": [
+    "sfml",
+    "nlohmann-json",
+    "imgui-sfml"
+  ]
+}
