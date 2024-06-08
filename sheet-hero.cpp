@@ -54,6 +54,8 @@ int main()
 	Measure measure_2{};
 	note_set_1.set_value(Value::Whole);
 	measure_2.add_treble_note_set(note_set_1);
+	measure_2.add_bass_note_set(note_set_2);
+	measure_2.add_bass_note_set(note_set_2);
 
 	Measure measure_3{};
 	for (int i = 0; i < 8; ++i) {
@@ -71,7 +73,7 @@ int main()
 	SongRenderer song_renderer{};
 	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
 	song_renderer.set_max_width(window_initial_size.x - song_margin * 2);
-	song_renderer.set_music_size(80);
+	song_renderer.set_music_size(40);
 	song_renderer.set_song(song);
 
 	sf::Clock deltaClock;

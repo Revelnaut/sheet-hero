@@ -44,4 +44,5 @@ private:
 	void draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_measure(Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const;
+	void draw_note_set(NoteSet& note_set, sf::Vector2f midline_position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const;
 };

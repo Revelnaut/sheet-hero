@@ -99,6 +99,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	for (auto measure : m_song.get_measures()) {
 		draw_measure(measure, draw_position, true, target, states);
+		draw_measure(measure, draw_position, false, target, states);
 
 		if (draw_position.x + (get_measure_width() * 2) + (get_bar_margin() * 2) <= get_max_width()) {
 			draw_position.x += get_measure_width() + get_bar_margin();
@@ -168,14 +169,15 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 	constexpr wchar_t NOTE_FLAG_EIGHT = 0xE240;
 
 	sf::Vector2f draw_position{ position };
+
+	const std::vector<NoteSet>* note_sets{ nullptr };
 	if (treble) {
-		draw_position.y += get_vertical_pitch_separation() * 2;
-	}
-	else {
-		draw_position.y += get_vertical_pitch_separation() * 4;
+		note_sets = &(measure.get_treble_note_sets());
+	} else {
+		note_sets = &(measure.get_bass_note_sets());
 	}
 
-	for (auto note_set : measure.get_treble_note_sets()) {
+	for (auto & note_set : *note_sets) {
 		wchar_t note_head{};
 
 		switch (note_set.get_value()) {
@@ -189,12 +191,14 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 
 		for (auto note : note_set.get_notes()) {
 			draw_position.y = position.y - get_vertical_pitch_separation() * note.get_staff_position();
+
 			if (treble) {
 				draw_position.y += get_vertical_pitch_separation() * 2;
 			}
 			else {
-				draw_position.y += get_vertical_pitch_separation() * 4;
+				draw_position.y += get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * 10;
 			}
+
 			draw_symbol(note_head, draw_position, sf::Color::Green, get_music_size(), target, states);
 		}
 
@@ -213,4 +217,8 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 			break;
 		}
 	}
+}
+
+void SongRenderer::draw_note_set(NoteSet& note_set, sf::Vector2f midline_position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const {
+
 }

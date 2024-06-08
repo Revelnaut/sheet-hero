@@ -17,7 +17,13 @@ public:
 	
 	void add_treble_note_set(const NoteSet& note_set);
 	std::vector<NoteSet> const& get_treble_note_sets() const;
+
+	void add_bass_note_set(const NoteSet& note_set);
+	std::vector<NoteSet> const& get_bass_note_sets() const;
+
+	size_t get_note_set_count() const;
 private:
 	std::vector<NoteSet> m_treble_sets{};
+	std::vector<NoteSet> m_bass_sets{};
 	TimeSignature m_time_signature{};
 };
