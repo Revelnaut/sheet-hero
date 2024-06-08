@@ -3,10 +3,15 @@
 Note::Note() {}
 
 Note::Note(PitchClass pitch_class, Accidental accidental, int octave)
-	: m_pitch_class{ pitch_class }, m_accidental{ accidental }, m_octave{ octave } {}
+	: m_pitch_class{ pitch_class },
+	m_accidental{ accidental },
+	m_octave{ octave } {}
 
 Note::Note(const Note& source)
-	: m_pitch_class{ source.m_pitch_class }, m_accidental{ source.m_accidental }, m_octave{ source.m_octave } {}
+	: m_pitch_class{ source.m_pitch_class },
+	m_accidental{ source.m_accidental },
+	m_octave{ source.m_octave },
+	m_state{ source.m_state } {}
 
 Note::~Note() {}
 
@@ -14,6 +19,7 @@ Note& Note::operator=(const Note& source) {
 	m_pitch_class = source.m_pitch_class;
 	m_accidental = source.m_accidental;
 	m_octave = source.m_octave;
+	m_state = source.m_state;
 
 	return *this;
 }

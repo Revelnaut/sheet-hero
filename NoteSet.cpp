@@ -3,6 +3,9 @@
 
 NoteSet::NoteSet() {}
 
+NoteSet::NoteSet(Value value)
+	: m_value{ value } {}
+
 NoteSet::NoteSet(const NoteSet& source)
 	: m_notes{ source.m_notes }, m_value{ source.m_value } {}
 

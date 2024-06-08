@@ -6,6 +6,7 @@
 class NoteSet {
 public:
 	NoteSet();
+	NoteSet(Value value);
 	NoteSet(const NoteSet& source);
 	~NoteSet();
 
