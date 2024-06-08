@@ -60,6 +60,11 @@ float SongRenderer::get_staff_height() const {
 	return get_music_size();
 }
 
+float SongRenderer::get_grand_staff_separation() const
+{
+	return get_music_size() * 3.0f;
+}
+
 float SongRenderer::get_grand_staff_height() const {
 	return get_staff_height() * 2.0f + get_staff_separation();
 }
@@ -109,7 +114,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		}
 		else {
 			draw_position.x = left_margin;
-			draw_position.y += get_grand_staff_height() + get_staff_separation();
+			draw_position.y += get_grand_staff_height() + get_grand_staff_separation();
 			draw_grand_staff(sf::Vector2f(0.0f, draw_position.y), m_max_width, target, states);
 		}
 	}
@@ -156,7 +161,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const {
 	sf::Text text{ symbol, m_music_font, static_cast<unsigned int>(size) };
-	text.setFillColor(m_music_color);
+	text.setFillColor(color);
 	text.setPosition(position);
 	target.draw(text, states);
 }
@@ -168,6 +173,10 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 	constexpr wchar_t NOTEHEAD_BLACK = 0xE0A4;
 	constexpr wchar_t NOTE_FLAG_EIGHT = 0xE240;
 
+	sf::RectangleShape stem{ sf::Vector2f{0.0f, get_vertical_pitch_separation() * 7} };
+	stem.setOutlineThickness(get_line_thickness());
+	stem.setOutlineColor(get_music_color());
+
 	sf::Vector2f draw_position{ position };
 
 	const std::vector<NoteSet>* note_sets{ nullptr };
@@ -178,43 +187,57 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 	}
 
 	for (auto & note_set : *note_sets) {
-		wchar_t note_head{};
+		if (note_set.is_rest() == false) {
+			wchar_t note_head{};
 
-		switch (note_set.get_value()) {
-		case Value::Whole:
-			note_head = NOTEHEAD_WHOLE; break;
-		case Value::Half:
-			note_head = NOTEHEAD_HALF; break;
-		default:
-			note_head = NOTEHEAD_BLACK; break;
-		}
-
-		for (auto note : note_set.get_notes()) {
-			draw_position.y = position.y - get_vertical_pitch_separation() * note.get_staff_position();
-
-			if (treble) {
-				draw_position.y += get_vertical_pitch_separation() * 2;
-			}
-			else {
-				draw_position.y += get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * 10;
+			switch (note_set.get_value()) {
+			case Value::Whole:
+				note_head = NOTEHEAD_WHOLE; break;
+			case Value::Half:
+				note_head = NOTEHEAD_HALF; break;
+			default:
+				note_head = NOTEHEAD_BLACK; break;
 			}
 
-			draw_symbol(note_head, draw_position, sf::Color::Green, get_music_size(), target, states);
-		}
+			for (auto note : note_set.get_notes()) {
+				draw_position.y = position.y - get_vertical_pitch_separation() * note.get_staff_position();
 
-		switch (note_set.get_value()) {
-		case Value::Whole:
-			draw_position.x += get_measure_width();
-			break;
-		case Value::Half:
-			draw_position.x += get_measure_width() / 2;
-			break;
-		case Value::Quarter:
-			draw_position.x += get_measure_width() / 4;
-			break;
-		case Value::Eight:
-			draw_position.x += get_measure_width() / 8;
-			break;
+				if (treble) {
+					draw_position.y += get_vertical_pitch_separation() * 2;
+				}
+				else {
+					draw_position.y += get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * 10;
+				}
+
+				if (note_set.get_value() != Value::Whole) {
+					stem.setPosition(draw_position + sf::Vector2(get_music_size() / 3.5f, get_vertical_pitch_separation()));
+					target.draw(stem, states);
+				}
+
+				draw_symbol(note_head, draw_position, m_music_color, m_music_size, target, states);
+
+				if (note_set.get_value() == Value::Eight) {
+					draw_symbol(NOTE_FLAG_EIGHT, draw_position + sf::Vector2(get_music_size() / 3.5f, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
+				}
+			}
+
+			switch (note_set.get_value()) {
+			case Value::Whole:
+				draw_position.x += get_measure_width();
+				break;
+			case Value::Half:
+				draw_position.x += get_measure_width() / 2;
+				break;
+			case Value::Quarter:
+				draw_position.x += get_measure_width() / 4;
+				break;
+			case Value::Eight:
+				draw_position.x += get_measure_width() / 8;
+				break;
+			}
+		}
+		else {
+			// TODO: Rests
 		}
 	}
 }

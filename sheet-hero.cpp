@@ -36,6 +36,7 @@ int main()
 
 	NoteSet note_set_1{ Value::Half };
 	note_set_1.add_note(Note{ PitchClass::C, Accidental::Natural, 4 });
+	note_set_1.add_note(Note{ PitchClass::D, Accidental::Natural, 4 });
 	note_set_1.add_note(Note{ PitchClass::E, Accidental::Natural, 4 });
 	note_set_1.add_note(Note{ PitchClass::G, Accidental::Natural, 4 });
 

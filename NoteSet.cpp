@@ -20,6 +20,9 @@ NoteSet& NoteSet::operator=(const NoteSet& source) {
 
 void NoteSet::add_note(const Note& note) {
 	m_notes.push_back(note);
+	std::sort(m_notes.begin(), m_notes.end(), [](const Note& left, const Note& right) {
+		return left.get_staff_position() < right.get_staff_position();
+	});
 }
 
 void NoteSet::set_value(Value value) {

@@ -23,6 +23,7 @@ public:
 	float get_line_separation() const;
 	float get_staff_separation() const;
 	float get_staff_height() const;
+	float get_grand_staff_separation() const;
 	float get_grand_staff_height() const;
 	float get_measure_width() const;
 	float get_bar_margin() const;
