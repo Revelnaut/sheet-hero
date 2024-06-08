@@ -5,14 +5,10 @@
 #include "Scale.hpp"
 #include <unordered_map>
 
-class Game : public sf::Drawable, public sf::Transformable {
+class SongRenderer : public sf::Drawable, public sf::Transformable {
 public:
-	Game();
-	~Game();
-
-	void set_game_area(const sf::FloatRect& game_area);
-	const sf::FloatRect& get_game_area() const;
-	void process_event(const sf::Window& window, const sf::Event& event);
+	SongRenderer();
+	~SongRenderer();
 
 	const sf::Color& get_music_color() const;
 	float get_music_size() const;
@@ -29,8 +25,6 @@ private:
 	sf::Color m_music_color{ sf::Color::Black };
 	float m_music_size{ 50.0f };
 	sf::Font m_music_font{};
-
-	sf::FloatRect m_game_area{};
 
 	Key current_key{ Key::CMajor };
 	Scale current_scale{ Key::CMajor };

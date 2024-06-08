@@ -61,3 +61,9 @@ enum class Key {
 	EFlatMinor,
 	AFlatMinor,
 };
+
+enum class NoteState {
+	Normal,
+	Correct,
+	Incorrect,
+};

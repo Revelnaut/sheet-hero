@@ -13,7 +13,7 @@ using json = nlohmann::json;
 #include <imgui.h>
 #include <imgui-SFML.h>
 
-#include "Game.hpp"
+#include "SongRenderer.hpp"
 
 int main()
 {
@@ -29,8 +29,8 @@ int main()
 
 	ImGui::SFML::Init(window);
 
-	Game game{};
-	game.set_game_area({ 50.f, 50.f, 1200.0f,  window_initial_size.y - 100.0f });
+	SongRenderer song_renderer{};
+	song_renderer.setPosition(sf::Vector2f(100, 100));
 
 	sf::Clock deltaClock;
 	while (window.isOpen())
@@ -53,7 +53,7 @@ int main()
 		//ImGui::ShowDemoWindow();
 
 		window.clear(window_color);
-		window.draw(game);
+		window.draw(song_renderer);
 		ImGui::SFML::Render(window);
 		window.display();
 	}

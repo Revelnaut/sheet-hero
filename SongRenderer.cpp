@@ -1,47 +1,29 @@
-#include "Game.hpp"
+#include "SongRenderer.hpp"
 #include <math.h>
 
-Game::Game() {
+SongRenderer::SongRenderer() {
 	m_music_font.loadFromFile("data/bravura/otf/Bravura.otf");
 }
 
-Game::~Game() {
+SongRenderer::~SongRenderer() {}
 
-}
-
-void Game::set_game_area(const sf::FloatRect& game_area)
-{
-	m_game_area = game_area;
-}
-
-const sf::FloatRect& Game::get_game_area() const
-{
-	return m_game_area;
-}
-
-void Game::process_event(const sf::Window& window, const sf::Event& event)
-{
-}
-
-const sf::Color& Game::get_music_color() const
-{
+const sf::Color& SongRenderer::get_music_color() const {
 	return m_music_color;
 }
 
-float Game::get_music_size() const {
+float SongRenderer::get_music_size() const {
 	return m_music_size;
 }
 
-float Game::get_note_gap() const {
+float SongRenderer::get_note_gap() const {
 	return get_music_size() / 2.0f;
 }
 
-float Game::get_vertical_pitch_separation() const {
+float SongRenderer::get_vertical_pitch_separation() const {
 	return get_music_size() / 8.0f;
 }
 
-float Game::get_line_thickness() const
-{
+float SongRenderer::get_line_thickness() const {
 	float thickness = round(get_music_size() / 50.0f);
 	if (thickness < 1.0f) {
 		thickness = 1.0f;
@@ -49,28 +31,25 @@ float Game::get_line_thickness() const
 	return thickness;
 }
 
-float Game::get_line_separation() const
-{
+float SongRenderer::get_line_separation() const {
 	return get_music_size() / 4.0f;
 }
 
-float Game::get_staff_separation() const
-{
+float SongRenderer::get_staff_separation() const {
 	return get_music_size() * 2.0f;
 }
 
-float Game::get_staff_height() const
-{
+float SongRenderer::get_staff_height() const {
 	return get_music_size();
 }
 
-float Game::get_grand_staff_height() const
-{
+float SongRenderer::get_grand_staff_height() const {
 	return get_staff_height() * 2.0f + get_staff_separation();
 }
 
-void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
+void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	states.transform *= getTransform();
+
 	NoteSet s;
 	s.add_note(Note(PitchClass::A, Accidental::Natural, 4));
 	s.add_note(Note(PitchClass::F, Accidental::Natural, 4));
@@ -83,7 +62,7 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	float measure_margin = get_note_gap();
 	float measure_length = get_note_gap() * 8;
 
-	draw_grand_staff(m_game_area.getPosition(), measure_start + (measure_margin * 12) + (measure_length * 4), target, states);
+	draw_grand_staff(getPosition(), measure_start + (measure_margin * 12) + (measure_length * 4), target, states);
 
 	float line_thickness = 1.0f;
 	float gap = m_music_size / 4.0f;
@@ -94,27 +73,26 @@ void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	vertical_line.setOutlineColor(m_music_color);
 	vertical_line.setOutlineThickness(line_thickness);
 
-	vertical_line.setPosition(m_game_area.getPosition());
+	vertical_line.setPosition(getPosition());
 
-	vertical_line.setPosition(m_game_area.getPosition().x + measure_start, vertical_line.getPosition().y);
+	vertical_line.setPosition(getPosition().x + measure_start, vertical_line.getPosition().y);
 	target.draw(vertical_line, states);
 
 	sf::Vector2f measure_position{ measure_start + measure_margin * 2, m_music_size / 4 };
-	draw_measure(measure, m_game_area.getPosition() + measure_position, target, states);
+	draw_measure(measure, getPosition() + measure_position, target, states);
 	measure_position.x += measure_length + measure_margin;
 	
-	vertical_line.setPosition(m_game_area.getPosition().x + measure_position.x, vertical_line.getPosition().y);
+	vertical_line.setPosition(getPosition().x + measure_position.x, vertical_line.getPosition().y);
 	target.draw(vertical_line, states);
 
 	measure_position.x += measure_margin * 2;
 
-	draw_measure(measure, m_game_area.getPosition() + measure_position, target, states);
+	draw_measure(measure, getPosition() + measure_position, target, states);
 
 
 }
 
-void Game::draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const
-{
+void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const {
 	sf::RectangleShape staff_line{ sf::Vector2f{width, 0.0f} };
 	staff_line.setOutlineThickness(get_line_thickness());
 	staff_line.setOutlineColor(m_music_color);
@@ -153,16 +131,14 @@ void Game::draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget
 	target.draw(vertical_line, states);
 }
 
-void Game::draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const
-{
+void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const {
 	sf::Text text{ symbol, m_music_font, static_cast<unsigned int>(size) };
-	text.setFillColor(color);
+	text.setFillColor(m_music_color);
 	text.setPosition(position);
 	target.draw(text, states);
 }
 
-void Game::draw_measure(Measure& measure, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const
-{
+void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const {
 	constexpr wchar_t NOTE_STEM = 0xE210;
 	constexpr wchar_t NOTEHEAD_WHOLE = 0xE0A2;
 	constexpr wchar_t NOTEHEAD_HALF = 0xE0A3;

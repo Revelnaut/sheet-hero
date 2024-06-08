@@ -74,3 +74,13 @@ int Note::get_staff_position() const {
 
 	return position;
 }
+
+void Note::set_state(NoteState state)
+{
+	m_state = state;
+}
+
+NoteState Note::get_state() const
+{
+	return m_state;
+}

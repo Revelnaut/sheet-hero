@@ -18,7 +18,7 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 #include_directories(${SFML_INCLUDE_DIR})
 
 # Add source to this project's executable.
-add_executable (sheet-hero "sheet-hero.cpp" "Game.cpp"  "Scale.cpp" "Note.cpp" "Song.cpp" "Measure.cpp" "NoteSet.cpp" "TimeSignature.cpp")
+add_executable (sheet-hero "sheet-hero.cpp" "SongRenderer.cpp"  "Scale.cpp" "Note.cpp" "Song.cpp" "Measure.cpp" "NoteSet.cpp" "TimeSignature.cpp")
 
 target_link_libraries(sheet-hero PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(sheet-hero PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
