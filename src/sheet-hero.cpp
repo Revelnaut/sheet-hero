@@ -1,19 +1,18 @@
-﻿#include <sstream>
-#include <fstream>
-#include <iostream>
+﻿#include <iostream>
 #include <string>
-#include <stdio.h>
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-#include <imgui.h>
-#include <imgui-SFML.h>
-
 #include "SongRenderer.hpp"
+#include "effolkronium/random.hpp"
+
+using Random = effolkronium::random_static;
 
 Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) {
 	Song song{};
@@ -21,6 +20,14 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 	song.set_tempo(tempo);
 	for (int m = 0; m < measures; ++m) {
 		Measure measure;
+		
+		Value value = static_cast<Value>(Random::get<int>(static_cast<int>(Value::Whole), static_cast<int>(Value::Eight)));
+		NoteSet ns{ value };
+		ns.add_note(Note{ PitchClass::C, Accidental::Natural, 4 });
+
+		measure.add_treble_note_set(ns);
+
+		song.add_measure(measure);
 	}
 	return song;
 }

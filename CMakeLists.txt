@@ -9,16 +9,41 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project ("sheet-hero")
+set(INCLUDE_DIR "include")
+set(SOURCE_DIR "src")
+
+set(SOURCE_FILES
+    ${SOURCE_DIR}/sheet-hero.cpp
+    ${SOURCE_DIR}/SongRenderer.cpp
+    ${SOURCE_DIR}/Scale.cpp
+    ${SOURCE_DIR}/Note.cpp
+    ${SOURCE_DIR}/Song.cpp
+    ${SOURCE_DIR}/Measure.cpp
+    ${SOURCE_DIR}/NoteSet.cpp
+    ${SOURCE_DIR}/TimeSignature.cpp
+)
+set(HEADER_FILES
+    ${INCLUDE_DIR}/DataTypes.hpp
+    ${INCLUDE_DIR}/Measure.hpp
+    ${INCLUDE_DIR}/Note.hpp
+    ${INCLUDE_DIR}/NoteSet.hpp
+    ${INCLUDE_DIR}/Scale.hpp
+    ${INCLUDE_DIR}/Song.hpp
+    ${INCLUDE_DIR}/SongRenderer.hpp
+    ${INCLUDE_DIR}/TimeSignature.hpp
+    ${INCLUDE_DIR}/effolkronium/random.hpp
+)
+
+project (sheet-hero)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
 
-#include_directories(${SFML_INCLUDE_DIR})
-
 # Add source to this project's executable.
-add_executable (sheet-hero "sheet-hero.cpp" "SongRenderer.cpp"  "Scale.cpp" "Note.cpp" "Song.cpp" "Measure.cpp" "NoteSet.cpp" "TimeSignature.cpp")
+add_executable (sheet-hero ${SOURCE_FILES} ${HEADER_FILES} )
+
+target_include_directories(sheet-hero PRIVATE ${INCLUDE_DIR} ${INCLUDE_DIR}/effolkronium/)
 
 target_link_libraries(sheet-hero PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(sheet-hero PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)

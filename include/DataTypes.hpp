@@ -17,7 +17,6 @@ enum class Accidental {
 };
 
 enum class Value {
-	Zero,
 	Whole,
 	Half,
 	Quarter,
