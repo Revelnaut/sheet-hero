@@ -22,6 +22,9 @@ public:
 	std::vector<NoteSet> const& get_bass_note_sets() const;
 
 	size_t get_note_set_count() const;
+
+	int free_treble_space_in_eights() const;
+	int free_bass_space_in_eights() const;
 private:
 	std::vector<NoteSet> m_treble_sets{};
 	std::vector<NoteSet> m_bass_sets{};

@@ -45,3 +45,31 @@ size_t Measure::get_note_set_count() const
 {
 	return m_treble_sets.size() > m_bass_sets.size() ? m_treble_sets.size() : m_bass_sets.size();
 }
+
+int Measure::free_treble_space_in_eights() const
+{
+	int free_space = 8 * m_time_signature.get_top() / m_time_signature.get_bottom();
+	for (auto note_set : m_treble_sets) {
+		switch (note_set.get_value()) {
+		case Value::Whole: free_space -= 8; break;
+		case Value::Half: free_space -= 4; break;
+		case Value::Quarter: free_space -= 2; break;
+		case Value::Eight: free_space -= 1; break;
+		}
+	}
+	return free_space;
+}
+
+int Measure::free_bass_space_in_eights() const
+{
+	int free_space = 8 * m_time_signature.get_top() / m_time_signature.get_bottom();
+	for (auto note_set : m_bass_sets) {
+		switch (note_set.get_value()) {
+		case Value::Whole: free_space -= 8; break;
+		case Value::Half: free_space -= 4; break;
+		case Value::Quarter: free_space -= 2; break;
+		case Value::Eight: free_space -= 1; break;
+		}
+	}
+	return free_space;
+}

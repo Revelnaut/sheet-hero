@@ -15,6 +15,16 @@ using json = nlohmann::json;
 
 #include "SongRenderer.hpp"
 
+Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) {
+	Song song{};
+	song.set_key(key);
+	song.set_tempo(tempo);
+	for (int m = 0; m < measures; ++m) {
+		Measure measure;
+	}
+	return song;
+}
+
 int main()
 {
 	std::string window_title = "Sheet Hero";
@@ -34,41 +44,7 @@ int main()
 
 	ImGui::SFML::Init(window);
 
-	NoteSet note_set_1{ Value::Half };
-	note_set_1.add_note(Note{ PitchClass::C, Accidental::Natural, 4 });
-	note_set_1.add_note(Note{ PitchClass::D, Accidental::Natural, 4 });
-	note_set_1.add_note(Note{ PitchClass::E, Accidental::Natural, 4 });
-	note_set_1.add_note(Note{ PitchClass::G, Accidental::Natural, 4 });
-
-	NoteSet note_set_2{ Value::Half };
-	note_set_2.add_note(Note{ PitchClass::F, Accidental::Natural, 4 });
-	note_set_2.add_note(Note{ PitchClass::A, Accidental::Sharp, 4 });
-	note_set_2.add_note(Note{ PitchClass::C, Accidental::Natural, 5 });
-
-	NoteSet note_set_3{ Value::Eight };
-	note_set_3.add_note(Note{ PitchClass::C, Accidental::Natural, 5 });
-
-	Measure measure_1{};
-	measure_1.add_treble_note_set(note_set_1);
-	measure_1.add_treble_note_set(note_set_2);
-
-	Measure measure_2{};
-	note_set_1.set_value(Value::Whole);
-	measure_2.add_treble_note_set(note_set_1);
-	measure_2.add_bass_note_set(note_set_2);
-	measure_2.add_bass_note_set(note_set_2);
-
-	Measure measure_3{};
-	for (int i = 0; i < 8; ++i) {
-		measure_3.add_treble_note_set(note_set_3);
-	}
-
-	Song song{};
-	for (int i = 0; i < 4; ++i) {
-		song.add_measure(measure_1);
-		song.add_measure(measure_2);
-		song.add_measure(measure_3);
-	}
+	Song song = generate_random_song(4);
 
 	float song_margin = 100.0;
 	SongRenderer song_renderer{};
