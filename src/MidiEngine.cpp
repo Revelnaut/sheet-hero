@@ -1,22 +1,26 @@
 #include "MidiEngine.hpp"
 #include <iostream>
+#include <libremidi/libremidi.hpp>
 
 MidiEngine::MidiEngine() {
-	probe_midi_devices();
+	auto message_callback = [](const libremidi::message& message) {
+		auto nBytes = message.size();
+		std::cout << "[ ";
+		for (auto i = 0U; i < nBytes; i++)
+			std::cout << std::hex << (int)message[i] << std::dec << " ";
+		std::cout << "]";
+		if (nBytes > 0)
+			std::cout << " ; stamp = " << message.timestamp;
+		std::cout << std::endl;
+		};
+
+	m_midi_in = std::make_unique<libremidi::midi_in>(libremidi::midi_in{ libremidi::input_configuration{.on_message = message_callback} });
+	
+	libremidi::observer obs;
+	for (const libremidi::input_port& port : obs.get_input_ports()) {
+		m_midi_in->open_port(port);
+		break;
+	}
 }
 
 MidiEngine::~MidiEngine() {}
-
-void MidiEngine::probe_midi_devices() {
-	try {
-		// Probe all midi ports for devices
-		m_devices.clear();
-		for (unsigned int i = 0; i < m_midi_in.getPortCount(); ++i) {
-			m_devices.push_back(MidiDevice{ i, m_midi_in.getPortName(i) });
-			std::cout << "Midi port #" << m_devices.back().get_port() << ": " << m_devices.back().get_name() << std::endl;
-		}
-	}
-	catch (RtMidiError& error) {
-		error.printMessage();
-	}
-}

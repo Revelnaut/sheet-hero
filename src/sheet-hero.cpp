@@ -10,6 +10,8 @@
 using json = nlohmann::json;
 
 #include "MidiEngine.hpp"
+#include <libremidi/libremidi.hpp>
+
 #include "SongRenderer.hpp"
 #include "effolkronium/random.hpp"
 
@@ -132,7 +134,6 @@ int main()
 					}
 
 					if (event.key.code == sf::Keyboard::M) {
-						midi_engine.probe_midi_devices();
 					}
 				}
 			}
