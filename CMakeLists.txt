@@ -20,6 +20,8 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/Song.cpp
     ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/NoteGroup.cpp
+    ${SOURCE_DIR}/MidiDevice.cpp
+    ${SOURCE_DIR}/MidiEngine.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
     ${SOURCE_DIR}/rtmidi/RtMidi.cpp
 )
@@ -32,6 +34,8 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/Song.hpp
     ${INCLUDE_DIR}/SongRenderer.hpp
     ${INCLUDE_DIR}/TimeSignature.hpp
+    ${INCLUDE_DIR}/MidiDevice.hpp
+    ${INCLUDE_DIR}/MidiEngine.hpp
     ${INCLUDE_DIR}/effolkronium/random.hpp
     ${INCLUDE_DIR}/rtmidi/RtMidi.h
 )
@@ -45,7 +49,7 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 # Add source to this project's executable.
 add_executable (sheet-hero ${SOURCE_FILES} ${HEADER_FILES} )
 
-target_include_directories(sheet-hero PRIVATE ${INCLUDE_DIR} ${INCLUDE_DIR}/effolkronium/)
+target_include_directories(sheet-hero PRIVATE ${INCLUDE_DIR} ${INCLUDE_DIR}/effolkronium/ ${INCLUDE_DIR}/rtmidi/)
 
 target_link_libraries(sheet-hero PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(sheet-hero PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)

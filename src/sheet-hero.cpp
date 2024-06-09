@@ -9,6 +9,7 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+#include "MidiEngine.hpp"
 #include "SongRenderer.hpp"
 #include "effolkronium/random.hpp"
 
@@ -76,6 +77,13 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 
 int main()
 {
+	try {
+		MidiEngine midi_engine{};
+	}
+	catch (RtMidiError& error) {
+		error.printMessage();
+	}
+
 	std::string window_title = "Sheet Hero";
 	sf::Vector2u window_initial_size{ 1920, 1080 };
 	sf::VideoMode windowed_mode{ window_initial_size.x, window_initial_size.y };
