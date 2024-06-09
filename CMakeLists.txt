@@ -21,6 +21,7 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/NoteGroup.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
+    ${SOURCE_DIR}/rtmidi/RtMidi.cpp
 )
 set(HEADER_FILES
     ${INCLUDE_DIR}/DataTypes.hpp
@@ -32,6 +33,7 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/SongRenderer.hpp
     ${INCLUDE_DIR}/TimeSignature.hpp
     ${INCLUDE_DIR}/effolkronium/random.hpp
+    ${INCLUDE_DIR}/rtmidi/RtMidi.h
 )
 
 project (sheet-hero)
