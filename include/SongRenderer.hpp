@@ -25,6 +25,7 @@ private:
 	Song m_song{};
 	float m_position_in_song{};
 	int m_note_group_at_position{};
+	std::vector<NoteState> m_note_states{};
 
 	sf::Color m_music_color{ sf::Color::Black };
 	float m_music_size{ 50.0f };
@@ -48,5 +49,5 @@ private:
 
 	void draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const;
-	void draw_measure(Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const;
+	void draw_measure(const Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const;
 };

@@ -42,10 +42,10 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 
 			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
 			Random::shuffle(staff_pitches);
-			
+
 			int note_count = Random::get(1, 3);
 			for (int i = 0; i < note_count; ++i) {
-				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), 4});
+				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), 4 });
 			}
 			measure.add_treble_note_group(ng);
 		}
@@ -93,7 +93,7 @@ int main()
 	ImGui::SFML::Init(window);
 
 	float song_margin = 100.0;
-	SongRenderer song_renderer{ generate_random_song(32) };
+	SongRenderer song_renderer{ generate_random_song(1) };
 	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
 	song_renderer.set_max_width(window_initial_size.x - song_margin * 2);
 	song_renderer.set_music_size(60);

@@ -17,11 +17,12 @@ public:
 	int get_pitch_relative_to_octave() const;
 	int get_staff_position() const;
 
-	void set_state(NoteState state);
-	NoteState get_state() const;
+	int get_id() const;
 private:
 	PitchClass m_pitch_class{ PitchClass::C };
 	Accidental m_accidental{ Accidental::Natural };
 	int m_octave{ 4 };
-	NoteState m_state{};
+	unsigned int m_id{};
+
+	static unsigned int m_id_seed;
 };

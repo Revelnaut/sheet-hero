@@ -1,17 +1,26 @@
 #include "Note.hpp"
+#include <vector>
+#include <iostream>
 
-Note::Note() {}
+unsigned int Note::m_id_seed{ 0 };
+
+Note::Note() {
+	m_id = ++m_id_seed;
+}
 
 Note::Note(PitchClass pitch_class, Accidental accidental, int octave)
 	: m_pitch_class{ pitch_class },
 	m_accidental{ accidental },
-	m_octave{ octave } {}
+	m_octave{ octave } {
+	m_id = ++m_id_seed;
+}
 
 Note::Note(const Note& source)
 	: m_pitch_class{ source.m_pitch_class },
 	m_accidental{ source.m_accidental },
-	m_octave{ source.m_octave },
-	m_state{ source.m_state } {}
+	m_octave{ source.m_octave } {
+	m_id = ++m_id_seed;
+}
 
 Note::~Note() {}
 
@@ -19,7 +28,6 @@ Note& Note::operator=(const Note& source) {
 	m_pitch_class = source.m_pitch_class;
 	m_accidental = source.m_accidental;
 	m_octave = source.m_octave;
-	m_state = source.m_state;
 
 	return *this;
 }
@@ -81,12 +89,7 @@ int Note::get_staff_position() const {
 	return position;
 }
 
-void Note::set_state(NoteState state)
+int Note::get_id() const
 {
-	m_state = state;
-}
-
-NoteState Note::get_state() const
-{
-	return m_state;
+	return m_id;
 }

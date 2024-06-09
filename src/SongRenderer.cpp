@@ -111,7 +111,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	bar.setOutlineColor(get_music_color());
 	bar.setOutlineThickness(get_line_thickness());
 
-	for (auto measure : m_song.get_measures()) {
+	for (auto & measure : m_song.get_measures()) {
 		draw_measure(measure, draw_position, true, target, states);
 		draw_measure(measure, draw_position, false, target, states);
 
@@ -175,7 +175,7 @@ void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, con
 	target.draw(text, states);
 }
 
-void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const {
+void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const {
 	constexpr wchar_t NOTE_STEM = 0xE210;
 	constexpr wchar_t NOTEHEAD_WHOLE = 0xE0A2;
 	constexpr wchar_t NOTEHEAD_HALF = 0xE0A3;
@@ -208,7 +208,7 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 				note_head = NOTEHEAD_BLACK; break;
 			}
 
-			for (auto note : note_group.get_notes()) {
+			for (auto & note : note_group.get_notes()) {
 				draw_position.y = position.y - get_vertical_pitch_separation() * note.get_staff_position();
 
 				if (treble) {
