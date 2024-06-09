@@ -14,6 +14,22 @@ SongRenderer::~SongRenderer() {}
 
 void SongRenderer::set_song(const Song& song) {
 	m_song = song;
+
+	// Set initial note states
+	m_note_states.clear();
+	for (auto & measure : m_song.get_measures()) {
+		for (auto& note_group : measure.get_treble_note_groups()) {
+			for (auto& note : note_group.get_notes()) {
+				m_note_states[note.get_id()] = NoteState::Normal;
+			}
+		}
+
+		for (auto& note_group : measure.get_bass_note_groups()) {
+			for (auto& note : note_group.get_notes()) {
+				m_note_states[note.get_id()] = NoteState::Normal;
+			}
+		}
+	}
 }
 
 const Song& SongRenderer::get_song() const

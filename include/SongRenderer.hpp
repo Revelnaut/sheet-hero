@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Song.hpp"
+#include <unordered_map>
 
 class SongRenderer : public sf::Drawable, public sf::Transformable {
 public:
@@ -25,7 +26,7 @@ private:
 	Song m_song{};
 	float m_position_in_song{};
 	int m_note_group_at_position{};
-	std::vector<NoteState> m_note_states{};
+	std::unordered_map<int, NoteState> m_note_states{};
 
 	sf::Color m_music_color{ sf::Color::Black };
 	float m_music_size{ 50.0f };
