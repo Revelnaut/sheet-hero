@@ -19,14 +19,14 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/Note.cpp
     ${SOURCE_DIR}/Song.cpp
     ${SOURCE_DIR}/Measure.cpp
-    ${SOURCE_DIR}/NoteSet.cpp
+    ${SOURCE_DIR}/NoteGroup.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
 )
 set(HEADER_FILES
     ${INCLUDE_DIR}/DataTypes.hpp
     ${INCLUDE_DIR}/Measure.hpp
     ${INCLUDE_DIR}/Note.hpp
-    ${INCLUDE_DIR}/NoteSet.hpp
+    ${INCLUDE_DIR}/NoteGroup.hpp
     ${INCLUDE_DIR}/Scale.hpp
     ${INCLUDE_DIR}/Song.hpp
     ${INCLUDE_DIR}/SongRenderer.hpp

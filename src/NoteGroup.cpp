@@ -1,42 +1,42 @@
-#include "NoteSet.hpp"
+#include "NoteGroup.hpp"
 #include <algorithm>
 
-NoteSet::NoteSet() {}
+NoteGroup::NoteGroup() {}
 
-NoteSet::NoteSet(Value value)
+NoteGroup::NoteGroup(Value value)
 	: m_value{ value } {}
 
-NoteSet::NoteSet(const NoteSet& source)
+NoteGroup::NoteGroup(const NoteGroup& source)
 	: m_notes{ source.m_notes }, m_value{ source.m_value } {}
 
-NoteSet::~NoteSet() {}
+NoteGroup::~NoteGroup() {}
 
-NoteSet& NoteSet::operator=(const NoteSet& source) {
+NoteGroup& NoteGroup::operator=(const NoteGroup& source) {
 	m_notes = source.m_notes;
 	m_value = source.m_value;
 
 	return *this;
 }
 
-void NoteSet::add_note(const Note& note) {
+void NoteGroup::add_note(const Note& note) {
 	m_notes.push_back(note);
 	std::sort(m_notes.begin(), m_notes.end(), [](const Note& left, const Note& right) {
 		return left.get_staff_position() < right.get_staff_position();
 	});
 }
 
-void NoteSet::set_value(Value value) {
+void NoteGroup::set_value(Value value) {
 	m_value = value;
 }
 
-std::vector<Note> const& NoteSet::get_notes() const {
+std::vector<Note> const& NoteGroup::get_notes() const {
 	return m_notes;
 }
 
-Value const& NoteSet::get_value() const {
+Value const& NoteGroup::get_value() const {
 	return m_value;
 }
 
-bool NoteSet::is_rest() const {
+bool NoteGroup::is_rest() const {
 	return m_notes.size() == 0;
 }

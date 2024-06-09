@@ -3,14 +3,14 @@
 #include "Note.hpp"
 #include <vector>
 
-class NoteSet {
+class NoteGroup {
 public:
-	NoteSet();
-	NoteSet(Value value);
-	NoteSet(const NoteSet& source);
-	~NoteSet();
+	NoteGroup();
+	NoteGroup(Value value);
+	NoteGroup(const NoteGroup& source);
+	~NoteGroup();
 
-	NoteSet& operator=(const NoteSet& source);
+	NoteGroup& operator=(const NoteGroup& source);
 
 	void add_note(const Note& note);
 	void set_value(Value value);

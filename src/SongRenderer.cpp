@@ -2,7 +2,12 @@
 #include <math.h>
 
 SongRenderer::SongRenderer() {
-	m_music_font.loadFromFile("data/bravura/otf/Bravura.otf");
+	initialize();
+}
+
+SongRenderer::SongRenderer(const Song& song) {
+	initialize();
+	set_song(song);
 }
 
 SongRenderer::~SongRenderer() {}
@@ -30,6 +35,10 @@ const sf::Color& SongRenderer::get_music_color() const {
 
 float SongRenderer::get_music_size() const {
 	return m_music_size;
+}
+
+void SongRenderer::initialize() {
+	m_music_font.loadFromFile("data/bravura/otf/Bravura.otf");
 }
 
 float SongRenderer::get_note_gap() const {
@@ -179,18 +188,18 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 
 	sf::Vector2f draw_position{ position };
 
-	const std::vector<NoteSet>* note_sets{ nullptr };
+	const std::vector<NoteGroup>* note_groups{ nullptr };
 	if (treble) {
-		note_sets = &(measure.get_treble_note_sets());
+		note_groups = &(measure.get_treble_note_groups());
 	} else {
-		note_sets = &(measure.get_bass_note_sets());
+		note_groups = &(measure.get_bass_note_groups());
 	}
 
-	for (auto & note_set : *note_sets) {
-		if (note_set.is_rest() == false) {
+	for (auto & note_group : *note_groups) {
+		if (note_group.is_rest() == false) {
 			wchar_t note_head{};
 
-			switch (note_set.get_value()) {
+			switch (note_group.get_value()) {
 			case Value::Whole:
 				note_head = NOTEHEAD_WHOLE; break;
 			case Value::Half:
@@ -199,7 +208,7 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 				note_head = NOTEHEAD_BLACK; break;
 			}
 
-			for (auto note : note_set.get_notes()) {
+			for (auto note : note_group.get_notes()) {
 				draw_position.y = position.y - get_vertical_pitch_separation() * note.get_staff_position();
 
 				if (treble) {
@@ -209,19 +218,19 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 					draw_position.y += get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * 10;
 				}
 
-				if (note_set.get_value() != Value::Whole) {
+				if (note_group.get_value() != Value::Whole) {
 					stem.setPosition(draw_position + sf::Vector2(get_music_size() / 3.5f, get_vertical_pitch_separation()));
 					target.draw(stem, states);
 				}
 
 				draw_symbol(note_head, draw_position, m_music_color, m_music_size, target, states);
 
-				if (note_set.get_value() == Value::Eight) {
+				if (note_group.get_value() == Value::Eight) {
 					draw_symbol(NOTE_FLAG_EIGHT, draw_position + sf::Vector2(get_music_size() / 3.5f, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
 				}
 			}
 
-			switch (note_set.get_value()) {
+			switch (note_group.get_value()) {
 			case Value::Whole:
 				draw_position.x += get_measure_width();
 				break;
@@ -240,8 +249,4 @@ void SongRenderer::draw_measure(Measure& measure, sf::Vector2f position, bool tr
 			// TODO: Rests
 		}
 	}
-}
-
-void SongRenderer::draw_note_set(NoteSet& note_set, sf::Vector2f midline_position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const {
-
 }

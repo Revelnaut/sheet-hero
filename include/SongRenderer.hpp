@@ -6,6 +6,7 @@
 class SongRenderer : public sf::Drawable, public sf::Transformable {
 public:
 	SongRenderer();
+	SongRenderer(const Song& song);
 	~SongRenderer();
 
 	void set_song(const Song& song);
@@ -22,12 +23,15 @@ public:
 
 private:
 	Song m_song{};
+	float m_position_in_song{};
+	int m_note_group_at_position{};
 
 	sf::Color m_music_color{ sf::Color::Black };
 	float m_music_size{ 50.0f };
 	sf::Font m_music_font{};
-
 	float m_max_width{ 0.0 };
+
+	void initialize();
 
 	float get_note_gap() const;
 	float get_vertical_pitch_separation() const;
@@ -45,5 +49,4 @@ private:
 	void draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_measure(Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const;
-	void draw_note_set(NoteSet& note_set, sf::Vector2f midline_position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const;
 };

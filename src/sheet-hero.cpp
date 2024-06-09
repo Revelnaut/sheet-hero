@@ -38,16 +38,16 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 			}
 
 			Value value = static_cast<Value>(Random::get<int>(static_cast<int>(largest_option), static_cast<int>(Value::Eight)));
-			NoteSet ns{ value };
+			NoteGroup ng{ value };
 
 			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
 			Random::shuffle(staff_pitches);
 			
 			int note_count = Random::get(1, 3);
 			for (int i = 0; i < note_count; ++i) {
-				ns.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), 4});
+				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), 4});
 			}
-			measure.add_treble_note_set(ns);
+			measure.add_treble_note_group(ng);
 		}
 
 		while (measure.free_bass_space_in_eights() > 0) {
@@ -64,9 +64,9 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 			}
 
 			Value value = static_cast<Value>(Random::get<int>(static_cast<int>(largest_option), static_cast<int>(Value::Eight)));
-			NoteSet ns{ value };
+			NoteGroup ns{ value };
 			ns.add_note(Note{ static_cast<PitchClass>(Random::get(0, 6)), static_cast<Accidental>(Random::get(0, 2)), 3 });
-			measure.add_bass_note_set(ns);
+			measure.add_bass_note_group(ns);
 		}
 
 		song.add_measure(measure);
@@ -93,11 +93,10 @@ int main()
 	ImGui::SFML::Init(window);
 
 	float song_margin = 100.0;
-	SongRenderer song_renderer{};
+	SongRenderer song_renderer{ generate_random_song(32) };
 	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
 	song_renderer.set_max_width(window_initial_size.x - song_margin * 2);
 	song_renderer.set_music_size(60);
-	song_renderer.set_song(generate_random_song(8));
 	song_renderer.set_music_color(sf::Color::Black);
 
 	sf::Clock deltaClock;
