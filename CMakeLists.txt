@@ -23,7 +23,6 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/MidiDevice.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
-    ${SOURCE_DIR}/rtmidi/RtMidi.cpp
 )
 set(HEADER_FILES
     ${INCLUDE_DIR}/DataTypes.hpp
@@ -37,7 +36,6 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/MidiDevice.hpp
     ${INCLUDE_DIR}/MidiEngine.hpp
     ${INCLUDE_DIR}/effolkronium/random.hpp
-    ${INCLUDE_DIR}/rtmidi/RtMidi.h
 )
 
 project (sheet-hero)
@@ -45,15 +43,17 @@ project (sheet-hero)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
+find_package(rtmidi CONFIG REQUIRED)
 
 # Add source to this project's executable.
 add_executable (sheet-hero ${SOURCE_FILES} ${HEADER_FILES} )
 
-target_include_directories(sheet-hero PRIVATE ${INCLUDE_DIR} ${INCLUDE_DIR}/effolkronium/ ${INCLUDE_DIR}/rtmidi/)
+target_include_directories(sheet-hero PRIVATE ${INCLUDE_DIR} ${INCLUDE_DIR}/effolkronium/)
 
 target_link_libraries(sheet-hero PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(sheet-hero PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
 target_link_libraries(sheet-hero PRIVATE ImGui-SFML::ImGui-SFML)
+target_link_libraries(sheet-hero PRIVATE RtMidi::rtmidi)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET sheet-hero PROPERTY CXX_STANDARD 20)
