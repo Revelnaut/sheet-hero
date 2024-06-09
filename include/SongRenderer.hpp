@@ -17,17 +17,6 @@ public:
 	const sf::Color& get_music_color() const;
 	float get_music_size() const;
 
-	float get_note_gap() const;
-	float get_vertical_pitch_separation() const;
-	float get_line_thickness() const;
-	float get_line_separation() const;
-	float get_staff_separation() const;
-	float get_staff_height() const;
-	float get_grand_staff_separation() const;
-	float get_grand_staff_height() const;
-	float get_measure_width() const;
-	float get_bar_margin() const;
-
 	void set_max_width(float max_width);
 	float get_max_width() const;
 
@@ -39,6 +28,17 @@ private:
 	sf::Font m_music_font{};
 
 	float m_max_width{ 0.0 };
+
+	float get_note_gap() const;
+	float get_vertical_pitch_separation() const;
+	float get_line_thickness() const;
+	float get_line_separation() const;
+	float get_staff_separation() const;
+	float get_staff_height() const;
+	float get_grand_staff_separation() const;
+	float get_grand_staff_height() const;
+	float get_measure_width() const;
+	float get_bar_margin() const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
