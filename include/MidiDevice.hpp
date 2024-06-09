@@ -5,6 +5,7 @@
 class MidiDevice {
 public:
 	MidiDevice();
+	MidiDevice(unsigned int port, std::string name);
 	MidiDevice(const MidiDevice& source);
 	~MidiDevice();
 
@@ -13,9 +14,9 @@ public:
 	void set_port(int port);
 	void set_name(const std::string& name);
 
-	const int get_port() const;
+	const unsigned int get_port() const;
 	const std::string& get_name() const;
 private:
-	int m_port{ 0 };
+	unsigned int m_port{ 0 };
 	std::string m_name{};
 };

@@ -8,6 +8,8 @@ class MidiEngine {
 public:
 	MidiEngine();
 	~MidiEngine();
+
+	void probe_midi_devices();
 private:
 	//std::unique_ptr<RtMidiIn> m_midi_in{};
 	RtMidiIn m_midi_in{};

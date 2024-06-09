@@ -77,12 +77,7 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 
 int main()
 {
-	try {
-		MidiEngine midi_engine{};
-	}
-	catch (RtMidiError& error) {
-		error.printMessage();
-	}
+	MidiEngine midi_engine{};
 
 	std::string window_title = "Sheet Hero";
 	sf::Vector2u window_initial_size{ 1920, 1080 };
@@ -134,6 +129,10 @@ int main()
 						std::cout << "Generating..." << std::endl;
 						song_renderer.set_song(generate_random_song(32));
 						std::cout << "Done!" << std::endl;
+					}
+
+					if (event.key.code == sf::Keyboard::M) {
+						midi_engine.probe_midi_devices();
 					}
 				}
 			}

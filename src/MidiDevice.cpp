@@ -2,6 +2,9 @@
 
 MidiDevice::MidiDevice() {}
 
+MidiDevice::MidiDevice(unsigned int port, std::string name)
+	: m_port{ port }, m_name{ name } {}
+
 MidiDevice::MidiDevice(const MidiDevice& source)
 	: m_port{ source.m_port }, m_name{ source.m_name } {}
 
@@ -22,7 +25,7 @@ void MidiDevice::set_name(const std::string& name) {
 	m_name = name;
 }
 
-const int MidiDevice::get_port() const {
+const unsigned int MidiDevice::get_port() const {
 	return m_port;
 }
 
