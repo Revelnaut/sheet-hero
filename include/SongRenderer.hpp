@@ -29,6 +29,8 @@ private:
 	std::unordered_map<int, NoteState> m_note_states{};
 
 	sf::Color m_music_color{ sf::Color::Black };
+	sf::Color m_correct_color{ sf::Color::Green };
+	sf::Color m_incorrect_color{ sf::Color::Red };
 	float m_music_size{ 50.0f };
 	sf::Font m_music_font{};
 	float m_max_width{ 0.0 };
@@ -45,6 +47,9 @@ private:
 	float get_grand_staff_height() const;
 	float get_measure_width() const;
 	float get_bar_margin() const;
+	float get_beat_mark_margin() const;
+	float get_beat_mark_size() const;
+	float get_beat_division_mark_size() const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

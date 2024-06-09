@@ -96,7 +96,7 @@ int main()
 	SongRenderer song_renderer{ generate_random_song(1) };
 	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
 	song_renderer.set_max_width(window_initial_size.x - song_margin * 2);
-	song_renderer.set_music_size(60);
+	song_renderer.set_music_size(50);
 	song_renderer.set_music_color(sf::Color::Black);
 
 	sf::Clock deltaClock;

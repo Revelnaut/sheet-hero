@@ -17,7 +17,7 @@ void SongRenderer::set_song(const Song& song) {
 
 	// Set initial note states
 	m_note_states.clear();
-	for (auto & measure : m_song.get_measures()) {
+	for (auto& measure : m_song.get_measures()) {
 		for (auto& note_group : measure.get_treble_note_groups()) {
 			for (auto& note : note_group.get_notes()) {
 				m_note_states[note.get_id()] = NoteState::Normal;
@@ -96,12 +96,27 @@ float SongRenderer::get_grand_staff_height() const {
 
 float SongRenderer::get_measure_width() const
 {
-	return get_music_size() * 8;
+	return get_music_size() * 6;
 }
 
 float SongRenderer::get_bar_margin() const
 {
-	return get_measure_width() / 8;
+	return get_measure_width() / 16;
+}
+
+float SongRenderer::get_beat_mark_margin() const
+{
+	return get_music_size();
+}
+
+float SongRenderer::get_beat_mark_size() const
+{
+	return get_music_size() / 4;
+}
+
+float SongRenderer::get_beat_division_mark_size() const
+{
+	return get_beat_mark_size() / 2;
 }
 
 void SongRenderer::set_max_width(float max_width)
@@ -127,7 +142,28 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	bar.setOutlineColor(get_music_color());
 	bar.setOutlineThickness(get_line_thickness());
 
-	for (auto & measure : m_song.get_measures()) {
+	sf::RectangleShape beat{ sf::Vector2f{ get_beat_mark_size() / 2, get_beat_mark_size() } };
+	beat.setOrigin(get_beat_mark_size() / 4, get_beat_mark_size() / 2);
+	beat.setFillColor(m_music_color);
+
+	for (auto& measure : m_song.get_measures()) {
+		sf::Vector2f beat_position{ draw_position };
+		beat_position.x += get_music_size() / 4;
+		beat_position.y -= m_music_size;
+		for (int i = 0; i < 4; ++i) {
+			beat.setScale(1, 1);
+			beat.setPosition(beat_position);
+			target.draw(beat, states);
+
+			for (int j = 1; j < 4; ++j) {
+				beat.setScale(0.5, 0.5);
+				beat.setPosition(beat_position + sf::Vector2f(get_measure_width() / 16 * j, 0));
+				target.draw(beat, states);
+			}
+
+			beat_position.x += get_measure_width() / 4;
+		}
+
 		draw_measure(measure, draw_position, true, target, states);
 		draw_measure(measure, draw_position, false, target, states);
 
@@ -154,21 +190,21 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	staff_line.setPosition(position);
 	for (int i = 0; i < 5; ++i) {
 		target.draw(staff_line, states);
-		staff_line.move(sf::Vector2f{ 0.0f, get_line_separation()});
+		staff_line.move(sf::Vector2f{ 0.0f, get_line_separation() });
 	}
 
 	// Bass staff
-	staff_line.move(sf::Vector2f{ 0.0f, get_staff_separation() - get_line_separation()});
+	staff_line.move(sf::Vector2f{ 0.0f, get_staff_separation() - get_line_separation() });
 	for (int i = 0; i < 5; ++i) {
 		target.draw(staff_line, states);
-		staff_line.move(sf::Vector2f{ 0.0f, get_line_separation()});
+		staff_line.move(sf::Vector2f{ 0.0f, get_line_separation() });
 	}
 
 	// G clef
-	draw_symbol(0xE050, position + sf::Vector2f{ get_line_separation(), -get_line_separation()}, get_music_color(), get_music_size(), target, states);
+	draw_symbol(0xE050, position + sf::Vector2f{ get_line_separation(), -get_line_separation() }, get_music_color(), get_music_size(), target, states);
 
 	// F clef
-	draw_symbol(0xE062, position + sf::Vector2f{ get_line_separation(), get_staff_separation() + get_line_separation()}, get_music_color(), get_music_size(), target, states);
+	draw_symbol(0xE062, position + sf::Vector2f{ get_line_separation(), get_staff_separation() + get_line_separation() }, get_music_color(), get_music_size(), target, states);
 
 	// Brace
 	draw_symbol(0xF402, position - sf::Vector2f{ get_line_separation(), 0.0f }, get_music_color(), get_grand_staff_height(), target, states);
@@ -177,10 +213,10 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	vertical_line.setOutlineColor(get_music_color());
 	vertical_line.setOutlineThickness(get_line_thickness());
 
-	vertical_line.setPosition(position + sf::Vector2f{ get_line_thickness(), 0.0f});
+	vertical_line.setPosition(position + sf::Vector2f{ get_line_thickness(), 0.0f });
 	target.draw(vertical_line, states);
 
-	vertical_line.setPosition(position + sf::Vector2f{ width - get_line_thickness(), 0.0f});
+	vertical_line.setPosition(position + sf::Vector2f{ width - get_line_thickness(), 0.0f });
 	target.draw(vertical_line, states);
 }
 
@@ -207,11 +243,12 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 	const std::vector<NoteGroup>* note_groups{ nullptr };
 	if (treble) {
 		note_groups = &(measure.get_treble_note_groups());
-	} else {
+	}
+	else {
 		note_groups = &(measure.get_bass_note_groups());
 	}
 
-	for (auto & note_group : *note_groups) {
+	for (auto& note_group : *note_groups) {
 		if (note_group.is_rest() == false) {
 			wchar_t note_head{};
 
@@ -224,7 +261,14 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 				note_head = NOTEHEAD_BLACK; break;
 			}
 
-			for (auto & note : note_group.get_notes()) {
+			for (auto& note : note_group.get_notes()) {
+				sf::Color note_color{ m_music_color };
+
+				switch (m_note_states.at(note.get_id())) {
+				case NoteState::Correct: note_color = m_correct_color; break;
+				case NoteState::Incorrect: note_color = m_incorrect_color;  break;
+				}
+
 				draw_position.y = position.y - get_vertical_pitch_separation() * note.get_staff_position();
 
 				if (treble) {
@@ -235,14 +279,15 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 				}
 
 				if (note_group.get_value() != Value::Whole) {
+					stem.setOutlineColor(note_color);
 					stem.setPosition(draw_position + sf::Vector2(get_music_size() / 3.5f, get_vertical_pitch_separation()));
 					target.draw(stem, states);
 				}
 
-				draw_symbol(note_head, draw_position, m_music_color, m_music_size, target, states);
+				draw_symbol(note_head, draw_position, note_color, m_music_size, target, states);
 
 				if (note_group.get_value() == Value::Eight) {
-					draw_symbol(NOTE_FLAG_EIGHT, draw_position + sf::Vector2(get_music_size() / 3.5f, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
+					draw_symbol(NOTE_FLAG_EIGHT, draw_position + sf::Vector2(get_music_size() / 3.5f, -get_vertical_pitch_separation() * 7), note_color, m_music_size, target, states);
 				}
 			}
 
