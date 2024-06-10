@@ -80,6 +80,7 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 int main()
 {
 	MidiEngine midi_engine{};
+	bool midi_tool_active{ true };
 
 	std::string window_title = "Sheet Hero";
 	sf::Vector2u window_initial_size{ 1920, 1080 };
@@ -149,7 +150,14 @@ int main()
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());
 
-		//ImGui::ShowDemoWindow();
+		// ImGui::ShowDemoWindow();
+
+		ImGui::Begin("Midi", &midi_tool_active);
+		ImGui::Text("Pressed midi keys:");
+		for (auto pitch : midi_engine.get_pressed_notes()) {
+			ImGui::Text("%i", pitch);
+		}
+		ImGui::End();
 
 		window.clear(window_color);
 		window.draw(song_renderer);
