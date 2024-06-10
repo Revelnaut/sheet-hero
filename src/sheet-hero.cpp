@@ -11,9 +11,9 @@ using json = nlohmann::json;
 
 #include "MidiEngine.hpp"
 #include <libremidi/libremidi.hpp>
-
 #include "SongRenderer.hpp"
 #include "effolkronium/random.hpp"
+#include "PianoKeyboard.hpp"
 
 using Random = effolkronium::random_static;
 
@@ -80,7 +80,6 @@ Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120) 
 int main()
 {
 	MidiEngine midi_engine{};
-	bool midi_tool_active{ true };
 
 	std::string window_title = "Sheet Hero";
 	sf::Vector2u window_initial_size{ 1920, 1080 };
@@ -104,6 +103,9 @@ int main()
 	song_renderer.set_max_width(window_initial_size.x - song_margin * 2);
 	song_renderer.set_music_size(50);
 	song_renderer.set_music_color(sf::Color::Black);
+
+	PianoKeyboard piano_keyboard{ {window_initial_size.x - 200.0f, 180.0f} };
+	piano_keyboard.setPosition(100, 600);
 
 	sf::Clock deltaClock;
 	while (window.isOpen())
@@ -150,17 +152,21 @@ int main()
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());
 
+		piano_keyboard.set_pressed_keys(midi_engine.get_pressed_notes());
+
 		// ImGui::ShowDemoWindow();
 
-		ImGui::Begin("Midi", &midi_tool_active);
+		/*ImGui::Begin("Midi");
 		ImGui::Text("Pressed midi keys:");
 		for (auto pitch : midi_engine.get_pressed_notes()) {
 			ImGui::Text("%i", pitch);
 		}
-		ImGui::End();
+		ImGui::End();*/
 
 		window.clear(window_color);
 		window.draw(song_renderer);
+		window.draw(piano_keyboard);
+
 		ImGui::SFML::Render(window);
 		window.display();
 	}

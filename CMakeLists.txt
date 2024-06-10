@@ -23,6 +23,7 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/MidiDevice.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
+    ${SOURCE_DIR}/PianoKeyboard.cpp
 )
 set(HEADER_FILES
     ${INCLUDE_DIR}/DataTypes.hpp
@@ -35,6 +36,7 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/TimeSignature.hpp
     ${INCLUDE_DIR}/MidiDevice.hpp
     ${INCLUDE_DIR}/MidiEngine.hpp
+    ${INCLUDE_DIR}/PianoKeyboard.hpp
     ${INCLUDE_DIR}/effolkronium/random.hpp
 )
 
