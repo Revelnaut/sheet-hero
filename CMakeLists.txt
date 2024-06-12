@@ -15,6 +15,7 @@ set(SOURCE_DIR "src")
 set(SOURCE_FILES
     ${SOURCE_DIR}/sheet-hero.cpp
     ${SOURCE_DIR}/App.cpp
+    ${SOURCE_DIR}/AppImgui.cpp
     ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/MidiDevice.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
