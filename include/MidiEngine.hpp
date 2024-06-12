@@ -14,6 +14,7 @@ public:
 	void note_off(int pitch, int velocity);
 
 	std::vector<int> get_pressed_notes() const;
+	bool is_pressed(int index) const;
 private:
 	std::unique_ptr<libremidi::observer> m_observer;
 	std::unique_ptr<libremidi::midi_in> m_midi_in;

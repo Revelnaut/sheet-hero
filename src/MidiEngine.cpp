@@ -53,6 +53,11 @@ std::vector<int> MidiEngine::get_pressed_notes() const
 	return pressed_notes;
 }
 
+bool MidiEngine::is_pressed(int index) const
+{
+	return m_pressed_note_states.at(index) == true;
+}
+
 void MidiEngine::message_callback(libremidi::message&& message)
 {
 	if (message.size() > 0) {
