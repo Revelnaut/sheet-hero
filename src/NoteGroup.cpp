@@ -1,5 +1,6 @@
 #include "NoteGroup.hpp"
 #include <algorithm>
+#include <cmath>
 
 NoteGroup::NoteGroup() {}
 
@@ -35,6 +36,25 @@ std::vector<Note> const& NoteGroup::get_notes() const {
 
 Value const& NoteGroup::get_value() const {
 	return m_value;
+}
+
+float NoteGroup::get_staff_mid_point() const
+{
+	int staff_position_sum{};
+	for (const Note & note : m_notes) {
+		staff_position_sum += note.get_staff_position();
+	}
+	return static_cast<float>(staff_position_sum) / static_cast<float>(m_notes.size());
+}
+
+float NoteGroup::get_staff_max() const
+{
+	return m_notes.back().get_staff_position();
+}
+
+float NoteGroup::get_staff_min() const
+{
+	return m_notes.front().get_staff_position();
 }
 
 bool NoteGroup::is_rest() const {

@@ -14,7 +14,7 @@ int App::run()
 	create_window(false);
 	ImGui::SFML::Init(window);
 
-	song_renderer.set_song(generate_random_song(1));
+	song_renderer.set_song(generate_random_song(32));
 	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
 	song_renderer.set_max_width(window.getSize().x - song_margin * 2);
 	song_renderer.set_music_size(50);
@@ -51,12 +51,13 @@ int App::run()
 		}
 
 		ImGui::SFML::Update(window, deltaClock.restart());
-		ImGui::ShowDemoWindow();
-		imgui_show_interface();
+		//ImGui::ShowDemoWindow();
+		//imgui_show_interface();
 
 		window.clear(window_color);
 		window.draw(song_renderer);
 		ImGui::SFML::Render(window);
+
 		window.display();
 	}
 	ImGui::SFML::Shutdown();
@@ -94,15 +95,18 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 
 			int note_count = Random::get(1, 3);
 			for (int i = 0; i < note_count; ++i) {
-				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), 4 });
+				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), Random::get(4, 5)});
 			}
 			measure.add_treble_note_group(ng);
 		}
 
 		while (measure.free_bass_space_in_eights() > 0) {
-			Value largest_option = Value::Whole;
-
-			if (measure.free_bass_space_in_eights() >= 4) {
+			Value largest_option{};
+			
+			if (measure.free_bass_space_in_eights() == 8) {
+				largest_option = Value::Whole;
+			}
+			else if (measure.free_bass_space_in_eights() >= 4) {
 				largest_option = Value::Half;
 			}
 			else if (measure.free_bass_space_in_eights() >= 2) {
@@ -113,9 +117,16 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			}
 
 			Value value = static_cast<Value>(Random::get<int>(static_cast<int>(largest_option), static_cast<int>(Value::Eight)));
-			NoteGroup ns{ value };
-			ns.add_note(Note{ static_cast<PitchClass>(Random::get(0, 6)), static_cast<Accidental>(Random::get(0, 2)), 3 });
-			measure.add_bass_note_group(ns);
+			NoteGroup ng{ value };
+			
+			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
+			Random::shuffle(staff_pitches);
+
+			int note_count = Random::get(1, 3);
+			for (int i = 0; i < note_count; ++i) {
+				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), Random::get(2, 3) });
+			}
+			measure.add_bass_note_group(ng);
 		}
 
 		song.add_measure(measure);
@@ -132,7 +143,12 @@ void App::create_window(bool fullscreen)
 	sf::VideoMode windowed_mode{ window_initial_size.x, window_initial_size.y };
 	sf::VideoMode fullscreen_mode{ sf::VideoMode::getFullscreenModes()[0] };
 
-	window.create(fullscreen ? fullscreen_mode : windowed_mode, window_title, sf::Style::Default);
+	if (fullscreen) {
+		window.create(fullscreen_mode, window_title, sf::Style::Fullscreen);
+	}
+	else {
+		window.create(windowed_mode, window_title, sf::Style::Default);
+	}
 	window.setVerticalSyncEnabled(true);
 
 	update_view(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
