@@ -14,7 +14,7 @@ int App::run()
 	create_window(false);
 	ImGui::SFML::Init(window);
 
-	song_renderer.set_song(generate_random_song(32));
+	song_renderer.set_song(generate_random_song(32, Key::EMajor));
 	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
 	song_renderer.set_max_width(window.getSize().x - song_margin * 2);
 	song_renderer.set_music_size(50);

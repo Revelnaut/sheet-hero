@@ -134,7 +134,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	draw_grand_staff(sf::Vector2f(0.0f, 0.0f), m_max_width, target, states);
 
-	float left_margin = 100.0f;
+	float left_margin = 180.0f;
 
 	sf::Vector2f draw_position = sf::Vector2f(left_margin, 0.0f);
 
@@ -199,6 +199,9 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 		target.draw(staff_line, states);
 		staff_line.move(sf::Vector2f{ 0.0f, get_line_separation() });
 	}
+
+	draw_key_signature(m_song.get_key(), position + sf::Vector2f(50.0f, 0.0f), target, states);
+	draw_key_signature(m_song.get_key(), position + sf::Vector2f(50.0f, get_staff_separation() + get_staff_height() + get_vertical_pitch_separation() * 2), target, states);
 
 	// G clef
 	draw_symbol(0xE050, position + sf::Vector2f{ get_line_separation(), -get_line_separation() }, get_music_color(), get_music_size(), target, states);
@@ -354,6 +357,142 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 		}
 		else {
 			// TODO: Rests
+		}
+	}
+}
+
+void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const
+{
+	constexpr wchar_t FLAT_ACCIDENTAL = 0xE260;
+	constexpr wchar_t SHARP_ACCIDENTAL = 0xE262;
+	float key_signature_gap{ get_music_size() / 4.0f };
+	
+	bool is_sharp{ false };
+	int accidental_count{ 0 };
+
+	switch (key) {
+	case Key::CMajor:
+	case Key::AMinor:
+		accidental_count = 0;
+		is_sharp = false;
+		break;
+
+	case Key::GMajor:
+	case Key::EMinor:
+		accidental_count = 1;
+		is_sharp = true;
+		break;
+	case Key::DMajor:
+	case Key::BMinor:
+		accidental_count = 2;
+		is_sharp = true;
+		break;
+	case Key::AMajor:
+	case Key::FSharpMinor:
+		accidental_count = 3;
+		is_sharp = true;
+		break;
+	case Key::EMajor:
+	case Key::CSharpMinor:
+		accidental_count = 4;
+		is_sharp = true;
+		break;
+	case Key::BMajor:
+	case Key::GSharpMinor:
+		accidental_count = 5;
+		is_sharp = true;
+		break;
+	case Key::FSharpMajor:
+	case Key::DSharpMinor:
+		accidental_count = 6;
+		is_sharp = true;
+		break;
+	case Key::CSharpMajor:
+	case Key::ASharpMinor:
+		accidental_count = 7;
+		is_sharp = true;
+		break;
+
+	case Key::FMajor:
+	case Key::DMinor:
+		accidental_count = 1;
+		is_sharp = false;
+		break;
+	case Key::BFlatMajor:
+	case Key::GMinor:
+		accidental_count = 2;
+		is_sharp = false;
+		break;
+	case Key::EFlatMajor:
+	case Key::CMinor:
+		accidental_count = 3;
+		is_sharp = false;
+		break;
+	case Key::AFlatMajor:
+	case Key::FMinor:
+		accidental_count = 4;
+		is_sharp = false;
+		break;
+	case Key::DFlatMajor:
+	case Key::BFlatMinor:
+		accidental_count = 5;
+		is_sharp = false;
+		break;
+	case Key::GFlatMajor:
+	case Key::EFlatMinor:
+		accidental_count = 6;
+		is_sharp = false;
+	case Key::CFlatMajor:
+	case Key::AFlatMinor:
+		accidental_count = 7;
+		is_sharp = false;
+		break;
+	}
+
+	if (is_sharp) {
+		if (accidental_count > 0) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(0.0f, -get_vertical_pitch_separation() * 8), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 1) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap, -get_vertical_pitch_separation() * 5), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 2) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 2, -get_vertical_pitch_separation() * 9), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 3) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 3, -get_vertical_pitch_separation() * 6), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 4) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 4, -get_vertical_pitch_separation() * 3), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 5) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 5, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 6) {
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 6, -get_vertical_pitch_separation() * 4), m_music_color, m_music_size, target, states);
+		}
+	}
+	else {
+		if (accidental_count > 0) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(0.0f, -get_vertical_pitch_separation() * 4), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 1) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 2) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 2, -get_vertical_pitch_separation() * 3), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 3) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 3, -get_vertical_pitch_separation() * 6), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 4) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 4, -get_vertical_pitch_separation() * 2), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 5) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 5, -get_vertical_pitch_separation() * 5), m_music_color, m_music_size, target, states);
+		}
+		if (accidental_count > 6) {
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 6, -get_vertical_pitch_separation() * 1), m_music_color, m_music_size, target, states);
 		}
 	}
 }
