@@ -50,6 +50,7 @@ private:
 	float get_beat_mark_margin() const;
 	float get_beat_mark_size() const;
 	float get_beat_division_mark_size() const;
+	float get_ledger_line_width() const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

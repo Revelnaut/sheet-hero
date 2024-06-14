@@ -119,6 +119,11 @@ float SongRenderer::get_beat_division_mark_size() const
 	return get_beat_mark_size() / 2;
 }
 
+float SongRenderer::get_ledger_line_width() const
+{
+	return get_music_size();
+}
+
 void SongRenderer::set_max_width(float max_width)
 {
 	m_max_width = max_width;
@@ -132,7 +137,7 @@ float SongRenderer::get_max_width() const
 void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 
-	
+
 
 	float left_margin = 180.0f;
 
@@ -236,10 +241,10 @@ void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf:
 	text.setString(symbol);
 	text.setFont(m_music_font);
 	if (size == 0) {
-		text.setCharacterSize(m_music_size);
+		text.setCharacterSize(static_cast<int>(m_music_size));
 	}
 	else {
-		text.setCharacterSize(size);
+		text.setCharacterSize(static_cast<int>(size));
 	}
 	if (color == sf::Color::Transparent) {
 		text.setFillColor(m_music_color);
@@ -270,7 +275,12 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 	constexpr wchar_t NOTEHEAD_BLACK = 0xE0A4;
 	constexpr wchar_t NOTE_FLAG_EIGHT = 0xE240;
 
-	sf::RectangleShape stem{ sf::Vector2f{0.0f, get_vertical_pitch_separation() * 7}};
+	sf::RectangleShape ledger_line{ sf::Vector2f{get_ledger_line_width(), 0.0f} };
+	ledger_line.setOutlineThickness(get_line_thickness());
+	ledger_line.setOutlineColor(get_music_color());
+	ledger_line.setOrigin(get_ledger_line_width() / 3.0f, 0.0f);
+
+	sf::RectangleShape stem{ sf::Vector2f{0.0f, get_vertical_pitch_separation() * 7} };
 	stem.setOutlineThickness(get_line_thickness());
 	stem.setOutlineColor(get_music_color());
 
@@ -316,7 +326,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 					c4_position = position.y + get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * 2;
 					middle_position = c4_position + get_vertical_pitch_separation() * 6;
 				}
-				
+
 				float stem_start_y{}, stem_end_y{};
 
 				stem_start_y = c4_position - (note_group.get_staff_max() * get_vertical_pitch_separation());
@@ -349,10 +359,10 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 
 				if (note_group.get_value() == Value::Eight) {
 					if (stem_up) {
-						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_start_y - get_staff_height()), target, states, sf::Vector2f(0.95, 0.95));
+						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_start_y - get_staff_height()), target, states, sf::Vector2f{ 0.95f, 0.95f });
 					}
 					else {
-						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_end_y + get_staff_height()), target, states, sf::Vector2f(0.95, -0.95));
+						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_end_y + get_staff_height()), target, states, sf::Vector2f{ 0.95f, -0.95f });
 					}
 				}
 			}
@@ -394,7 +404,34 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 			}
 
 			// Draw ledger lines
-
+			int top_ledger{ 12 };
+			int bottom_ledger{ 0 };
+			if (!treble) {
+				top_ledger = 0;
+				bottom_ledger = -12;
+			}
+			if (note_group.get_staff_max() >= top_ledger) {
+				for (int i = top_ledger; i <= note_group.get_staff_max(); i += 2) {
+					if (treble) {
+						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y - get_vertical_pitch_separation() * (i - top_ledger + 2));
+					}
+					else {
+						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y + get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * (i - top_ledger + 2));
+					}
+					target.draw(ledger_line, states);
+				}
+			}
+			if (note_group.get_staff_min() <= bottom_ledger) {
+				for (int i = bottom_ledger; i >= note_group.get_staff_min(); i -= 2) {
+					if (treble) {
+						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y + get_staff_height() + get_vertical_pitch_separation() * (2 - (i - bottom_ledger)));
+					}
+					else {
+						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y + get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * (i - top_ledger + 2));
+					}
+					target.draw(ledger_line, states);
+				}
+			}
 
 			switch (note_group.get_value()) {
 			case Value::Whole:
@@ -422,7 +459,7 @@ void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf:
 	constexpr wchar_t FLAT_ACCIDENTAL = 0xE260;
 	constexpr wchar_t SHARP_ACCIDENTAL = 0xE262;
 	float key_signature_gap{ get_music_size() / 4.0f };
-	
+
 	bool is_sharp{ false };
 	int accidental_count{ 0 };
 
