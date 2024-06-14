@@ -121,7 +121,7 @@ float SongRenderer::get_beat_division_mark_size() const
 
 float SongRenderer::get_ledger_line_width() const
 {
-	return get_music_size();
+	return get_music_size() * 0.8;
 }
 
 void SongRenderer::set_max_width(float max_width)
