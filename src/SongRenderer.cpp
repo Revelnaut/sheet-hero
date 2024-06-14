@@ -132,7 +132,7 @@ float SongRenderer::get_max_width() const
 void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 
-	draw_grand_staff(sf::Vector2f(0.0f, 0.0f), m_max_width, target, states);
+	
 
 	float left_margin = 180.0f;
 
@@ -146,7 +146,13 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	beat.setOrigin(get_beat_mark_size() / 4, get_beat_mark_size() / 2);
 	beat.setFillColor(sf::Color{ 0, 0, 0, 40 });
 
+	bool new_line{ true };
+
 	for (auto& measure : m_song.get_measures()) {
+		if (new_line) {
+			new_line = false;
+			draw_grand_staff(sf::Vector2f(0.0f, draw_position.y), m_max_width, target, states);
+		}
 		sf::Vector2f beat_position{ draw_position };
 		beat_position.x += get_music_size() / 4;
 		beat_position.y -= m_music_size;
@@ -168,15 +174,17 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		draw_measure(measure, draw_position, false, target, states);
 
 		if (draw_position.x + (get_measure_width() * 2) + (get_bar_margin() * 2) <= get_max_width()) {
-			draw_position.x += get_measure_width() + get_bar_margin();
-			bar.setPosition(draw_position);
-			target.draw(bar, states);
-			draw_position.x += get_bar_margin();
+			if (&measure != &m_song.get_measures().back()) { // If not last measure
+				draw_position.x += get_measure_width() + get_bar_margin();
+				bar.setPosition(draw_position);
+				target.draw(bar, states);
+				draw_position.x += get_bar_margin();
+			}
 		}
 		else {
 			draw_position.x = left_margin;
 			draw_position.y += get_grand_staff_height() + get_grand_staff_separation();
-			draw_grand_staff(sf::Vector2f(0.0f, draw_position.y), m_max_width, target, states);
+			new_line = true;
 		}
 	}
 }
@@ -204,13 +212,13 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	draw_key_signature(m_song.get_key(), position + sf::Vector2f(50.0f, get_staff_separation() + get_staff_height() + get_vertical_pitch_separation() * 2), target, states);
 
 	// G clef
-	draw_symbol(0xE050, position + sf::Vector2f{ get_line_separation(), -get_line_separation() }, get_music_color(), get_music_size(), target, states);
+	draw_symbol(0xE050, position + sf::Vector2f{ get_line_separation(), -get_line_separation() }, target, states);
 
 	// F clef
-	draw_symbol(0xE062, position + sf::Vector2f{ get_line_separation(), get_staff_separation() + get_line_separation() }, get_music_color(), get_music_size(), target, states);
+	draw_symbol(0xE062, position + sf::Vector2f{ get_line_separation(), get_staff_separation() + get_line_separation() }, target, states);
 
 	// Brace
-	draw_symbol(0xF402, position - sf::Vector2f{ get_line_separation(), 0.0f }, get_music_color(), get_grand_staff_height(), target, states);
+	draw_symbol(0xF402, position - sf::Vector2f{ get_line_separation(), 0.0f }, target, states, get_grand_staff_height());
 
 	sf::RectangleShape vertical_line{ sf::Vector2f{ 0.0f, get_grand_staff_height() } };
 	vertical_line.setOutlineColor(get_music_color());
@@ -223,9 +231,35 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	target.draw(vertical_line, states);
 }
 
-void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, const sf::Color& color, float size, sf::RenderTarget& target, sf::RenderStates states) const {
-	sf::Text text{ symbol, m_music_font, static_cast<unsigned int>(size) };
-	text.setFillColor(color);
+void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states, float size, const sf::Color& color) const {
+	sf::Text text{};
+	text.setString(symbol);
+	text.setFont(m_music_font);
+	if (size == 0) {
+		text.setCharacterSize(m_music_size);
+	}
+	else {
+		text.setCharacterSize(size);
+	}
+	if (color == sf::Color::Transparent) {
+		text.setFillColor(m_music_color);
+	}
+	else {
+		text.setFillColor(color);
+	}
+	text.setPosition(position);
+	target.draw(text, states);
+}
+
+void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states, sf::Vector2f scale, const sf::Color& color) const {
+	sf::Text text{ symbol, m_music_font, static_cast<unsigned int>(m_music_size) };
+	text.setScale(scale);
+	if (color == sf::Color::Transparent) {
+		text.setFillColor(m_music_color);
+	}
+	else {
+		text.setFillColor(color);
+	}
 	text.setPosition(position);
 	target.draw(text, states);
 }
@@ -273,14 +307,16 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 			// Draw stem
 			if (note_group.get_value() != Value::Whole) {
 				float c4_position{};
-				float b4_position{};
+				float middle_position{};
 				if (treble) {
 					c4_position = position.y + get_vertical_pitch_separation() * 10;
+					middle_position = c4_position - get_vertical_pitch_separation() * 6;
 				}
 				else {
 					c4_position = position.y + get_staff_height() + get_staff_separation() - get_vertical_pitch_separation() * 2;
+					middle_position = c4_position + get_vertical_pitch_separation() * 6;
 				}
-				b4_position = c4_position - get_vertical_pitch_separation() * 6;
+				
 				float stem_start_y{}, stem_end_y{};
 
 				stem_start_y = c4_position - (note_group.get_staff_max() * get_vertical_pitch_separation());
@@ -292,6 +328,17 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 					stem_end_y += get_vertical_pitch_separation() * 7;
 				}
 
+				if (stem_up) {
+					if (stem_start_y > middle_position) {
+						stem_start_y = middle_position;
+					}
+				}
+				else {
+					if (stem_end_y < middle_position) {
+						stem_end_y = middle_position;
+					}
+				}
+
 				sf::Vector2f stem_position{ draw_position };
 				stem_position.x += stem_offset;
 				stem_position.y = stem_start_y;
@@ -299,8 +346,18 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 				stem.setOutlineColor(m_music_color);
 				stem.setPosition(stem_position);
 				target.draw(stem, states);
+
+				if (note_group.get_value() == Value::Eight) {
+					if (stem_up) {
+						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_start_y - get_staff_height()), target, states, sf::Vector2f(0.95, 0.95));
+					}
+					else {
+						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_end_y + get_staff_height()), target, states, sf::Vector2f(0.95, -0.95));
+					}
+				}
 			}
 
+			// Draw notes
 			for (auto& note : note_group.get_notes()) {
 				sf::Color note_color{ m_music_color };
 
@@ -328,17 +385,16 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 				previous_staff_position = note.get_staff_position();
 				previous_offset = offset;
 
-				if ((offset && stem_up) || (!offset && !stem_up)) {
-					draw_symbol(note_head, draw_position + sf::Vector2f(second_interval_offset, 0), note_color, m_music_size, target, states);
+				if ((offset && stem_up) || (!offset && !stem_up && note_group.get_value() != Value::Whole) || (offset && !stem_up && note_group.get_value() == Value::Whole)) {
+					draw_symbol(note_head, draw_position + sf::Vector2f(second_interval_offset, 0), target, states, sf::Vector2f(1, 1), note_color);
 				}
 				else {
-					draw_symbol(note_head, draw_position, note_color, m_music_size, target, states);
+					draw_symbol(note_head, draw_position, target, states, sf::Vector2f(1, 1), note_color);
 				}
-
-				/*if (note_group.get_value() == Value::Eight) {
-					draw_symbol(NOTE_FLAG_EIGHT, draw_position + sf::Vector2(get_music_size() / 3.5f, -get_vertical_pitch_separation() * 7), note_color, m_music_size, target, states);
-				}*/
 			}
+
+			// Draw ledger lines
+
 
 			switch (note_group.get_value()) {
 			case Value::Whole:
@@ -451,48 +507,48 @@ void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf:
 
 	if (is_sharp) {
 		if (accidental_count > 0) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(0.0f, -get_vertical_pitch_separation() * 8), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(0.0f, -get_vertical_pitch_separation() * 8), target, states);
 		}
 		if (accidental_count > 1) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap, -get_vertical_pitch_separation() * 5), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap, -get_vertical_pitch_separation() * 5), target, states);
 		}
 		if (accidental_count > 2) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 2, -get_vertical_pitch_separation() * 9), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 2, -get_vertical_pitch_separation() * 9), target, states);
 		}
 		if (accidental_count > 3) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 3, -get_vertical_pitch_separation() * 6), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 3, -get_vertical_pitch_separation() * 6), target, states);
 		}
 		if (accidental_count > 4) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 4, -get_vertical_pitch_separation() * 3), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 4, -get_vertical_pitch_separation() * 3), target, states);
 		}
 		if (accidental_count > 5) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 5, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 5, -get_vertical_pitch_separation() * 7), target, states);
 		}
 		if (accidental_count > 6) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 6, -get_vertical_pitch_separation() * 4), m_music_color, m_music_size, target, states);
+			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 6, -get_vertical_pitch_separation() * 4), target, states);
 		}
 	}
 	else {
 		if (accidental_count > 0) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(0.0f, -get_vertical_pitch_separation() * 4), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(0.0f, -get_vertical_pitch_separation() * 4), target, states);
 		}
 		if (accidental_count > 1) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap, -get_vertical_pitch_separation() * 7), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap, -get_vertical_pitch_separation() * 7), target, states);
 		}
 		if (accidental_count > 2) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 2, -get_vertical_pitch_separation() * 3), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 2, -get_vertical_pitch_separation() * 3), target, states);
 		}
 		if (accidental_count > 3) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 3, -get_vertical_pitch_separation() * 6), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 3, -get_vertical_pitch_separation() * 6), target, states);
 		}
 		if (accidental_count > 4) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 4, -get_vertical_pitch_separation() * 2), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 4, -get_vertical_pitch_separation() * 2), target, states);
 		}
 		if (accidental_count > 5) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 5, -get_vertical_pitch_separation() * 5), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 5, -get_vertical_pitch_separation() * 5), target, states);
 		}
 		if (accidental_count > 6) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 6, -get_vertical_pitch_separation() * 1), m_music_color, m_music_size, target, states);
+			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(key_signature_gap * 6, -get_vertical_pitch_separation() * 1), target, states);
 		}
 	}
 }
