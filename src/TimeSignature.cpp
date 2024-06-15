@@ -2,39 +2,39 @@
 
 TimeSignature::TimeSignature() {}
 
-TimeSignature::TimeSignature(int top, int bottom)
-	: m_top{ top }, m_bottom{ bottom } {}
+TimeSignature::TimeSignature(int numerator, int denominator)
+	: m_numerator{ numerator }, m_denominator{ denominator } {}
 
 TimeSignature::TimeSignature(const TimeSignature& source)
-	: m_top{ source.m_top }, m_bottom{ source.m_bottom } {}
+	: m_numerator{ source.m_numerator }, m_denominator{ source.m_denominator } {}
 
 TimeSignature::~TimeSignature() {}
 
 TimeSignature& TimeSignature::operator=(const TimeSignature& source)
 {
-	m_top = source.m_top;
-	m_bottom = source.m_bottom;
+	m_numerator = source.m_numerator;
+	m_denominator = source.m_denominator;
 
 	return *this;
 }
 
-void TimeSignature::set(int top, int bottom) {
-	m_top = top;
-	m_bottom = bottom;
+void TimeSignature::set(int numerator, int denominator) {
+	m_numerator = numerator;
+	m_denominator = denominator;
 }
 
-void TimeSignature::set_top(int top) {
-	m_top = top;
+void TimeSignature::set_numerator(int numerator) {
+	m_numerator = numerator;
 }
 
-void TimeSignature::set_bottom(int bottom) {
-	m_bottom = bottom;
+void TimeSignature::set_denominator(int denominator) {
+	m_denominator = denominator;
 }
 
-int TimeSignature::get_top() const {
-	return m_top;
+int TimeSignature::get_numerator() const {
+	return m_numerator;
 }
 
-int TimeSignature::get_bottom() const {
-	return m_bottom;
+int TimeSignature::get_denominator() const {
+	return m_denominator;
 }

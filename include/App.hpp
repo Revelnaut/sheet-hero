@@ -15,7 +15,6 @@ using json = nlohmann::json;
 #include <libremidi/libremidi.hpp>
 #include "SongRenderer.hpp"
 #include "effolkronium/random.hpp"
-#include "PianoKeyboard.hpp"
 
 using Random = effolkronium::random_static;
 

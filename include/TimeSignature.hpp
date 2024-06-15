@@ -3,20 +3,20 @@
 class TimeSignature {
 public:
 	TimeSignature();
-	TimeSignature(int top, int bottom);
+	TimeSignature(int numerator, int denominator);
 	TimeSignature(const TimeSignature& source);
 	~TimeSignature();
 
 	TimeSignature& operator=(const TimeSignature& source);
 
-	void set(int top, int bottom);
-	void set_top(int top);
-	void set_bottom(int bottom);
+	void set(int numerator, int denominator);
+	void set_numerator(int numerator);
+	void set_denominator(int denominator);
 
-	int get_top() const;
-	int get_bottom() const;
+	int get_numerator() const;
+	int get_denominator() const;
 
 private:
-	int m_top{ 4 };
-	int m_bottom{ 4 };
+	int m_numerator{ 4 };
+	int m_denominator{ 4 };
 };

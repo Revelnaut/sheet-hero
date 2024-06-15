@@ -48,7 +48,7 @@ size_t Measure::get_note_group_count() const
 
 int Measure::free_treble_space_in_eights() const
 {
-	int free_space = 8 * m_time_signature.get_top() / m_time_signature.get_bottom();
+	int free_space = 8 * m_time_signature.get_numerator() / m_time_signature.get_denominator();
 	for (auto note_group : m_treble_note_groups) {
 		switch (note_group.get_value()) {
 		case Value::Whole: free_space -= 8; break;
@@ -62,7 +62,7 @@ int Measure::free_treble_space_in_eights() const
 
 int Measure::free_bass_space_in_eights() const
 {
-	int free_space = 8 * m_time_signature.get_top() / m_time_signature.get_bottom();
+	int free_space = 8 * m_time_signature.get_numerator() / m_time_signature.get_denominator();
 	for (auto note_group : m_bass_note_groups) {
 		switch (note_group.get_value()) {
 		case Value::Whole: free_space -= 8; break;

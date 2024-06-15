@@ -18,6 +18,7 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/AppImgui.cpp
     ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
+    ${SOURCE_DIR}/MusicalSymbol.cpp
     ${SOURCE_DIR}/Note.cpp
     ${SOURCE_DIR}/NoteGroup.cpp
     ${SOURCE_DIR}/Scale.cpp
@@ -30,6 +31,7 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/DataTypes.hpp
     ${INCLUDE_DIR}/Measure.hpp
     ${INCLUDE_DIR}/MidiEngine.hpp
+    ${INCLUDE_DIR}/MusicalSymbol.hpp
     ${INCLUDE_DIR}/Note.hpp
     ${INCLUDE_DIR}/NoteGroup.hpp
     ${INCLUDE_DIR}/Scale.hpp
