@@ -14,7 +14,8 @@ MusicalSymbol::MusicalSymbol(const MusicalSymbol& source) :
 	m_character_size{ source.m_character_size },
 	m_fill_color{ source.m_fill_color },
 	m_outline_color{ source.m_outline_color },
-	m_outline_thickness{ source.m_outline_thickness }
+	m_outline_thickness{ source.m_outline_thickness },
+	m_use_font_baseline{ source.m_use_font_baseline }
 {}
 
 MusicalSymbol::~MusicalSymbol() {}
@@ -26,6 +27,7 @@ MusicalSymbol& MusicalSymbol::operator=(const MusicalSymbol& source) {
 	m_fill_color = source.m_fill_color;
 	m_outline_color = source.m_outline_color;
 	m_outline_thickness = source.m_outline_thickness;
+	m_use_font_baseline = source.m_use_font_baseline;
 
 	return *this;
 }
@@ -78,19 +80,55 @@ float MusicalSymbol::get_outline_thickness() const {
 	return m_outline_thickness;
 }
 
-sf::FloatRect MusicalSymbol::get_bounds() const
+sf::FloatRect MusicalSymbol::get_local_bounds() const
 {
 	auto glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
-	return glyph_data.bounds;
+	sf::FloatRect bounds{};
+	if (m_use_font_baseline) {
+		bounds = glyph_data.bounds;
+		bounds.top += m_character_size;
+	}
+	else {
+		bounds = sf::FloatRect{ sf::Vector2f(0.0f, 0.0f), glyph_data.bounds.getSize() };
+	}
+	return bounds;
+}
+
+sf::FloatRect MusicalSymbol::get_global_bounds() const
+{
+	return sf::FloatRect{ getPosition(), get_local_bounds().getSize() };
+}
+
+sf::Vector2f MusicalSymbol::get_size() const
+{
+	return get_local_bounds().getSize();
+}
+
+sf::Vector2f MusicalSymbol::get_local_center() const
+{
+	return sf::Vector2f{ get_size().x / 2.0f, get_size().y / 2.0f };
+	return sf::Vector2f{ get_size().x / 2.0f, get_size().y / 2.0f };
+}
+
+void MusicalSymbol::use_font_baseline(bool use) {
+	m_use_font_baseline = use;
+}
+
+bool MusicalSymbol::is_using_font_baseline() const {
+	return m_use_font_baseline;
 }
 
 void MusicalSymbol::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 
-	sf::Text text_renderer{ static_cast<wchar_t>(m_glyph), *m_font, m_character_size };
-	text_renderer.setFillColor(m_fill_color);
-	text_renderer.setOutlineColor(m_outline_color);
-	text_renderer.setOutlineThickness(m_outline_thickness);
+	sf::Glyph glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
 
-	target.draw(text_renderer, states);
+	sf::Sprite symbol_renderer{};
+	if (m_use_font_baseline) {
+		symbol_renderer.setPosition(sf::Vector2f(0.0f, m_character_size) + glyph_data.bounds.getPosition());
+	}
+	symbol_renderer.setTexture(m_font->getTexture(m_character_size), false);
+	symbol_renderer.setTextureRect(glyph_data.textureRect);
+	symbol_renderer.setColor(m_fill_color);
+	target.draw(symbol_renderer, states);
 }

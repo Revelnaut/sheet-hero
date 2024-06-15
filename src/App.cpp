@@ -1,5 +1,5 @@
-
 #include "App.hpp"
+#include "MusicalSymbol.hpp"
 
 App::App()
 {
@@ -14,12 +14,6 @@ int App::run()
 {
 	create_window(false);
 	ImGui::SFML::Init(window);
-
-	song_renderer.set_song(generate_random_song(8, static_cast<Key>(Random::get(0, 29))));
-	song_renderer.setPosition(sf::Vector2f(song_margin, song_margin));
-	song_renderer.set_max_width(window.getSize().x - song_margin * 2);
-	song_renderer.set_music_size(50);
-	song_renderer.set_music_color(sf::Color::Black);
 
 	sf::Clock deltaClock;
 	while (window.isOpen())
@@ -56,9 +50,7 @@ int App::run()
 		//imgui_show_interface();
 
 		window.clear(window_color);
-		window.draw(song_renderer);
 		ImGui::SFML::Render(window);
-
 		window.display();
 	}
 	ImGui::SFML::Shutdown();

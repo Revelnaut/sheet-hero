@@ -61,7 +61,13 @@ public:
 	void set_outline_thickness(float thickness);
 	float get_outline_thickness() const;
 
-	sf::FloatRect get_bounds() const;
+	sf::FloatRect get_local_bounds() const;
+	sf::FloatRect get_global_bounds() const;
+	sf::Vector2f get_size() const;
+	sf::Vector2f get_local_center() const;
+
+	void use_font_baseline(bool use);
+	bool is_using_font_baseline() const;
 
 private:
 	MusicalGlyph m_glyph{ MusicalGlyph::Null };
@@ -71,6 +77,7 @@ private:
 	sf::Color m_fill_color{ sf::Color::Black };
 	sf::Color m_outline_color{ sf::Color::Transparent };
 	float m_outline_thickness{ 0.0f };
+	bool m_use_font_baseline{ false };
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
