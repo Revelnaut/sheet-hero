@@ -13,6 +13,7 @@ constexpr static float BAR_WIDTH{ 0.5f };
 constexpr static float STAFF_SPACING{ 2.0f };
 constexpr static float GRAND_STAFF_SPACING{ 3.0f };
 constexpr static float GRAND_STAFF_BRACE_SPACING{ 0.0f };
+constexpr static float FIRST_MEASURE_OFFSET{ 1.0f };
 
 unsigned int SheetMusicSettings::get_font_size() const {
 	return static_cast<unsigned int>(size);
@@ -64,13 +65,22 @@ float SheetMusicSettings::get_measure_width(bool include_bars) const {
 	return width;
 }
 
+float SheetMusicSettings::get_first_measure_offset() const {
+	return size * FIRST_MEASURE_OFFSET * first_measure_offset_scale;
+}
+
+float SheetMusicSettings::get_first_measure_position(const Key& key) const {
+	float accidentals_width{ get_key_signature_accidental_spacing() * DataUtility::accidentals_in_key(key) };
+	return get_grand_staff_brace_spacing() + get_clef_spacing() + get_key_signature_spacing() + accidentals_width + get_first_measure_offset();
+}
+
 float SheetMusicSettings::get_staff_height() const {
 	return size * staff_height_scale;
 }
 
 float SheetMusicSettings::get_staff_spacing() const
 {
-	return size * STAFF_SPACING * staff_spacing_scale;
+	return (size * STAFF_SPACING * staff_spacing_scale) + (get_line_spacing() * 2);
 }
 
 float SheetMusicSettings::get_grand_staff_height() const
@@ -86,10 +96,4 @@ float SheetMusicSettings::get_grand_staff_spacing() const
 float SheetMusicSettings::get_grand_staff_brace_spacing() const
 {
 	return size * GRAND_STAFF_BRACE_SPACING * grand_staff_brace_spacing_scale;
-}
-
-float SheetMusicSettings::get_first_measure_position(const Key& key) const
-{
-	float estimated_accidental_width{ 0.2f * size };
-	return get_grand_staff_brace_spacing() + get_clef_spacing() + get_key_signature_spacing() + ((estimated_accidental_width + get_key_signature_accidental_spacing()) * DataUtility::accidentals_in_key(key)) + get_bar_width();
 }

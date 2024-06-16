@@ -3,6 +3,7 @@
 void App::imgui_show_interface()
 {
 	imgui_midi_window();
+	imgui_settings_window();
 }
 
 void App::imgui_midi_window()
@@ -108,4 +109,17 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 	ImGui::SetCursorScreenPos(current_position);
 
 	ImGui::PopStyleVar(1);
+}
+
+void App::imgui_settings_window()
+{
+	if (ImGui::Begin("Settings")) {
+		ImGui::SliderFloat("Staff spacing", &song_renderer.get_settings().staff_spacing_scale, 0.0f, 2.0f, "%.1f");
+		ImGui::SliderFloat("Clef spacing", &song_renderer.get_settings().clef_spacing_scale, 0.0f, 10.0f, "%.1f");
+		ImGui::SliderFloat("Key signature spacing", &song_renderer.get_settings().key_signature_spacing_scale, 0.0f, 10.0f, "%.1f");
+		ImGui::SliderFloat("Key signature accidental spacing", &song_renderer.get_settings().key_signature_accidental_spacing_scale, 0.0f, 2.0f, "%.1f");
+		ImGui::SliderFloat("Bar width", &song_renderer.get_settings().bar_width_scale, 0.0f, 10.0f, "%.1f");
+		ImGui::SliderFloat("Measure width", &song_renderer.get_settings().measure_width_scale, 0.0f, 4.0f, "%.1f");
+		ImGui::End();
+	}
 }

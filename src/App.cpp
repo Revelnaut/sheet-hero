@@ -52,7 +52,7 @@ int App::run()
 
 		ImGui::SFML::Update(window, deltaClock.restart());
 		//ImGui::ShowDemoWindow();
-		//imgui_show_interface();
+		imgui_show_interface();
 
 		window.clear(window_color);
 
@@ -135,10 +135,7 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 	return song;
 }
 
-
-
-void App::create_window(bool fullscreen)
-{
+void App::create_window(bool fullscreen) {
 	std::string window_title = "Sheet Hero";
 	sf::Vector2u window_initial_size{ 1920, 1080 };
 	sf::VideoMode windowed_mode{ window_initial_size.x, window_initial_size.y };
@@ -162,7 +159,6 @@ void App::update_view(float width, float height) {
 	song_renderer.set_max_width(width - song_margin * 2);
 }
 
-void App::toggle_fullscreen()
-{
+void App::toggle_fullscreen() {
 	create_window(!is_fullscreen);
 }
