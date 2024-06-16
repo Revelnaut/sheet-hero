@@ -32,6 +32,8 @@ public:
 	~App();
 
 	int run();
+	
+	void generate_demo_song();
 	Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120);
 
 	void create_window(bool fullscreen);

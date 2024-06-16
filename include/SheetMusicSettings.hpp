@@ -18,10 +18,9 @@ struct SheetMusicSettings {
 	float measure_width_scale{ 1.0f };
 	float first_measure_offset_scale{ 1.0f };
 
-	float staff_height_scale{ 1.0f };
 	float staff_spacing_scale{ 1.0f };
 	float grand_staff_spacing_scale{ 1.0f };
-	float grand_staff_brace_spacing_scale{ 1.0f };
+	float grand_staff_brace_spacing_scale{ 0.0f };
 
 	unsigned int get_font_size() const;
 	float get_line_thickness() const;

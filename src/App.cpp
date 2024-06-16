@@ -16,8 +16,7 @@ int App::run()
 	create_window(false);
 	ImGui::SFML::Init(window);
 
-	song_renderer.set_song(generate_random_song(8, Key::CFlatMajor));
-	song_renderer.setPosition(song_margin, song_margin);
+	generate_demo_song();
 
 	sf::Clock deltaClock;
 	while (window.isOpen())
@@ -34,7 +33,7 @@ int App::run()
 				else {
 					if (event.key.code == sf::Keyboard::G) {
 						std::cout << "Generating..." << std::endl;
-						song_renderer.set_song(generate_random_song(8, static_cast<Key>(Random::get(0, 29))));
+						generate_demo_song();
 						std::cout << "Done!" << std::endl;
 						std::cout << "Song key: " << (int)song_renderer.get_song().get_key() << std::endl;
 					}
@@ -63,6 +62,11 @@ int App::run()
 	}
 	ImGui::SFML::Shutdown();
 	return EXIT_SUCCESS;
+}
+
+void App::generate_demo_song() {
+	song_renderer.set_song(generate_random_song(32, Key::CFlatMajor));
+	song_renderer.setPosition(song_margin, song_margin);
 }
 
 Song App::generate_random_song(int measures, Key key, int tempo) {
