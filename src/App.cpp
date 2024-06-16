@@ -1,5 +1,6 @@
 #include "App.hpp"
 #include "MusicalSymbol.hpp"
+#include "SheetMusicSettings.hpp"
 
 App::App()
 {
@@ -14,6 +15,9 @@ int App::run()
 {
 	create_window(false);
 	ImGui::SFML::Init(window);
+
+	song_renderer.set_song(generate_random_song(8, Key::CFlatMajor));
+	song_renderer.setPosition(song_margin, song_margin);
 
 	sf::Clock deltaClock;
 	while (window.isOpen())
@@ -32,6 +36,7 @@ int App::run()
 						std::cout << "Generating..." << std::endl;
 						song_renderer.set_song(generate_random_song(8, static_cast<Key>(Random::get(0, 29))));
 						std::cout << "Done!" << std::endl;
+						std::cout << "Song key: " << (int)song_renderer.get_song().get_key() << std::endl;
 					}
 				}
 			}
@@ -50,6 +55,9 @@ int App::run()
 		//imgui_show_interface();
 
 		window.clear(window_color);
+
+		window.draw(song_renderer);
+
 		ImGui::SFML::Render(window);
 		window.display();
 	}

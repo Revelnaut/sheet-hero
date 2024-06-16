@@ -82,14 +82,16 @@ float MusicalSymbol::get_outline_thickness() const {
 
 sf::FloatRect MusicalSymbol::get_local_bounds() const
 {
-	auto glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
 	sf::FloatRect bounds{};
-	if (m_use_font_baseline) {
-		bounds = glyph_data.bounds;
-		bounds.top += m_character_size;
-	}
-	else {
-		bounds = sf::FloatRect{ sf::Vector2f(0.0f, 0.0f), glyph_data.bounds.getSize() };
+	if (m_font) {
+		auto glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
+		if (m_use_font_baseline) {
+			bounds = glyph_data.bounds;
+			bounds.top += m_character_size;
+		}
+		else {
+			bounds = sf::FloatRect{ sf::Vector2f(0.0f, 0.0f), glyph_data.bounds.getSize() };
+		}
 	}
 	return bounds;
 }
@@ -119,16 +121,18 @@ bool MusicalSymbol::is_using_font_baseline() const {
 }
 
 void MusicalSymbol::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
+	if (m_font) {
+		states.transform *= getTransform();
 
-	sf::Glyph glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
+		sf::Glyph glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
 
-	sf::Sprite symbol_renderer{};
-	if (m_use_font_baseline) {
-		symbol_renderer.setPosition(sf::Vector2f(0.0f, m_character_size) + glyph_data.bounds.getPosition());
+		sf::Sprite symbol_renderer{};
+		if (m_use_font_baseline) {
+			symbol_renderer.setPosition(sf::Vector2f(0.0f, static_cast<float>(m_character_size)) + glyph_data.bounds.getPosition());
+		}
+		symbol_renderer.setTexture(m_font->getTexture(m_character_size), false);
+		symbol_renderer.setTextureRect(glyph_data.textureRect);
+		symbol_renderer.setColor(m_fill_color);
+		target.draw(symbol_renderer, states);
 	}
-	symbol_renderer.setTexture(m_font->getTexture(m_character_size), false);
-	symbol_renderer.setTextureRect(glyph_data.textureRect);
-	symbol_renderer.setColor(m_fill_color);
-	target.draw(symbol_renderer, states);
 }

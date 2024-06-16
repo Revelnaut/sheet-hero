@@ -1,8 +1,10 @@
 #pragma once
 
+#include <unordered_map>
 #include <SFML/Graphics.hpp>
 #include "Song.hpp"
-#include <unordered_map>
+#include "SheetMusicSettings.hpp"
+#include "MusicalSymbol.hpp"
 
 class SongRenderer : public sf::Drawable, public sf::Transformable {
 public:
@@ -13,44 +15,23 @@ public:
 	void set_song(const Song& song);
 	const Song& get_song() const;
 
-	void set_music_size(float size);
-	void set_music_color(const sf::Color& color);
-
-	const sf::Color& get_music_color() const;
-	float get_music_size() const;
-
 	void set_max_width(float max_width);
 	float get_max_width() const;
 
+	void set_settings(const SheetMusicSettings& settings);
+	SheetMusicSettings& get_settings();
 private:
+	sf::Font m_music_font{};
+	SheetMusicSettings m_settings{};
+
 	Song m_song{};
 	float m_position_in_song{};
-	int m_note_group_at_position{};
-	std::unordered_map<int, NoteState> m_note_states{};
 
-	sf::Color m_music_color{ sf::Color::Black };
-	sf::Color m_correct_color{ sf::Color::Green };
-	sf::Color m_incorrect_color{ sf::Color::Red };
-	float m_music_size{ 50.0f };
-	sf::Font m_music_font{};
 	float m_max_width{ 0.0 };
 
 	void initialize();
 
-	float get_note_gap() const;
-	float get_vertical_pitch_separation() const;
-	float get_line_thickness() const;
-	float get_line_separation() const;
-	float get_staff_separation() const;
-	float get_staff_height() const;
-	float get_grand_staff_separation() const;
-	float get_grand_staff_height() const;
-	float get_measure_width() const;
-	float get_bar_margin() const;
-	float get_beat_mark_margin() const;
-	float get_beat_mark_size() const;
-	float get_beat_division_mark_size() const;
-	float get_ledger_line_width() const;
+	MusicalSymbol symbol_factory(const MusicalGlyph& glyph) const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

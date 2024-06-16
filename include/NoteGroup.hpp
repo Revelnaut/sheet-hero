@@ -18,8 +18,8 @@ public:
 	const std::vector<Note>& get_notes() const;
 	const Value& get_value() const;
 	float get_staff_mid_point() const;
-	float get_staff_max() const;
-	float get_staff_min() const;
+	int get_staff_max() const;
+	int get_staff_min() const;
 
 	bool is_rest() const;
 

@@ -5,7 +5,7 @@
 enum class MusicalGlyph {
 	Null = 0,
 
-	Brace = 0xE000,
+	Brace = 0xF402,
 	ClefG = 0xE050,
 	ClefF = 0xE062,
 

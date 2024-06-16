@@ -47,6 +47,7 @@ static Accidental int_to_accidental(int accidental) {
 	case 0: return Accidental::Natural;
 	case 1: return Accidental::Sharp;
 	}
+	return Accidental::Natural;
 }
 
 void Scale::set_accidentals(int c, int d, int e, int f, int g, int a, int b)
