@@ -68,10 +68,10 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 		if (draw_position.x + (m_settings.get_measure_width(true) + m_settings.get_measure_width(false)) <= get_max_width()) {
 			if (&measure != &m_song.get_measures().back()) { // If not last measure
-				draw_position.x += m_settings.get_measure_width(true);
+				draw_position.x += m_settings.get_measure_width(false) + m_settings.get_bar_width() / 2;
 				bar.setPosition(draw_position);
 				target.draw(bar, states);
-				draw_position.x += m_settings.get_bar_width();
+				draw_position.x += m_settings.get_bar_width() / 2;
 			}
 		}
 		else {
