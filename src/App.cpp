@@ -65,7 +65,7 @@ int App::run()
 }
 
 void App::generate_demo_song() {
-	song_renderer.set_song(generate_random_song(32, Key::CFlatMajor));
+	song_renderer.set_song(generate_random_song(32, static_cast<Key>(Random::get(0, 29))));
 	song_renderer.setPosition(song_margin, song_margin);
 }
 

@@ -377,57 +377,72 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 
 void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const
 {
-	constexpr wchar_t FLAT_ACCIDENTAL = 0xE260;
-	constexpr wchar_t SHARP_ACCIDENTAL = 0xE262;
 	float pitch_spacing{ m_settings.get_pitch_spacing() };
 	float accidental_spacing{ m_settings.get_key_signature_accidental_spacing() };
-
 	int accidental_count{ DataUtility::accidentals_in_key(key) };
 
 	if (DataUtility::is_key_sharp(key)) {
+		MusicalSymbol sharp_accidental = symbol_factory(MusicalGlyph::AccidentalSharp);
+		sharp_accidental.use_font_baseline(true);
 		if (accidental_count > 0) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(0.0f, -pitch_spacing * 8), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(0.0f, -pitch_spacing * 8));
+			target.draw(sharp_accidental, states);
 		}
 		if (accidental_count > 1) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(accidental_spacing, -pitch_spacing * 5), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing, -pitch_spacing * 5));
+			target.draw(sharp_accidental, states);
 		}
 		if (accidental_count > 2) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 2, -pitch_spacing * 9), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 2, -pitch_spacing * 9));
+			target.draw(sharp_accidental, states);
 		}
 		if (accidental_count > 3) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 3, -pitch_spacing * 6), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 3, -pitch_spacing * 6));
+			target.draw(sharp_accidental, states);
 		}
 		if (accidental_count > 4) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 4, -pitch_spacing * 3), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 4, -pitch_spacing * 3));
+			target.draw(sharp_accidental, states);
 		}
 		if (accidental_count > 5) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 5, -pitch_spacing * 7), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 5, -pitch_spacing * 7));
+			target.draw(sharp_accidental, states);
 		}
 		if (accidental_count > 6) {
-			draw_symbol(SHARP_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 6, -pitch_spacing * 4), target, states);
+			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 6, -pitch_spacing * 4));
+			target.draw(sharp_accidental, states);
 		}
 	}
 	else if (DataUtility::is_key_flat(key)) {
+		MusicalSymbol flat_accidental = symbol_factory(MusicalGlyph::AccidentalFlat);
+		flat_accidental.use_font_baseline(true);
 		if (accidental_count > 0) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(0.0f, -pitch_spacing * 4), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(0.0f, -pitch_spacing * 4));
+			target.draw(flat_accidental, states);
 		}
 		if (accidental_count > 1) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(accidental_spacing, -pitch_spacing * 7), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing, -pitch_spacing * 7));
+			target.draw(flat_accidental, states);
 		}
 		if (accidental_count > 2) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 2, -pitch_spacing * 3), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 2, -pitch_spacing * 3));
+			target.draw(flat_accidental, states);
 		}
 		if (accidental_count > 3) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 3, -pitch_spacing * 6), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 3, -pitch_spacing * 6));
+			target.draw(flat_accidental, states);
 		}
 		if (accidental_count > 4) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 4, -pitch_spacing * 2), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 4, -pitch_spacing * 2));
+			target.draw(flat_accidental, states);
 		}
 		if (accidental_count > 5) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 5, -pitch_spacing * 5), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 5, -pitch_spacing * 5));
+			target.draw(flat_accidental, states);
 		}
 		if (accidental_count > 6) {
-			draw_symbol(FLAT_ACCIDENTAL, position + sf::Vector2f(accidental_spacing * 6, -pitch_spacing * 1), target, states);
+			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 6, -pitch_spacing * 1));
+			target.draw(flat_accidental, states);
 		}
 	}
 }
