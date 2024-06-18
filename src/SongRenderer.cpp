@@ -63,8 +63,8 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			draw_position.x = m_settings.get_first_measure_position(m_song.get_key());
 		}
 
-		draw_measure(measure, draw_position, true, target, states);
-		draw_measure(measure, draw_position, false, target, states);
+		draw_measure(measure.treble_measure, draw_position, true, target, states);
+		draw_measure(measure.bass_measure, draw_position, false, target, states);
 
 		if (draw_position.x + (m_settings.get_measure_width(true) + m_settings.get_measure_width(false)) <= get_max_width()) {
 			if (&measure != &m_song.get_measures().back()) { // If not last measure
@@ -143,7 +143,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	target.draw(f_clef, states);
 
 	// Time signature
-	const TimeSignature & time_signature = m_song.get_measures()[0].get_time_signature();
+	const TimeSignature & time_signature = m_song.get_time_signature();
 
 	MusicalSymbol ts_numerator = symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_numerator()));
 	MusicalSymbol ts_denominator = symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_denominator()));
@@ -220,15 +220,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, b
 
 	sf::Vector2f draw_position{ position };
 
-	const std::vector<NoteGroup>* note_groups{ nullptr };
-	if (treble) {
-		note_groups = &(measure.get_treble_note_groups());
-	}
-	else {
-		note_groups = &(measure.get_bass_note_groups());
-	}
-
-	for (auto& note_group : *note_groups) {
+	for (auto& note_group : measure.get_note_groups()) {
 		if (note_group.is_rest() == false) {
 			wchar_t note_head{};
 

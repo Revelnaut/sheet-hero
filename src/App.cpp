@@ -73,19 +73,23 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 	Song song{};
 	song.set_key(key);
 	song.set_tempo(tempo);
-	for (int m = 0; m < measures; ++m) {
-		Measure measure;
+	song.set_time_signature({4, 4});
 
-		while (measure.free_treble_space_in_eights() > 0) {
+	for (int m = 0; m < measures; ++m) {
+		GrandMeasure grand_measure;
+
+		Measure & treble = grand_measure.treble_measure;
+
+		while (treble.free_space_in_eights(song.get_time_signature()) > 0) {
 			Value largest_option{};
 
-			if (measure.free_treble_space_in_eights() == 8) {
+			if (treble.free_space_in_eights(song.get_time_signature()) == 8) {
 				largest_option = Value::Whole;
 			}
-			else if (measure.free_treble_space_in_eights() >= 4) {
+			else if (treble.free_space_in_eights(song.get_time_signature()) >= 4) {
 				largest_option = Value::Half;
 			}
-			else if (measure.free_treble_space_in_eights() >= 2) {
+			else if (treble.free_space_in_eights(song.get_time_signature()) >= 2) {
 				largest_option = Value::Quarter;
 			}
 			else {
@@ -102,19 +106,21 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			for (int i = 0; i < note_count; ++i) {
 				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), Random::get(4, 5)});
 			}
-			measure.add_treble_note_group(ng);
+			treble.add_note_group(ng);
 		}
 
-		while (measure.free_bass_space_in_eights() > 0) {
+		Measure& bass = grand_measure.bass_measure;
+
+		while (bass.free_space_in_eights(song.get_time_signature()) > 0) {
 			Value largest_option{};
 			
-			if (measure.free_bass_space_in_eights() == 8) {
+			if (bass.free_space_in_eights(song.get_time_signature()) == 8) {
 				largest_option = Value::Whole;
 			}
-			else if (measure.free_bass_space_in_eights() >= 4) {
+			else if (bass.free_space_in_eights(song.get_time_signature()) >= 4) {
 				largest_option = Value::Half;
 			}
-			else if (measure.free_bass_space_in_eights() >= 2) {
+			else if (bass.free_space_in_eights(song.get_time_signature()) >= 2) {
 				largest_option = Value::Quarter;
 			}
 			else {
@@ -131,10 +137,10 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			for (int i = 0; i < note_count; ++i) {
 				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), Random::get(2, 3) });
 			}
-			measure.add_bass_note_group(ng);
+			bass.add_note_group(ng);
 		}
 
-		song.add_measure(measure);
+		song.add_measure(grand_measure);
 	}
 	return song;
 }

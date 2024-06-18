@@ -21,11 +21,11 @@ Song& Song::operator=(const Song& source)
 	return *this;
 }
 
-void Song::add_measure(const Measure& measure) {
+void Song::add_measure(const GrandMeasure& measure) {
 	m_measures.push_back(measure);
 }
 
-const std::vector<Measure>& Song::get_measures() const {
+const std::vector<GrandMeasure>& Song::get_measures() const {
 	return m_measures;
 }
 
@@ -48,4 +48,12 @@ const Key& Song::get_key() const {
 
 const Scale& Song::get_scale() const {
 	return m_scale;
+}
+
+void Song::set_time_signature(const TimeSignature& time_signature) {
+	m_time_signature = time_signature;
+}
+
+TimeSignature const& Song::get_time_signature() const {
+	return m_time_signature;
 }
