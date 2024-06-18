@@ -6,6 +6,7 @@ constexpr static float LINE_THICKNESS{ 0.02f };
 constexpr static float LINE_SPACING{ 0.25f };
 constexpr static float PITCH_SPACING{ 0.125f };
 constexpr static float CLEF_SPACING{ 0.25f };
+constexpr static float TIME_SIGNATURE_SPACING{ 0.25f };
 constexpr static float KEY_SIGNATURE_SPACING{ 0.25f };
 constexpr static float KEY_SIGNATURE_ACCIDENTAL_SPACING{ 0.25f };
 constexpr static float MEASURE_WIDTH{ 6.0f };
@@ -13,7 +14,7 @@ constexpr static float BAR_WIDTH{ 0.5f };
 constexpr static float STAFF_SPACING{ 2.0f };
 constexpr static float GRAND_STAFF_SPACING{ 3.0f };
 constexpr static float GRAND_STAFF_BRACE_SPACING{ 0.5f };
-constexpr static float FIRST_MEASURE_OFFSET{ 1.0f };
+constexpr static float FIRST_MEASURE_OFFSET{ 1.5f };
 
 unsigned int SheetMusicSettings::get_font_size() const {
 	return static_cast<unsigned int>(size);
@@ -41,6 +42,11 @@ float SheetMusicSettings::get_pitch_spacing() const {
 float SheetMusicSettings::get_clef_spacing() const
 {
 	return size * CLEF_SPACING * clef_spacing_scale;
+}
+
+float SheetMusicSettings::get_time_signature_spacing() const
+{
+	return size * TIME_SIGNATURE_SPACING * time_signature_spacing_scale;
 }
 
 float SheetMusicSettings::get_key_signature_spacing() const
@@ -71,7 +77,7 @@ float SheetMusicSettings::get_first_measure_offset() const {
 
 float SheetMusicSettings::get_first_measure_position(const Key& key) const {
 	float accidentals_width{ get_key_signature_accidental_spacing() * DataUtility::accidentals_in_key(key) };
-	return get_grand_staff_brace_spacing() + get_clef_spacing() + get_key_signature_spacing() + accidentals_width + get_first_measure_offset() + get_bar_width();
+	return get_grand_staff_brace_spacing() + get_clef_spacing() + get_time_signature_spacing() + get_key_signature_spacing() + accidentals_width + get_first_measure_offset() + get_bar_width();
 }
 
 float SheetMusicSettings::get_staff_height() const {

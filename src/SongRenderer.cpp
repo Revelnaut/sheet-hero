@@ -87,7 +87,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 	// Brace
 	MusicalSymbol brace = symbol_factory(MusicalGlyph::Brace);
-	brace.set_character_size(m_settings.get_grand_staff_height());
+	brace.set_character_size(static_cast<unsigned int>(m_settings.get_grand_staff_height()));
 	brace.setPosition(draw_position);
 	target.draw(brace, states);
 
@@ -142,7 +142,26 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	f_clef.setPosition(draw_position + sf::Vector2f{ 0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing() });
 	target.draw(f_clef, states);
 
-	draw_position.x += g_clef.get_size().x + m_settings.get_key_signature_spacing();
+	// Time signature
+	const TimeSignature & time_signature = m_song.get_measures()[0].get_time_signature();
+
+	MusicalSymbol ts_numerator = symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_numerator()));
+	MusicalSymbol ts_denominator = symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_denominator()));
+
+	draw_position.x += g_clef.get_size().x + m_settings.get_time_signature_spacing();
+
+	ts_numerator.setPosition(draw_position);
+	ts_denominator.setPosition(draw_position.x, draw_position.y + m_settings.get_line_spacing() * 2);
+	target.draw(ts_numerator, states);
+	target.draw(ts_denominator, states);
+
+	ts_numerator.move(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing());
+	ts_denominator.move(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing());
+	target.draw(ts_numerator, states);
+	target.draw(ts_denominator, states);
+
+	// Key signature
+	draw_position.x += ts_numerator.get_size().x + m_settings.get_key_signature_spacing();
 	draw_key_signature(m_song.get_key(), draw_position, target, states);
 
 	draw_position.y += m_settings.get_staff_height() + m_settings.get_staff_spacing() + m_settings.get_line_spacing();

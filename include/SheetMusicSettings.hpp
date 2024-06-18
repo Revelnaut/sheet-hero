@@ -11,6 +11,7 @@ struct SheetMusicSettings {
 	float line_thickness_scale{ 1.0f };
 
 	float clef_spacing_scale{ 1.0f };
+	float time_signature_spacing_scale{ 1.0f };
 	float key_signature_spacing_scale{ 1.0f };
 	float key_signature_accidental_spacing_scale{ 1.0f };
 
@@ -27,6 +28,7 @@ struct SheetMusicSettings {
 	float get_line_spacing() const;
 	float get_pitch_spacing() const;
 	float get_clef_spacing() const;
+	float get_time_signature_spacing() const;
 	float get_key_signature_spacing() const;
 	float get_key_signature_accidental_spacing() const;
 	float get_bar_width() const;

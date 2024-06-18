@@ -81,3 +81,20 @@ bool DataUtility::is_key_flat(const Key& key)
 {
 	return !is_key_natural(key) && !is_key_sharp(key);
 }
+
+MusicalGlyph DataUtility::int_to_time_signature_glyph(int index)
+{
+	switch (index) {
+	case 0: return MusicalGlyph::TimeSignature0;
+	case 1: return MusicalGlyph::TimeSignature1;
+	case 2: return MusicalGlyph::TimeSignature2;
+	case 3: return MusicalGlyph::TimeSignature3;
+	case 4: return MusicalGlyph::TimeSignature4;
+	case 5: return MusicalGlyph::TimeSignature5;
+	case 6: return MusicalGlyph::TimeSignature6;
+	case 7: return MusicalGlyph::TimeSignature7;
+	case 8: return MusicalGlyph::TimeSignature8;
+	case 9: return MusicalGlyph::TimeSignature9;
+	}
+	return MusicalGlyph::Null;
+}

@@ -67,10 +67,41 @@ enum class NoteState {
 	Incorrect,
 };
 
+enum class MusicalGlyph {
+	Null = 0,
+
+	Brace = 0xF402,
+	ClefG = 0xE050,
+	ClefF = 0xE062,
+
+	TimeSignature0 = 0xE080,
+	TimeSignature1 = 0xE081,
+	TimeSignature2 = 0xE082,
+	TimeSignature3 = 0xE083,
+	TimeSignature4 = 0xE084,
+	TimeSignature5 = 0xE085,
+	TimeSignature6 = 0xE086,
+	TimeSignature7 = 0xE087,
+	TimeSignature8 = 0xE088,
+	TimeSignature9 = 0xE089,
+
+	AccidentalFlat = 0xE260,
+	AccidentalNatural = 0xE261,
+	AccidentalSharp = 0xE262,
+
+	NoteheadWhole = 0xE0A2,
+	NoteheadHalf = 0xE0A3,
+	NoteheadBlack = 0xE0A4,
+
+	Flag8thUp = 0xE240,
+	Flag8thDown = 0xE241,
+};
+
 class DataUtility {
 public:
 	static int accidentals_in_key(const Key& key);
 	static bool is_key_natural(const Key& key);
 	static bool is_key_sharp(const Key& key);
 	static bool is_key_flat(const Key& key);
+	static MusicalGlyph int_to_time_signature_glyph(int index);
 };

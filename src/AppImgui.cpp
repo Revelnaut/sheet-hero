@@ -116,6 +116,7 @@ void App::imgui_settings_window()
 	if (ImGui::Begin("Settings")) {
 		ImGui::SliderFloat("Brace spacing", &song_renderer.get_settings().grand_staff_brace_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Clef spacing", &song_renderer.get_settings().clef_spacing_scale, 0.0f, 10.0f, "%.1f");
+		ImGui::SliderFloat("Time signature spacing", &song_renderer.get_settings().time_signature_spacing_scale, 0.0f, 10.0f, "%.1f");
 		ImGui::SliderFloat("Key signature spacing", &song_renderer.get_settings().key_signature_spacing_scale, 0.0f, 10.0f, "%.1f");
 		ImGui::SliderFloat("Key signature accidental spacing", &song_renderer.get_settings().key_signature_accidental_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Bar width", &song_renderer.get_settings().bar_width_scale, 0.0f, 10.0f, "%.1f");
