@@ -52,8 +52,8 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	sf::Vector2f draw_position{};
 
 	LineShape bar{ 0.0f, 0.0f, 0.0f, m_settings.get_grand_staff_height() };
-	bar.setColor(m_settings.color);
-	bar.setThickness(m_settings.get_line_thickness());
+	bar.set_color(m_settings.color);
+	bar.set_thickness(m_settings.get_line_thickness());
 
 	bool new_line{ true };
 
@@ -65,7 +65,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		}
 
 		draw_measure(measure.treble_measure, draw_position, 10, target, states);
-		draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
+		//draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
 		if (draw_position.x + (m_settings.get_measure_width(true) + m_settings.get_measure_width(false)) <= get_max_width()) {
 			if (&measure != &m_song.get_measures().back()) { // If not last measure
@@ -96,8 +96,8 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 	// Horizontal line
 	LineShape horizontal_line{ 0.0f, 0.0f, width - draw_position.x, 0.0f };
-	horizontal_line.setColor(m_settings.color);
-	horizontal_line.setThickness(m_settings.get_line_thickness());
+	horizontal_line.set_color(m_settings.color);
+	horizontal_line.set_thickness(m_settings.get_line_thickness());
 
 	// Treble staff
 	horizontal_line.setPosition(draw_position);
@@ -118,8 +118,8 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 	// Vertical bars
 	LineShape vertical_line{ 0.0f, 0.0f, 0.0f, m_settings.get_grand_staff_height() };
-	vertical_line.setColor(m_settings.color);
-	vertical_line.setThickness(m_settings.get_line_thickness());
+	vertical_line.set_color(m_settings.color);
+	vertical_line.set_thickness(m_settings.get_line_thickness());
 	vertical_line.setPosition(draw_position);
 	target.draw(vertical_line, states);
 
@@ -201,21 +201,70 @@ void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf:
 	target.draw(text, states);
 }
 
+#include "effolkronium/random.hpp"
+using Random = effolkronium::random_static;
+
 void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
 	float measure_width{ m_settings.get_measure_width() };
 	sf::Vector2f draw_position{ position };
+	int staff_middle_line = middle_c_offset - 4;
+	float staff_middle_position_y = position.y + m_settings.get_line_spacing() * 2;
 
 	for (const NoteGroup& note_group : measure.get_note_groups()) {
+
+		// Draw note head
+
 		Value value{ note_group.get_value() };
 
 		MusicalSymbol note_head{ symbol_factory(DataUtility::value_to_notehead_glyph(value)) };
 		note_head.setOrigin(note_head.get_size().x / 2, note_head.get_size().y / 2);
+
+		bool stem_direction_up = note_group.get_staff_mid_point() <= staff_middle_line;
 
 		for (const Note& note : note_group.get_notes()) {
 			float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
 			note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
 			target.draw(note_head, states);
 		}
+
+		// Draw stem
+		if (value != Value::Whole) {
+			LineShape stem{ };
+			stem.set_thickness(m_settings.size / 25.0f);
+			stem.set_color(m_settings.color);
+
+			float bottom_note_y = draw_position.y + (middle_c_offset - note_group.get_staff_min()) * m_settings.get_pitch_spacing();
+			float top_note_y = draw_position.y + (middle_c_offset - note_group.get_staff_max()) * m_settings.get_pitch_spacing();
+			float stem_overflow = m_settings.get_pitch_spacing() * 7;
+			float stem_x = draw_position.x;
+			float stem_offset_to_note_x = note_head.get_size().x / 2 - stem.get_thickness() / 2;
+			float stem_offset_to_note_y = note_head.get_size().y / 4;
+			
+
+			if (stem_direction_up) {
+				stem_x += stem_offset_to_note_x;
+			}
+			else {
+				stem_x -= stem_offset_to_note_x;
+			}
+
+			if (stem_direction_up) {
+				stem.set_points(stem_x, bottom_note_y - stem_offset_to_note_y, stem_x, top_note_y - stem_overflow);
+				if (stem.get_point_2().y > staff_middle_position_y) {
+					stem.set_point_2(stem_x, staff_middle_position_y);
+				}
+			}
+			else {
+				stem.set_points(stem_x, top_note_y + stem_offset_to_note_y, stem_x, bottom_note_y + stem_overflow);
+				if (stem.get_point_2().y < staff_middle_position_y) {
+					stem.set_point_2(stem_x, staff_middle_position_y);
+				}
+			}
+
+			target.draw(stem, states);
+		}
+
+		// Move the draw position forward according to the note's value/length
 
 		switch (value) {
 		case Value::Whole:

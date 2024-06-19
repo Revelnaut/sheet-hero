@@ -12,22 +12,22 @@ public:
 
 	LineShape& operator=(const LineShape& source);
 
-	void setPoints(const sf::Vector2f& point_1, const sf::Vector2f& point_2);
-	void setPoints(float point_1_x, float point_1_y, float point_2_x, float point_2_y);
+	void set_points(const sf::Vector2f& point_1, const sf::Vector2f& point_2);
+	void set_points(float point_1_x, float point_1_y, float point_2_x, float point_2_y);
 
-	void setPoint1(const sf::Vector2f& point_1);
-	void setPoint1(float point_1_x, float point_1_y);
+	void set_point_1(const sf::Vector2f& point_1);
+	void set_point_1(float point_1_x, float point_1_y);
 
-	void setPoint2(const sf::Vector2f& point_2);
-	void setPoint2(float point_2_x, float point_2_y);
+	void set_point_2(const sf::Vector2f& point_2);
+	void set_point_2(float point_2_x, float point_2_y);
 
-	void setColor(const sf::Color& color);
-	void setThickness(float thickness);
+	void set_color(const sf::Color& color);
+	void set_thickness(float thickness);
 
-	const sf::Vector2f& getPoint1() const;
-	const sf::Vector2f& getPoint2() const;
-	float getThickness() const;
-	const sf::Color& getColor() const;
+	const sf::Vector2f& get_point_1() const;
+	const sf::Vector2f& get_point_2() const;
+	float get_thickness() const;
+	const sf::Color& get_color() const;
 private:
 	sf::Vector2f m_point_1{};
 	sf::Vector2f m_point_2{};
