@@ -8,7 +8,7 @@ struct SheetMusicSettings {
 	sf::Color correct_color{ sf::Color::Green };
 
 	sf::Color beat_on_color{ sf::Color::Blue };
-	sf::Color beat_off_color{ {0x303030} };
+	sf::Color beat_off_color{ {0xAAAAAAFF} };
 
 	float size{ 40.0f };
 	float line_thickness_scale{ 2.0f };
@@ -25,6 +25,8 @@ struct SheetMusicSettings {
 	float staff_spacing_scale{ 1.0f };
 	float grand_staff_spacing_scale{ 1.0f };
 	float grand_staff_brace_spacing_scale{ 0.0f };
+
+	float note_accidental_offset_scale{ 1.0f };
 
 	float beat_size_scale{ 1.0f };
 	float tick_size_scale{ 1.0f };
@@ -46,6 +48,8 @@ struct SheetMusicSettings {
 	float get_grand_staff_height() const;
 	float get_grand_staff_spacing() const;
 	float get_grand_staff_brace_spacing() const;
+
+	float get_note_accidental_offset() const;
 
 	float get_beat_size() const;
 	float get_tick_size() const;

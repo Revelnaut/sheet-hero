@@ -221,45 +221,48 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		bool note_offset{ true };
 		int previous_note_position{};
 
-		if (stem_direction_up) {
-			for (const Note& note : note_group.get_notes()) {
-				float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
-				note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
-
-				if (note.get_staff_position() == previous_note_position + 1 && note_offset == false) {
-					note_offset = true;
-					note_head.move(close_note_offset, 0.0f);
-					ledger_line.set_point_2(ledger_line_point_x + close_note_offset, 0.0f);
-				}
-				else {
-					note_offset = false;
-				}
-
-				target.draw(note_head, states);
-
-				previous_note_position = note.get_staff_position();
-			}
+		if (!stem_direction_up) {
+			close_note_offset = -close_note_offset;
 		}
-		else {
-			for (auto it = note_group.get_notes().rbegin(); it != note_group.get_notes().rend(); ++it) {
-				auto& note = *it;
 
-				float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
-				note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
+		for (const Note& note : note_group.get_notes()) {
+			float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
+			note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
 
-				if (note.get_staff_position() == previous_note_position - 1 && note_offset == false) {
-					note_offset = true;
-					note_head.move(-close_note_offset, 0.0f);
-					ledger_line.set_point_1(-ledger_line_point_x - close_note_offset, 0.0f);
-				}
-				else {
-					note_offset = false;
-				}
-
-				target.draw(note_head, states);
-
-				previous_note_position = note.get_staff_position();
+			if (note.get_staff_position() == previous_note_position + 1 && note_offset == false) {
+				note_offset = true;
+				note_head.move(close_note_offset, 0.0f);
+				ledger_line.set_point_2(ledger_line_point_x + close_note_offset, 0.0f);
 			}
+			else {
+				note_offset = false;
+			}
+
+			target.draw(note_head, states);
+
+			// Draw accidental, if it differs from the song's current key
+			bool accidental_in_scale = note.get_accidental() == m_song.get_scale().get_accidental(note.get_pitch_class());
+
+			if (accidental_in_scale == false) {
+				MusicalSymbol accidental{ symbol_factory(MusicalGlyph::Null) };
+				accidental.use_font_baseline(true);
+
+				switch (note.get_accidental()) {
+				case Accidental::Flat:
+					accidental.set_glyph(MusicalGlyph::AccidentalFlatSmall);
+					break;
+				case Accidental::Natural:
+					accidental.set_glyph(MusicalGlyph::AccidentalNaturalSmall);
+					break;
+				case Accidental::Sharp:
+					accidental.set_glyph(MusicalGlyph::AccidentalSharpSmall);
+					break;
+				}
+				accidental.setPosition(note_head.getPosition() - sf::Vector2f(m_settings.get_note_accidental_offset(), m_settings.get_pitch_spacing() * 8));
+				target.draw(accidental, states);
+			}
+
+			previous_note_position = note.get_staff_position();
 		}
 
 		// Draw ledger lines

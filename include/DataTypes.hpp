@@ -89,6 +89,10 @@ enum class MusicalGlyph {
 	AccidentalNatural = 0xE261,
 	AccidentalSharp = 0xE262,
 
+	AccidentalFlatSmall = 0xF427,
+	AccidentalNaturalSmall = 0xF428,
+	AccidentalSharpSmall = 0xF429,
+
 	NoteheadWhole = 0xE0A2,
 	NoteheadHalf = 0xE0A3,
 	NoteheadBlack = 0xE0A4,

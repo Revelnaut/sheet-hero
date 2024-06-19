@@ -41,6 +41,11 @@ bool Scale::is_natural(const PitchClass& pitch_class) const {
 	return m_accidentals.at(pitch_class) == Accidental::Natural;
 }
 
+const Accidental& Scale::get_accidental(const PitchClass& pitch_class) const
+{
+	return m_accidentals.at(pitch_class);
+}
+
 static Accidental int_to_accidental(int accidental) {
 	switch (accidental) {
 	case -1: return Accidental::Flat;
@@ -76,6 +81,39 @@ void Scale::set_key(Key key)
 {
 	switch (key) {
 	case Key::CMajor: create("C Major", 0, 0, 0, 0, 0, 0, 0); break;
+	case Key::AMinor: create("A minor", 0, 0, 0, 0, 0, 0, 0); break;
+
 	case Key::GMajor: create("G Major", 0, 0, 0, 1, 0, 0, 0); break;
+	case Key::DMajor: create("D Major", 1, 0, 0, 1, 0, 0, 0); break;
+	case Key::AMajor: create("A Major", 1, 0, 0, 1, 1, 0, 0); break;
+	case Key::EMajor: create("E Major", 1, 1, 0, 1, 1, 0, 0); break;
+	case Key::BMajor: create("B Major", 1, 1, 0, 1, 1, 1, 0); break;
+	case Key::FSharpMajor: create("F# Major", 1, 1, 1, 1, 1, 1, 0); break;
+	case Key::CSharpMajor: create("F# Major", 1, 1, 1, 1, 1, 1, 1); break;
+
+	case Key::EMinor: create("E minor", 0, 0, 0, 1, 0, 0, 0); break;
+	case Key::BMinor: create("B minor", 1, 0, 0, 1, 0, 0, 0); break;
+	case Key::FSharpMinor: create("F# minor", 1, 0, 0, 1, 1, 0, 0); break;
+	case Key::CSharpMinor: create("C# minor", 1, 1, 0, 1, 1, 0, 0); break;
+	case Key::GSharpMinor: create("G# minor", 1, 1, 0, 1, 1, 1, 0); break;
+	case Key::DSharpMinor: create("D# minor", 1, 1, 1, 1, 1, 1, 0); break;
+	case Key::ASharpMinor: create("A# minor", 1, 1, 1, 1, 1, 1, 1); break;
+
+	case Key::FMajor: create("F Major", 0, 0, 0, 0, 0, 0, -1); break;
+	case Key::BFlatMajor: create("Bb Major", 0, 0, -1, 0, 0, 0, -1); break;
+	case Key::EFlatMajor: create("Eb Major", 0, 0, -1, 0, 0, -1, -1); break;
+	case Key::AFlatMajor: create("Ab Major", 0, -1, -1, 0, 0, -1, -1); break;
+	case Key::DFlatMajor: create("Db Major", 0, -1, -1, 0, -1, -1, -1); break;
+	case Key::GFlatMajor: create("Gb Major", -1, -1, -1, 0, -1, -1, -1); break;
+	case Key::CFlatMajor: create("Cb Major", -1, -1, -1, -1, -1, -1, -1); break;
+
+	case Key::DMinor: create("D minor", 0, 0, 0, 0, 0, 0, -1); break;
+	case Key::GMinor: create("G minor", 0, 0, -1, 0, 0, 0, -1); break;
+	case Key::CMinor: create("C minor", 0, 0, -1, 0, 0, -1, -1); break;
+	case Key::FMinor: create("F minor", 0, -1, -1, 0, 0, -1, -1); break;
+	case Key::BFlatMinor: create("Bb minor", 0, -1, -1, 0, -1, -1, -1); break;
+	case Key::EFlatMinor: create("Eb minor", -1, -1, -1, 0, -1, -1, -1); break;
+	case Key::AFlatMinor: create("Ab minor", -1, -1, -1, -1, -1, -1, -1); break;
+	
 	}
 }
