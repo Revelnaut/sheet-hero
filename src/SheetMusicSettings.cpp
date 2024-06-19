@@ -17,6 +17,9 @@ constexpr static float GRAND_STAFF_SPACING{ 3.0f };
 constexpr static float GRAND_STAFF_BRACE_SPACING{ 0.5f };
 constexpr static float FIRST_MEASURE_OFFSET{ 1.5f };
 
+constexpr static float BEAT_SIZE{ 0.4f };
+constexpr static float TICK_SIZE{ 0.2f };
+
 unsigned int SheetMusicSettings::get_font_size() const {
 	return static_cast<unsigned int>(size);
 }
@@ -104,4 +107,13 @@ float SheetMusicSettings::get_grand_staff_spacing() const
 float SheetMusicSettings::get_grand_staff_brace_spacing() const
 {
 	return size * GRAND_STAFF_BRACE_SPACING * grand_staff_brace_spacing_scale;
+}
+
+float SheetMusicSettings::get_beat_size() const {
+	return size * BEAT_SIZE * beat_size_scale;
+}
+
+float SheetMusicSettings::get_tick_size() const
+{
+	return size * TICK_SIZE * tick_size_scale;
 }

@@ -54,9 +54,13 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	bar.set_color(m_settings.color);
 	bar.set_thickness(m_settings.get_line_thickness());
 
-	LineShape beat{ 0.0f, -m_settings.size, 0.0f, 0.0f };
-	beat.set_thickness(m_settings.size / 2.0f);
-	beat.set_color(sf::Color::Blue);
+	sf::CircleShape beat{ m_settings.get_beat_size() / 2.0f };
+	beat.setOrigin(beat.getRadius(), beat.getRadius());
+	beat.setFillColor(m_settings.beat_off_color);
+
+	sf::CircleShape tick{ m_settings.get_tick_size() / 2.0f };
+	tick.setOrigin(tick.getRadius(), tick.getRadius());
+	tick.setFillColor(m_settings.beat_off_color);
 
 	bool new_line{ true };
 
@@ -67,9 +71,19 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			draw_position.x = m_settings.get_first_measure_position(m_song.get_key());
 		}
 
-		float beat_length = m_settings.get_measure_width(false) / 4.0f;
-		for (int i = 0; i < 4; ++i) {
+		const TimeSignature& time_signature{ m_song.get_time_signature() };
+		float beat_length{ m_settings.get_measure_width(false) / static_cast<float>(time_signature.get_numerator()) };
+		float beat_position_y{ m_settings.get_staff_height() + m_settings.get_staff_spacing() / 2.0f };
+		for (int b = 0; b < time_signature.get_numerator(); ++b) {
+			beat.setPosition(draw_position);
+			beat.move(b * beat_length, beat_position_y);
+			target.draw(beat, states);
 
+			for (int t = 1; t < 4; ++t) {
+				tick.setPosition(beat.getPosition());
+				tick.move(t * beat_length / 4.0f, 0.0f);
+				target.draw(tick, states);
+			}
 		}
 
 		draw_measure(measure.treble_measure, draw_position, 10, target, states);
@@ -180,7 +194,6 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
 	float measure_width{ m_settings.get_measure_width() / m_song.get_time_signature().get_ratio() };
-	std::cout << m_song.get_time_signature().get_ratio() << std::endl;
 
 	sf::Vector2f draw_position{ position };
 	int staff_middle_line = middle_c_offset - 4;
