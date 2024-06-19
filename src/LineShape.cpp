@@ -1,5 +1,6 @@
 #include "LineShape.hpp"
 #include <cmath>
+#include <numbers>
 
 LineShape::LineShape() {}
 
@@ -54,6 +55,14 @@ void LineShape::setPoint2(float point_2_x, float point_2_y) {
 	m_point_2 = sf::Vector2f(point_2_x, point_2_y);
 }
 
+void LineShape::setColor(const sf::Color& color) {
+	m_color = color;
+}
+
+void LineShape::setThickness(float thickness) {
+	m_thickness = thickness;
+}
+
 const sf::Vector2f& LineShape::getPoint1() const {
 	return m_point_1;
 }
@@ -71,18 +80,16 @@ const sf::Color& LineShape::getColor() const
 	return m_color;
 }
 
-#include <iostream>
-
 void LineShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	auto angle = atan2f(m_point_2.y - m_point_1.y, m_point_2.x - m_point_1.x);
-	auto distance = std::sqrt(std::pow((m_point_2.x - m_point_1.x), 2) + std::pow((m_point_2.y - m_point_1.y), 2));
+	float distance = std::sqrtf(std::powf((m_point_2.x - m_point_1.x), 2) + std::powf((m_point_2.y - m_point_1.y), 2));
+	float angle = atan2f(m_point_2.y - m_point_1.y, m_point_2.x - m_point_1.x);
+	angle *= 180.0f / std::numbers::pi; // Convert radians to degrees for SFML
 
 	sf::RectangleShape rectangle{ sf::Vector2f{distance + m_thickness, m_thickness} };
-	rectangle.setOrigin(m_thickness / 2, m_thickness / 2);
-	rectangle.rotate(angle);
 	rectangle.setPosition(m_point_1);
 	rectangle.setFillColor(m_color);
+	rectangle.setOrigin(m_thickness / 2, m_thickness / 2);
+	rectangle.rotate(angle);
+	
 	target.draw(rectangle, states);
-
-	std::cout << "Angle : " << angle << " - Distance : " << distance << std::endl;
 }

@@ -21,6 +21,9 @@ public:
 	void setPoint2(const sf::Vector2f& point_2);
 	void setPoint2(float point_2_x, float point_2_y);
 
+	void setColor(const sf::Color& color);
+	void setThickness(float thickness);
+
 	const sf::Vector2f& getPoint1() const;
 	const sf::Vector2f& getPoint2() const;
 	float getThickness() const;

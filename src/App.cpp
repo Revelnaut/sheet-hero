@@ -2,6 +2,8 @@
 #include "MusicalSymbol.hpp"
 #include "SheetMusicSettings.hpp"
 
+#include "LineShape.hpp"
+
 App::App()
 {
 	default_text_font.loadFromFile("data/fonts/opensans.ttf");
