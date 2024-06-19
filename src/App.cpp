@@ -2,8 +2,6 @@
 #include "MusicalSymbol.hpp"
 #include "SheetMusicSettings.hpp"
 
-#include "LineShape.hpp"
-
 App::App()
 {
 	default_text_font.loadFromFile("data/fonts/opensans.ttf");
@@ -53,7 +51,7 @@ int App::run()
 
 		ImGui::SFML::Update(window, deltaClock.restart());
 		//ImGui::ShowDemoWindow();
-		imgui_show_interface();
+		//imgui_show_interface();
 
 		window.clear(window_color);
 

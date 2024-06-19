@@ -1,6 +1,7 @@
 #include "SongRenderer.hpp"
 #include "MusicalSymbol.hpp"
 #include <math.h>
+#include "LineShape.hpp"
 
 SongRenderer::SongRenderer() {
 	initialize();
@@ -50,9 +51,9 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	sf::Vector2f draw_position{};
 
-	sf::RectangleShape bar{ sf::Vector2f{ 0.0f, m_settings.get_grand_staff_height() } };
-	bar.setOutlineColor(m_settings.color);
-	bar.setOutlineThickness(m_settings.get_line_thickness());
+	LineShape bar{ 0.0f, 0.0f, 0.0f, m_settings.get_grand_staff_height() };
+	bar.setColor(m_settings.color);
+	bar.setThickness(m_settings.get_line_thickness());
 
 	bool new_line{ true };
 
@@ -94,36 +95,35 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	draw_position.x += brace.get_size().x + m_settings.get_grand_staff_brace_spacing();
 
 	// Horizontal line
-	sf::RectangleShape staff_line{ sf::Vector2f(width - draw_position.x, 0.0f) };
-	staff_line.setOutlineColor(m_settings.color);
-	staff_line.setOutlineThickness(m_settings.get_line_thickness());
+	LineShape horizontal_line{ 0.0f, 0.0f, width - draw_position.x, 0.0f };
+	horizontal_line.setColor(m_settings.color);
+	horizontal_line.setThickness(m_settings.get_line_thickness());
 
 	// Treble staff
-	staff_line.setPosition(draw_position);
+	horizontal_line.setPosition(draw_position);
 	for (int i = 0; i < 5; ++i) {
-		target.draw(staff_line, states);
+		target.draw(horizontal_line, states);
 		if (i < 4) {
-			staff_line.move(sf::Vector2f{ 0.0f, m_settings.get_line_spacing() });
+			horizontal_line.move(sf::Vector2f{ 0.0f, m_settings.get_line_spacing() });
 		}
 	}
 
-	staff_line.move(sf::Vector2f{ 0.0f, m_settings.get_staff_spacing() });
+	horizontal_line.move(sf::Vector2f{ 0.0f, m_settings.get_staff_spacing() });
 
 	// Bass staff
 	for (int i = 0; i < 5; ++i) {
-		target.draw(staff_line, states);
-		staff_line.move(sf::Vector2f{ 0.0f, m_settings.get_line_spacing() });
+		target.draw(horizontal_line, states);
+		horizontal_line.move(sf::Vector2f{ 0.0f, m_settings.get_line_spacing() });
 	}
 
 	// Vertical bars
-	sf::RectangleShape vertical_line{ sf::Vector2f{ 0.0f, m_settings.get_grand_staff_height() } };
-	vertical_line.setOutlineColor(m_settings.color);
-	vertical_line.setOutlineThickness(m_settings.get_line_thickness());
-
-	vertical_line.setPosition(draw_position + sf::Vector2f{ m_settings.get_line_thickness(), 0.0f });
+	LineShape vertical_line{ 0.0f, 0.0f, 0.0f, m_settings.get_grand_staff_height() };
+	vertical_line.setColor(m_settings.color);
+	vertical_line.setThickness(m_settings.get_line_thickness());
+	vertical_line.setPosition(draw_position);
 	target.draw(vertical_line, states);
 
-	vertical_line.setPosition(draw_position + sf::Vector2f{ staff_line.getSize().x - m_settings.get_line_thickness(), 0.0f });
+	vertical_line.setPosition(draw_position + sf::Vector2f{ width - draw_position.x, 0.0f });
 	target.draw(vertical_line, states);
 
 	// G clef

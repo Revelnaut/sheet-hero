@@ -8,7 +8,7 @@ struct SheetMusicSettings {
 	sf::Color correct_color{ sf::Color::Green };
 
 	float size{ 50.0f };
-	float line_thickness_scale{ 1.0f };
+	float line_thickness_scale{ 2.0f };
 
 	float clef_spacing_scale{ 1.0f };
 	float time_signature_spacing_scale{ 1.0f };

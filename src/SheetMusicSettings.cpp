@@ -23,6 +23,7 @@ unsigned int SheetMusicSettings::get_font_size() const {
 
 float SheetMusicSettings::get_line_thickness() const
 {
+	return size * LINE_THICKNESS * line_thickness_scale;
 	float thickness = round(size * LINE_THICKNESS * line_thickness_scale);
 	if (thickness < 1.0f) {
 		return 1.0f;

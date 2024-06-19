@@ -124,6 +124,7 @@ void App::imgui_settings_window()
 		ImGui::SliderFloat("First measure offset", &song_renderer.get_settings().first_measure_offset_scale, 0.0f, 10.0f, "%.1f");
 		ImGui::SliderFloat("Staff spacing", &song_renderer.get_settings().staff_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Grand staff spacing", &song_renderer.get_settings().grand_staff_spacing_scale, 0.0f, 4.0f, "%.1f");
+		ImGui::SliderFloat("Line thickness", &song_renderer.get_settings().line_thickness_scale, 1.0f, 8.0f, "%.0f");
 		ImGui::End();
 	}
 }
