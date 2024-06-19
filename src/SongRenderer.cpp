@@ -217,10 +217,19 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		MusicalSymbol note_head{ symbol_factory(DataUtility::value_to_notehead_glyph(value)) };
 		note_head.setOrigin(note_head.get_size().x / 2, note_head.get_size().y / 2);
 
+		LineShape ledger_line{};
+		ledger_line.set_thickness(m_settings.get_line_thickness());
+		ledger_line.set_color(m_settings.color);
+		
+		float ledger_line_point_x = note_head.get_size().x * 0.7;
+
+		ledger_line.set_point_1(-ledger_line_point_x, 0.0f);
+		ledger_line.set_point_2(ledger_line_point_x, 0.0f);
+
 		bool stem_direction_up = note_group.get_staff_mid_point() <= staff_middle_line;
 
 		// Iterate through notes and draw them
-		float close_note_offset = note_head.get_size().x * 0.8;
+		float close_note_offset = note_head.get_size().x * 0.9;
 		bool note_offset{ true };
 		int previous_note_position{};
 
@@ -232,6 +241,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 				if (note.get_staff_position() == previous_note_position + 1 && note_offset == false) {
 					note_offset = true;
 					note_head.move(close_note_offset, 0.0f);
+					ledger_line.set_point_2(ledger_line_point_x + close_note_offset, 0.0f);
 				}
 				else {
 					note_offset = false;
@@ -243,7 +253,6 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			}
 		}
 		else {
-			close_note_offset = -close_note_offset;
 			for (auto it = note_group.get_notes().rbegin(); it != note_group.get_notes().rend(); ++it) {
 				auto& note = *it;
 
@@ -252,7 +261,8 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 
 				if (note.get_staff_position() == previous_note_position - 1 && note_offset == false) {
 					note_offset = true;
-					note_head.move(close_note_offset, 0.0f);
+					note_head.move(-close_note_offset, 0.0f);
+					ledger_line.set_point_1(-ledger_line_point_x - close_note_offset, 0.0f);
 				}
 				else {
 					note_offset = false;
@@ -261,6 +271,21 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 				target.draw(note_head, states);
 
 				previous_note_position = note.get_staff_position();
+			}
+		}
+
+		// Draw ledger lines
+		if (note_group.get_staff_max() >= middle_c_offset + 2) {
+			for (int i = middle_c_offset + 2; i <= note_group.get_staff_max(); i += 2) {
+				ledger_line.setPosition(draw_position.x, position.y - (i - middle_c_offset) * m_settings.get_pitch_spacing());
+				target.draw(ledger_line, states);
+			}
+		}
+
+		if (note_group.get_staff_min() <= middle_c_offset - 10) {
+			for (int i = middle_c_offset - 10; i >= note_group.get_staff_min(); i -= 2) {
+				ledger_line.setPosition(draw_position.x, position.y - (i - middle_c_offset) * m_settings.get_pitch_spacing());
+				target.draw(ledger_line, states);
 			}
 		}
 
@@ -315,7 +340,6 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		}
 
 		// Move the draw position forward according to the note's value/length
-
 		switch (value) {
 		case Value::Whole:
 			draw_position.x += measure_width;
