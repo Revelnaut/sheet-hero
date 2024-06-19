@@ -209,7 +209,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		ledger_line.set_thickness(m_settings.get_line_thickness());
 		ledger_line.set_color(m_settings.color);
 
-		float ledger_line_point_x = note_head.get_size().x * 0.7;
+		float ledger_line_point_x = note_head.get_size().x * 0.8;
 
 		ledger_line.set_point_1(-ledger_line_point_x, 0.0f);
 		ledger_line.set_point_2(ledger_line_point_x, 0.0f);
