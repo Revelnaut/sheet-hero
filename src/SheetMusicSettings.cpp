@@ -10,7 +10,8 @@ constexpr static float TIME_SIGNATURE_SPACING{ 0.25f };
 constexpr static float KEY_SIGNATURE_SPACING{ 0.25f };
 constexpr static float KEY_SIGNATURE_ACCIDENTAL_SPACING{ 0.25f };
 constexpr static float MEASURE_WIDTH{ 6.0f };
-constexpr static float BAR_WIDTH{ 0.5f };
+constexpr static float BAR_WIDTH{ 1.0f };
+constexpr static float BAR_WIDTH_MIN{ 0.5f };
 constexpr static float STAFF_SPACING{ 2.0f };
 constexpr static float GRAND_STAFF_SPACING{ 3.0f };
 constexpr static float GRAND_STAFF_BRACE_SPACING{ 0.5f };
@@ -60,7 +61,7 @@ float SheetMusicSettings::get_key_signature_accidental_spacing() const
 }
 
 float SheetMusicSettings::get_bar_width() const {
-	return size * BAR_WIDTH * bar_width_scale;
+	return size * BAR_WIDTH * bar_width_scale + (size * BAR_WIDTH_MIN);
 }
 
 float SheetMusicSettings::get_measure_width(bool include_bars) const {

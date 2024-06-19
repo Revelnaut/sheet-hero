@@ -63,15 +63,15 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			draw_position.x = m_settings.get_first_measure_position(m_song.get_key());
 		}
 
-		draw_measure(measure.treble_measure, draw_position, true, target, states);
-		draw_measure(measure.bass_measure, draw_position, false, target, states);
+		draw_measure(measure.treble_measure, draw_position, 10, target, states);
+		draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
 		if (draw_position.x + (m_settings.get_measure_width(true) + m_settings.get_measure_width(false)) <= get_max_width()) {
 			if (&measure != &m_song.get_measures().back()) { // If not last measure
-				draw_position.x += m_settings.get_measure_width(false) + m_settings.get_bar_width() / 2;
+				draw_position.x += m_settings.get_measure_width(false) + m_settings.get_bar_width() * 0.2f;
 				bar.setPosition(draw_position);
 				target.draw(bar, states);
-				draw_position.x += m_settings.get_bar_width() / 2;
+				draw_position.x += m_settings.get_bar_width() * 0.8f;
 			}
 		}
 		else {
@@ -86,7 +86,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	sf::Vector2f draw_position{ position };
 
 	// Brace
-	MusicalSymbol brace = symbol_factory(MusicalGlyph::Brace);
+	MusicalSymbol brace{ symbol_factory(MusicalGlyph::Brace) };
 	brace.set_character_size(static_cast<unsigned int>(m_settings.get_grand_staff_height()));
 	brace.setPosition(draw_position);
 	target.draw(brace, states);
@@ -129,24 +129,24 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	// G clef
 	draw_position.x += m_settings.get_clef_spacing();
 
-	MusicalSymbol g_clef = symbol_factory(MusicalGlyph::ClefG);
+	MusicalSymbol g_clef{ symbol_factory(MusicalGlyph::ClefG) };
 	g_clef.use_font_baseline(true);
 	g_clef.setOrigin(0, m_settings.get_line_spacing());
 	g_clef.setPosition(draw_position);
 	target.draw(g_clef, states);
 
 	// F clef
-	MusicalSymbol f_clef = symbol_factory(MusicalGlyph::ClefF);
+	MusicalSymbol f_clef{ symbol_factory(MusicalGlyph::ClefF) };
 	f_clef.use_font_baseline(true);
 	f_clef.setOrigin(0, m_settings.get_line_spacing() * 3);
 	f_clef.setPosition(draw_position + sf::Vector2f{ 0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing() });
 	target.draw(f_clef, states);
 
 	// Time signature
-	const TimeSignature & time_signature = m_song.get_time_signature();
+	const TimeSignature& time_signature{ m_song.get_time_signature() };
 
-	MusicalSymbol ts_numerator = symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_numerator()));
-	MusicalSymbol ts_denominator = symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_denominator()));
+	MusicalSymbol ts_numerator{ symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_numerator())) };
+	MusicalSymbol ts_denominator{ symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_denominator())) };
 
 	draw_position.x += g_clef.get_size().x + m_settings.get_time_signature_spacing();
 
@@ -201,176 +201,35 @@ void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf:
 	target.draw(text, states);
 }
 
-void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, bool treble, sf::RenderTarget& target, sf::RenderStates states) const {
-	constexpr wchar_t NOTEHEAD_WHOLE = 0xE0A2;
-	constexpr wchar_t NOTEHEAD_HALF = 0xE0A3;
-	constexpr wchar_t NOTEHEAD_BLACK = 0xE0A4;
-	constexpr wchar_t NOTE_FLAG_EIGHT = 0xE240;
-
-	float ledger_line_width = m_settings.size / 2.0f;
-
-	sf::RectangleShape ledger_line{ sf::Vector2f{ledger_line_width, 0.0f} };
-	ledger_line.setOutlineThickness(m_settings.get_line_thickness());
-	ledger_line.setOutlineColor(m_settings.color);
-	ledger_line.setOrigin(ledger_line_width / 3.0f, 0.0f);
-
-	sf::RectangleShape stem{ sf::Vector2f{0.0f, m_settings.get_pitch_spacing() * 7} };
-	stem.setOutlineThickness(m_settings.get_line_thickness());
-	stem.setOutlineColor(m_settings.color);
-
+void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
+	float measure_width{ m_settings.get_measure_width() };
 	sf::Vector2f draw_position{ position };
 
-	for (auto& note_group : measure.get_note_groups()) {
-		if (note_group.is_rest() == false) {
-			wchar_t note_head{};
+	for (const NoteGroup& note_group : measure.get_note_groups()) {
+		Value value{ note_group.get_value() };
 
-			switch (note_group.get_value()) {
-			case Value::Whole:
-				note_head = NOTEHEAD_WHOLE; break;
-			case Value::Half:
-				note_head = NOTEHEAD_HALF; break;
-			default:
-				note_head = NOTEHEAD_BLACK; break;
-			}
+		MusicalSymbol note_head{ symbol_factory(DataUtility::value_to_notehead_glyph(value)) };
+		note_head.setOrigin(note_head.get_size().x / 2, note_head.get_size().y / 2);
 
-			float second_interval_offset{ m_settings.size / 3.9f };
-			float stem_offset{ m_settings.size / 3.7f };
-			bool offset{ false };
-			bool previous_offset{ false };
-			int previous_staff_position{ note_group.get_notes()[0].get_staff_position() };
-			bool stem_up = note_group.get_staff_mid_point() < 6;
-
-			// Draw stem
-			if (note_group.get_value() != Value::Whole) {
-				float c4_position{};
-				float middle_position{};
-				if (treble) {
-					c4_position = position.y + m_settings.get_pitch_spacing() * 10;
-					middle_position = c4_position - m_settings.get_pitch_spacing() * 6;
-				}
-				else {
-					c4_position = position.y + m_settings.get_staff_height() + m_settings.get_staff_spacing() - m_settings.get_pitch_spacing() * 2;
-					middle_position = c4_position + m_settings.get_pitch_spacing() * 6;
-				}
-
-				float stem_start_y{}, stem_end_y{};
-
-				stem_start_y = c4_position - (note_group.get_staff_max() * m_settings.get_pitch_spacing());
-				if (stem_up) {
-					stem_start_y -= m_settings.get_pitch_spacing() * 7;
-				}
-				stem_end_y = c4_position - (note_group.get_staff_min() * m_settings.get_pitch_spacing());
-				if (!stem_up) {
-					stem_end_y += m_settings.get_pitch_spacing() * 7;
-				}
-
-				if (stem_up) {
-					if (stem_start_y > middle_position) {
-						stem_start_y = middle_position;
-					}
-				}
-				else {
-					if (stem_end_y < middle_position) {
-						stem_end_y = middle_position;
-					}
-				}
-
-				sf::Vector2f stem_position{ draw_position };
-				stem_position.x += stem_offset;
-				stem_position.y = stem_start_y;
-				stem.setSize(sf::Vector2f(0.0f, stem_end_y - stem_start_y));
-				stem.setOutlineColor(m_settings.color);
-				stem.setPosition(stem_position);
-				target.draw(stem, states);
-
-				if (note_group.get_value() == Value::Eight) {
-					if (stem_up) {
-						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_start_y - m_settings.get_staff_height()), target, states, sf::Vector2f{ 0.95f, 0.95f });
-					}
-					else {
-						draw_symbol(NOTE_FLAG_EIGHT, sf::Vector2(draw_position.x + stem_offset - 0.5f, stem_end_y + m_settings.get_staff_height()), target, states, sf::Vector2f{ 0.95f, -0.95f });
-					}
-				}
-			}
-
-			// Draw notes
-			for (auto& note : note_group.get_notes()) {
-				sf::Color note_color{ m_settings.color };
-
-				draw_position.y = position.y - m_settings.get_pitch_spacing() * note.get_staff_position();
-
-				if (treble) {
-					draw_position.y += m_settings.get_pitch_spacing() * 2;
-				}
-				else {
-					draw_position.y += m_settings.get_staff_height() + m_settings.get_staff_spacing() - m_settings.get_pitch_spacing() * 10;
-				}
-
-				if (previous_staff_position == note.get_staff_position() - 1 && previous_offset == false) {
-					offset = true;
-				}
-				else {
-					offset = false;
-				}
-
-				previous_staff_position = note.get_staff_position();
-				previous_offset = offset;
-
-				if ((offset && stem_up) || (!offset && !stem_up && note_group.get_value() != Value::Whole) || (offset && !stem_up && note_group.get_value() == Value::Whole)) {
-					draw_symbol(note_head, draw_position + sf::Vector2f(second_interval_offset, 0), target, states, sf::Vector2f(1, 1), note_color);
-				}
-				else {
-					draw_symbol(note_head, draw_position, target, states, sf::Vector2f(1, 1), note_color);
-				}
-			}
-
-			// Draw ledger lines
-			int top_ledger{ 12 };
-			int bottom_ledger{ 0 };
-			if (!treble) {
-				top_ledger = 0;
-				bottom_ledger = -12;
-			}
-			if (note_group.get_staff_max() >= top_ledger) {
-				for (int i = top_ledger; i <= note_group.get_staff_max(); i += 2) {
-					if (treble) {
-						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y - m_settings.get_pitch_spacing() * (i - top_ledger + 2));
-					}
-					else {
-						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y + m_settings.get_staff_height() + m_settings.get_staff_spacing() - m_settings.get_pitch_spacing() * (i - top_ledger + 2));
-					}
-					target.draw(ledger_line, states);
-				}
-			}
-			if (note_group.get_staff_min() <= bottom_ledger) {
-				for (int i = bottom_ledger; i >= note_group.get_staff_min(); i -= 2) {
-					if (treble) {
-						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y + m_settings.get_staff_height() + m_settings.get_pitch_spacing() * (2 - (i - bottom_ledger)));
-					}
-					else {
-						ledger_line.setPosition(draw_position.x + stem_offset / 2, position.y + m_settings.get_staff_height() + m_settings.get_staff_spacing() - m_settings.get_pitch_spacing() * (i - top_ledger + 2));
-					}
-					target.draw(ledger_line, states);
-				}
-			}
-
-			switch (note_group.get_value()) {
-			case Value::Whole:
-				draw_position.x += m_settings.get_measure_width();
-				break;
-			case Value::Half:
-				draw_position.x += m_settings.get_measure_width() / 2;
-				break;
-			case Value::Quarter:
-				draw_position.x += m_settings.get_measure_width() / 4;
-				break;
-			case Value::Eight:
-				draw_position.x += m_settings.get_measure_width() / 8;
-				break;
-			}
+		for (const Note& note : note_group.get_notes()) {
+			float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
+			note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
+			target.draw(note_head, states);
 		}
-		else {
-			// TODO: Rests
+
+		switch (value) {
+		case Value::Whole:
+			draw_position.x += measure_width;
+			break;
+		case Value::Half:
+			draw_position.x += measure_width / 2.0f;
+			break;
+		case Value::Quarter:
+			draw_position.x += measure_width / 4.0f;
+			break;
+		case Value::Eight:
+			draw_position.x += measure_width / 8.0f;
+			break;
 		}
 	}
 }
@@ -382,7 +241,7 @@ void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf:
 	int accidental_count{ DataUtility::accidentals_in_key(key) };
 
 	if (DataUtility::is_key_sharp(key)) {
-		MusicalSymbol sharp_accidental = symbol_factory(MusicalGlyph::AccidentalSharp);
+		MusicalSymbol sharp_accidental{ symbol_factory(MusicalGlyph::AccidentalSharp) };
 		sharp_accidental.use_font_baseline(true);
 		if (accidental_count > 0) {
 			sharp_accidental.setPosition(position + sf::Vector2f(0.0f, -pitch_spacing * 8));
@@ -414,7 +273,7 @@ void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf:
 		}
 	}
 	else if (DataUtility::is_key_flat(key)) {
-		MusicalSymbol flat_accidental = symbol_factory(MusicalGlyph::AccidentalFlat);
+		MusicalSymbol flat_accidental{ symbol_factory(MusicalGlyph::AccidentalFlat) };
 		flat_accidental.use_font_baseline(true);
 		if (accidental_count > 0) {
 			flat_accidental.setPosition(position + sf::Vector2f(0.0f, -pitch_spacing * 4));

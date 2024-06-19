@@ -98,3 +98,13 @@ MusicalGlyph DataUtility::int_to_time_signature_glyph(int index)
 	}
 	return MusicalGlyph::Null;
 }
+
+MusicalGlyph DataUtility::value_to_notehead_glyph(Value value)
+{
+	switch (value) {
+	case Value::Whole: return MusicalGlyph::NoteheadWhole;
+	case Value::Half: return MusicalGlyph::NoteheadHalf;
+	default: return MusicalGlyph::NoteheadBlack;
+	}
+	return MusicalGlyph::Null;
+}
