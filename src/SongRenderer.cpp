@@ -299,6 +299,19 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			}
 
 			target.draw(stem, states);
+
+			if (value == Value::Eight) {
+				MusicalSymbol flag{ symbol_factory(MusicalGlyph::Null) };
+				if (stem_direction_up) {
+					flag.set_glyph(MusicalGlyph::Flag8thUp);
+				}
+				else {
+					flag.set_glyph(MusicalGlyph::Flag8thDown);
+				}
+				flag.use_font_baseline(true);
+				flag.setPosition(stem.get_point_2() - sf::Vector2f(0.0f, m_settings.size));
+				target.draw(flag, states);
+			}
 		}
 
 		// Move the draw position forward according to the note's value/length

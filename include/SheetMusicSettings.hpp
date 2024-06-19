@@ -7,7 +7,7 @@ struct SheetMusicSettings {
 	sf::Color incorrect_color{ sf::Color::Red };
 	sf::Color correct_color{ sf::Color::Green };
 
-	float size{ 50.0f };
+	float size{ 40.0f };
 	float line_thickness_scale{ 2.0f };
 
 	float clef_spacing_scale{ 1.0f };
