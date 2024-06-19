@@ -9,7 +9,7 @@ constexpr static float CLEF_SPACING{ 0.25f };
 constexpr static float TIME_SIGNATURE_SPACING{ 0.25f };
 constexpr static float KEY_SIGNATURE_SPACING{ 0.25f };
 constexpr static float KEY_SIGNATURE_ACCIDENTAL_SPACING{ 0.25f };
-constexpr static float MEASURE_WIDTH{ 6.0f };
+constexpr static float MEASURE_WIDTH{ 8.0f };
 constexpr static float BAR_WIDTH{ 1.0f };
 constexpr static float BAR_WIDTH_MIN{ 0.5f };
 constexpr static float STAFF_SPACING{ 2.0f };

@@ -1,7 +1,8 @@
 #include "SongRenderer.hpp"
 #include "MusicalSymbol.hpp"
-#include <math.h>
 #include "LineShape.hpp"
+
+#include <algorithm>
 
 SongRenderer::SongRenderer() {
 	initialize();
@@ -65,7 +66,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		}
 
 		draw_measure(measure.treble_measure, draw_position, 10, target, states);
-		//draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
+		draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
 		if (draw_position.x + (m_settings.get_measure_width(true) + m_settings.get_measure_width(false)) <= get_max_width()) {
 			if (&measure != &m_song.get_measures().back()) { // If not last measure
@@ -211,20 +212,56 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 	float staff_middle_position_y = position.y + m_settings.get_line_spacing() * 2;
 
 	for (const NoteGroup& note_group : measure.get_note_groups()) {
-
-		// Draw note head
-
+		// Note head
 		Value value{ note_group.get_value() };
-
 		MusicalSymbol note_head{ symbol_factory(DataUtility::value_to_notehead_glyph(value)) };
 		note_head.setOrigin(note_head.get_size().x / 2, note_head.get_size().y / 2);
 
 		bool stem_direction_up = note_group.get_staff_mid_point() <= staff_middle_line;
 
-		for (const Note& note : note_group.get_notes()) {
-			float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
-			note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
-			target.draw(note_head, states);
+		// Iterate through notes and draw them
+		float close_note_offset = note_head.get_size().x * 0.8;
+		bool note_offset{ true };
+		int previous_note_position{};
+
+		if (stem_direction_up) {
+			for (const Note& note : note_group.get_notes()) {
+				float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
+				note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
+
+				if (note.get_staff_position() == previous_note_position + 1 && note_offset == false) {
+					note_offset = true;
+					note_head.move(close_note_offset, 0.0f);
+				}
+				else {
+					note_offset = false;
+				}
+
+				target.draw(note_head, states);
+
+				previous_note_position = note.get_staff_position();
+			}
+		}
+		else {
+			close_note_offset = -close_note_offset;
+			for (auto it = note_group.get_notes().rbegin(); it != note_group.get_notes().rend(); ++it) {
+				auto& note = *it;
+
+				float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
+				note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
+
+				if (note.get_staff_position() == previous_note_position - 1 && note_offset == false) {
+					note_offset = true;
+					note_head.move(close_note_offset, 0.0f);
+				}
+				else {
+					note_offset = false;
+				}
+
+				target.draw(note_head, states);
+
+				previous_note_position = note.get_staff_position();
+			}
 		}
 
 		// Draw stem
@@ -239,7 +276,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			float stem_x = draw_position.x;
 			float stem_offset_to_note_x = note_head.get_size().x / 2 - stem.get_thickness() / 2;
 			float stem_offset_to_note_y = note_head.get_size().y / 4;
-			
+
 
 			if (stem_direction_up) {
 				stem_x += stem_offset_to_note_x;

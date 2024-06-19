@@ -102,7 +102,7 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
 			Random::shuffle(staff_pitches);
 
-			int note_count = Random::get(1, 3);
+			int note_count = Random::get(1, 5);
 			for (int i = 0; i < note_count; ++i) {
 				ng.add_note(Note{ static_cast<PitchClass>(staff_pitches[i]), static_cast<Accidental>(Random::get(0, 2)), Random::get(4, 5)});
 			}
