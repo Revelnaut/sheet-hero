@@ -16,6 +16,7 @@ public:
 	int get_numerator() const;
 	int get_denominator() const;
 
+	float get_ratio() const;
 private:
 	int m_numerator{ 4 };
 	int m_denominator{ 4 };

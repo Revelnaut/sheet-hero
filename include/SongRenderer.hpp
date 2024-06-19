@@ -36,8 +36,6 @@ private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const;
-	void draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states, sf::Vector2f scale = sf::Vector2f(1, 1), const sf::Color& color = sf::Color::Transparent) const;
-	void draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states, float size, const sf::Color& color = sf::Color::Transparent) const;
 	void draw_measure(const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_key_signature(const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const;
 };

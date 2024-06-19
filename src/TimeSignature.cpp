@@ -38,3 +38,8 @@ int TimeSignature::get_numerator() const {
 int TimeSignature::get_denominator() const {
 	return m_denominator;
 }
+
+float TimeSignature::get_ratio() const
+{
+	return static_cast<float>(m_numerator) / static_cast<float>(m_denominator);
+}

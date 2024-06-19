@@ -2,8 +2,6 @@
 #include "MusicalSymbol.hpp"
 #include "LineShape.hpp"
 
-#include <algorithm>
-
 SongRenderer::SongRenderer() {
 	initialize();
 }
@@ -56,6 +54,10 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	bar.set_color(m_settings.color);
 	bar.set_thickness(m_settings.get_line_thickness());
 
+	LineShape beat{ 0.0f, -m_settings.size, 0.0f, 0.0f };
+	beat.set_thickness(m_settings.size / 2.0f);
+	beat.set_color(sf::Color::Blue);
+
 	bool new_line{ true };
 
 	for (auto& measure : m_song.get_measures()) {
@@ -63,6 +65,11 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			new_line = false;
 			draw_grand_staff(draw_position, m_max_width, target, states);
 			draw_position.x = m_settings.get_first_measure_position(m_song.get_key());
+		}
+
+		float beat_length = m_settings.get_measure_width(false) / 4.0f;
+		for (int i = 0; i < 4; ++i) {
+
 		}
 
 		draw_measure(measure.treble_measure, draw_position, 10, target, states);
@@ -169,44 +176,12 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	draw_key_signature(m_song.get_key(), draw_position, target, states);
 }
 
-void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states, float size, const sf::Color& color) const {
-	sf::Text text{};
-	text.setString(symbol);
-	text.setFont(m_music_font);
-	if (size == 0) {
-		text.setCharacterSize(m_settings.get_font_size());
-	}
-	else {
-		text.setCharacterSize(static_cast<unsigned int>(size));
-	}
-	if (color == sf::Color::Transparent) {
-		text.setFillColor(m_settings.color);
-	}
-	else {
-		text.setFillColor(color);
-	}
-	text.setPosition(position);
-	target.draw(text, states);
-}
-
-void SongRenderer::draw_symbol(wchar_t symbol, const sf::Vector2f& position, sf::RenderTarget& target, sf::RenderStates states, sf::Vector2f scale, const sf::Color& color) const {
-	sf::Text text{ symbol, m_music_font, m_settings.get_font_size() };
-	text.setScale(scale);
-	if (color == sf::Color::Transparent) {
-		text.setFillColor(m_settings.color);
-	}
-	else {
-		text.setFillColor(color);
-	}
-	text.setPosition(position);
-	target.draw(text, states);
-}
-
-#include "effolkronium/random.hpp"
-using Random = effolkronium::random_static;
+#include <iostream>
 
 void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
-	float measure_width{ m_settings.get_measure_width() };
+	float measure_width{ m_settings.get_measure_width() / m_song.get_time_signature().get_ratio() };
+	std::cout << m_song.get_time_signature().get_ratio() << std::endl;
+
 	sf::Vector2f draw_position{ position };
 	int staff_middle_line = middle_c_offset - 4;
 	float staff_middle_position_y = position.y + m_settings.get_line_spacing() * 2;
@@ -220,7 +195,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		LineShape ledger_line{};
 		ledger_line.set_thickness(m_settings.get_line_thickness());
 		ledger_line.set_color(m_settings.color);
-		
+
 		float ledger_line_point_x = note_head.get_size().x * 0.7;
 
 		ledger_line.set_point_1(-ledger_line_point_x, 0.0f);
