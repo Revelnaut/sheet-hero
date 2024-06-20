@@ -1,6 +1,6 @@
-#include "DataTypes.hpp"
+#include "MusicalData.hpp"
 
-int DataUtility::accidentals_in_key(const Key& key)
+int DataUtility::accidental_count_in_key(const Key& key)
 {
 	switch (key) {
 	case Key::CMajor:

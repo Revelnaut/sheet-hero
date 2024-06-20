@@ -1,5 +1,5 @@
 #pragma once
-#include "DataTypes.hpp"
+#include "MusicalData.hpp"
 
 class Note {
 public:

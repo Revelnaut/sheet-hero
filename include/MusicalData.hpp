@@ -103,7 +103,7 @@ enum class MusicalGlyph {
 
 class DataUtility {
 public:
-	static int accidentals_in_key(const Key& key);
+	static int accidental_count_in_key(const Key& key);
 	static bool is_key_natural(const Key& key);
 	static bool is_key_sharp(const Key& key);
 	static bool is_key_flat(const Key& key);

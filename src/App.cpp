@@ -77,8 +77,8 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 
 	for (int m = 0; m < measures; ++m) {
 		GrandMeasure grand_measure;
-
 		Measure& treble = grand_measure.treble_measure;
+		Measure& bass = grand_measure.bass_measure;
 
 		while (treble.free_space_in_eights(song.get_time_signature()) > 0) {
 			Value largest_option{};
@@ -117,8 +117,6 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			}
 			treble.add_note_group(ng);
 		}
-
-		Measure& bass = grand_measure.bass_measure;
 
 		while (bass.free_space_in_eights(song.get_time_signature()) > 0) {
 			Value largest_option{};

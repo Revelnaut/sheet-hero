@@ -78,7 +78,7 @@ float SheetMusicSettings::get_first_measure_offset() const {
 }
 
 float SheetMusicSettings::get_first_measure_position(const Key& key) const {
-	float accidentals_width{ get_key_signature_accidental_spacing() * DataUtility::accidentals_in_key(key) };
+	float accidentals_width{ get_key_signature_accidental_spacing() * DataUtility::accidental_count_in_key(key) };
 	return get_grand_staff_brace_spacing() +
 		get_clef_spacing() +
 		get_time_signature_spacing() +

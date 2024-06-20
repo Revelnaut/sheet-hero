@@ -41,6 +41,10 @@ bool Scale::is_natural(const PitchClass& pitch_class) const {
 	return m_accidentals.at(pitch_class) == Accidental::Natural;
 }
 
+void Scale::set_accidental(const PitchClass& pitch_class, const Accidental& accidental) {
+	m_accidentals[pitch_class] = accidental;
+}
+
 const Accidental& Scale::get_accidental(const PitchClass& pitch_class) const
 {
 	return m_accidentals.at(pitch_class);

@@ -16,11 +16,11 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/sheet-hero.cpp
     ${SOURCE_DIR}/App.cpp
     ${SOURCE_DIR}/AppImgui.cpp
-    ${SOURCE_DIR}/DataTypes.cpp
     ${SOURCE_DIR}/GrandMeasure.cpp
     ${SOURCE_DIR}/LineShape.cpp
     ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
+    ${SOURCE_DIR}/MusicalData.cpp
     ${SOURCE_DIR}/MusicalSymbol.cpp
     ${SOURCE_DIR}/Note.cpp
     ${SOURCE_DIR}/NoteGroup.cpp
@@ -32,11 +32,11 @@ set(SOURCE_FILES
 )
 set(HEADER_FILES
     ${INCLUDE_DIR}/App.hpp
-    ${INCLUDE_DIR}/DataTypes.hpp
     ${INCLUDE_DIR}/GrandMeasure.hpp
     ${INCLUDE_DIR}/LineShape.hpp
     ${INCLUDE_DIR}/Measure.hpp
     ${INCLUDE_DIR}/MidiEngine.hpp
+    ${INCLUDE_DIR}/MusicalData.hpp
     ${INCLUDE_DIR}/MusicalSymbol.hpp
     ${INCLUDE_DIR}/Note.hpp
     ${INCLUDE_DIR}/NoteGroup.hpp

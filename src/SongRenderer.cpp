@@ -199,6 +199,8 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 	int staff_middle_line = middle_c_offset - 4;
 	float staff_middle_position_y = position.y + m_settings.get_line_spacing() * 2;
 
+	Scale measure_scale{ m_song.get_scale() };
+
 	for (const NoteGroup& note_group : measure.get_note_groups()) {
 		// Note head
 		Value value{ note_group.get_value() };
@@ -232,7 +234,12 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			if (note.get_staff_position() == previous_note_position + 1 && note_offset == false) {
 				note_offset = true;
 				note_head.move(close_note_offset, 0.0f);
-				ledger_line.set_point_2(ledger_line_point_x + close_note_offset, 0.0f);
+				if (stem_direction_up) {
+					ledger_line.set_point_2(ledger_line_point_x + close_note_offset, 0.0f);
+				}
+				else {
+					ledger_line.set_point_1(-ledger_line_point_x + close_note_offset, 0.0f);
+				}
 			}
 			else {
 				note_offset = false;
@@ -241,7 +248,8 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			target.draw(note_head, states);
 
 			// Draw accidental, if it differs from the song's current key
-			bool accidental_in_scale = note.get_accidental() == m_song.get_scale().get_accidental(note.get_pitch_class());
+			bool accidental_in_scale = note.get_accidental() == measure_scale.get_accidental(note.get_pitch_class());
+			measure_scale.set_accidental(note.get_pitch_class(), note.get_accidental());
 
 			if (accidental_in_scale == false) {
 				MusicalSymbol accidental{ symbol_factory(MusicalGlyph::Null) };
@@ -352,7 +360,7 @@ void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf:
 {
 	float pitch_spacing{ m_settings.get_pitch_spacing() };
 	float accidental_spacing{ m_settings.get_key_signature_accidental_spacing() };
-	int accidental_count{ DataUtility::accidentals_in_key(key) };
+	int accidental_count{ DataUtility::accidental_count_in_key(key) };
 
 	if (DataUtility::is_key_sharp(key)) {
 		MusicalSymbol sharp_accidental{ symbol_factory(MusicalGlyph::AccidentalSharp) };

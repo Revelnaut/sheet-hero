@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DataTypes.hpp"
+#include "MusicalData.hpp"
 #include "Scale.hpp"
 #include "GrandMeasure.hpp"
 #include <vector>

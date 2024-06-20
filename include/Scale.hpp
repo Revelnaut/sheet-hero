@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DataTypes.hpp"
+#include "MusicalData.hpp"
 #include <unordered_map>
 #include <string>
 
@@ -17,6 +17,7 @@ public:
 	bool is_flat(const PitchClass& pitch_class) const;
 	bool is_natural(const PitchClass& pitch_class) const;
 
+	void set_accidental(const PitchClass& pitch_class, const Accidental& accidental);
 	const Accidental& get_accidental(const PitchClass& pitch_class) const;
 
 	void create(std::string name, int c, int d, int e, int f, int g, int a, int b);

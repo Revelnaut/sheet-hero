@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "DataTypes.hpp"
+#include "MusicalData.hpp"
 
 constexpr const int MUSICAL_SYMBOL_DEFAULT_CHARACTER_SIZE = 100;
 

@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "DataTypes.hpp"
+#include "MusicalData.hpp"
 
 struct SheetMusicSettings {
 	sf::Color color{ sf::Color::Black };
