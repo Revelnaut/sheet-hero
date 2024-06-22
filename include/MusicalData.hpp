@@ -111,4 +111,5 @@ public:
 	static MusicalGlyph int_to_time_signature_glyph(int index);
 	static MusicalGlyph value_to_notehead_glyph(Value value);
 	static Accidental int_to_accidental(int accidental);
+	static int value_to_tick(Value value);
 };

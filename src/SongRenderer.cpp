@@ -2,6 +2,8 @@
 #include "MusicalSymbol.hpp"
 #include "LineShape.hpp"
 
+#include <algorithm>
+
 SongRenderer::SongRenderer() {
 	initialize();
 }
@@ -41,6 +43,22 @@ SheetMusicSettings& SongRenderer::get_settings() {
 	return m_settings;
 }
 
+void SongRenderer::set_playing_tick(int tick) {
+	set_playing_position(static_cast<double>( tick ) / static_cast<double>( m_song.get_tick_count() ));
+}
+
+int SongRenderer::get_playing_tick() const {
+	return static_cast<int>( static_cast<double>( m_song.get_tick_count() ) * m_playing_position);
+}
+
+void SongRenderer::set_playing_position(double position) {
+	m_playing_position = std::clamp(position, 0.0, 1.0);
+}
+
+double SongRenderer::get_playing_position() const {
+	return m_playing_position;
+}
+
 MusicalSymbol SongRenderer::symbol_factory(const MusicalGlyph& glyph) const {
 	return MusicalSymbol{ glyph, m_music_font, m_settings.get_font_size() };
 }
@@ -62,9 +80,11 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	tick.setOrigin(tick.getRadius(), tick.getRadius());
 	tick.setFillColor(m_settings.beat_off_color);
 
+	int tick_counter{ 0 };
+
 	bool new_line{ true };
 
-	for ( auto& measure : m_song.get_measures() ) {
+	for ( auto& measure : m_song.get_grand_measures() ) {
 		if ( new_line ) {
 			new_line = false;
 			draw_grand_staff(draw_position, m_max_width, target, states);
@@ -77,12 +97,28 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		for ( int b = 0; b < time_signature.get_numerator(); ++b ) {
 			beat.setPosition(draw_position);
 			beat.move(b * beat_length, beat_position_y);
+
+			if ( get_playing_tick() == tick_counter ) {
+				beat.setFillColor(m_settings.beat_on_color);
+			} else {
+				beat.setFillColor(m_settings.beat_off_color);
+			}
+
 			target.draw(beat, states);
+			++tick_counter;
 
 			for ( int t = 1; t < 4; ++t ) {
 				tick.setPosition(beat.getPosition());
 				tick.move(t * beat_length / 4.0f, 0.0f);
+
+				if ( get_playing_tick() == tick_counter ) {
+					tick.setFillColor(m_settings.beat_on_color);
+				} else {
+					tick.setFillColor(m_settings.beat_off_color);
+				}
+				
 				target.draw(tick, states);
+				++tick_counter;
 			}
 		}
 
@@ -90,7 +126,7 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
 		if ( draw_position.x + ( m_settings.get_measure_width(true) + m_settings.get_measure_width(false) ) <= get_max_width() ) {
-			if ( &measure != &m_song.get_measures().back() ) { // If not last measure
+			if ( &measure != &m_song.get_grand_measures().back() ) { // If not last measure
 				draw_position.x += m_settings.get_measure_width(false) + m_settings.get_bar_width() * 0.2f;
 				bar.setPosition(draw_position);
 				target.draw(bar, states);

@@ -17,11 +17,25 @@ namespace ImGui {
 			( t->*setter )( new_value );
 		}
 	}
+
+	template <typename T, typename Getter, typename Setter>
+	void SliderInt(const char* label, T* t, Getter getter, Setter setter, int min, int max,
+					  const char* format = "%d") {
+		int current = ( t->*getter )( );
+		int new_value = current;
+
+		ImGui::SliderInt(label, &new_value, min, max, format);
+
+		if ( current != new_value ) {
+			( t->*setter )( new_value );
+		}
+	}
 }
 
 void App::imgui_show_interface() {
-	imgui_midi_window();
+	//imgui_midi_window();
 	imgui_settings_window();
+	imgui_song_menu();
 }
 
 void App::imgui_midi_window() {
@@ -139,6 +153,21 @@ void App::imgui_settings_window() {
 		ImGui::SliderFloat("Staff spacing", &song_renderer.get_settings().staff_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Grand staff spacing", &song_renderer.get_settings().grand_staff_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Line thickness", &song_renderer.get_settings().line_thickness_scale, 1.0f, 8.0f, "%.0f");
+		ImGui::End();
+	}
+}
+
+void App::imgui_song_menu() {
+	if ( ImGui::Begin("Song") ) {
+		ImGui::SliderFloat("Song position", &song_renderer, &SongRenderer::get_playing_position, &SongRenderer::set_playing_position, 0.0, 1.0);
+		ImGui::SliderInt("Song position", &song_renderer, &SongRenderer::get_playing_tick, &SongRenderer::set_playing_tick, 0, song_renderer.get_song().get_tick_count() - 1);
+
+		auto& note_group = song_renderer.get_song().get_note_group_at_position(song_renderer.get_playing_position(), true);
+
+		for ( auto& note : note_group.get_notes() ) {
+			ImGui::Text(note.to_string().c_str());
+		}
+
 		ImGui::End();
 	}
 }

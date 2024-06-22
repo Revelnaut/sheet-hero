@@ -58,13 +58,11 @@ int App::run() {
 }
 
 void App::generate_demo_song() {
-	song_renderer.set_song(generate_random_song(32, static_cast<Key>( Random::get(0, 29) )));
+	song_renderer.set_song(generate_random_song(8, static_cast<Key>( Random::get(0, 29) )));
 	song_renderer.setPosition(song_margin, song_margin);
 }
 
 Song App::generate_random_song(int measures, Key key, int tempo) {
-	key = Key::CMajor;
-
 	Song song{};
 	song.set_key(key);
 	song.set_tempo(tempo);
@@ -144,7 +142,7 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			bass.add_note_group(ng);
 		}
 
-		song.add_measure(grand_measure);
+		song.add_grand_measure(grand_measure);
 	}
 	return song;
 }

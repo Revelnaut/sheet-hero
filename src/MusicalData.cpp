@@ -111,3 +111,13 @@ Accidental DataUtility::int_to_accidental(int accidental) {
 	}
 	return Accidental::Null;
 }
+
+int DataUtility::value_to_tick(Value value) {
+	switch ( value ) {
+	case Value::Whole: return 16;
+	case Value::Half: return 8;
+	case Value::Quarter: return 4;
+	case Value::Eight: return 2;
+	}
+	return 0;
+}

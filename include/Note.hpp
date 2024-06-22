@@ -1,5 +1,6 @@
 #pragma once
 #include "MusicalData.hpp"
+#include <string>
 
 class Note {
 public:
@@ -27,6 +28,7 @@ public:
 	int get_staff_position() const;
 
 	int get_id() const;
+	std::string to_string() const;
 private:
 	PitchClass m_pitch_class{ PitchClass::C };
 	Accidental m_accidental{ Accidental::Null };

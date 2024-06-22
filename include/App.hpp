@@ -44,4 +44,5 @@ public:
 	void imgui_midi_window();
 	void imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size);
 	void imgui_settings_window();
+	void imgui_song_menu();
 };

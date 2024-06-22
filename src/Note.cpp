@@ -93,6 +93,25 @@ int Note::get_id() const {
 	return m_id;
 }
 
+std::string Note::to_string() const {
+	std::string return_value;
+	switch ( m_pitch_class ) {
+	case PitchClass::C: return_value += "C"; break;
+	case PitchClass::D: return_value += "D"; break;
+	case PitchClass::E: return_value += "E"; break;
+	case PitchClass::F: return_value += "F"; break;
+	case PitchClass::G: return_value += "G"; break;
+	case PitchClass::A: return_value += "A"; break;
+	case PitchClass::B: return_value += "B"; break;
+	}
+	switch ( m_accidental ) {
+	case Accidental::Flat: return_value += "b"; break;
+	case Accidental::Sharp: return_value += "#"; break;
+	}
+	return_value += std::to_string(m_octave);
+	return return_value;
+}
+
 bool operator==(const Note& note_1, const Note& note_2) {
 	return note_1.m_accidental == note_2.m_accidental
 		&& note_1.m_octave == note_2.m_octave
