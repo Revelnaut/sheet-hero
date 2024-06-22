@@ -64,11 +64,8 @@ float SheetMusicSettings::get_bar_width() const {
 	return size * BAR_WIDTH * bar_width_scale + ( size * BAR_WIDTH_MIN );
 }
 
-float SheetMusicSettings::get_measure_width(bool include_bars) const {
+float SheetMusicSettings::get_measure_width() const {
 	float width = size * MEASURE_WIDTH * measure_width_scale;
-	if ( include_bars ) {
-		width += get_bar_width();
-	}
 	return width;
 }
 

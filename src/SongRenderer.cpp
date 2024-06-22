@@ -8,31 +8,18 @@ SongRenderer::SongRenderer() {
 	initialize();
 }
 
-SongRenderer::SongRenderer(const Song& song) {
-	initialize();
-	set_song(song);
-}
-
 SongRenderer::~SongRenderer() {}
 
-void SongRenderer::set_song(const Song& song) {
-	m_song = song;
+void SongRenderer::set_bounds(const sf::FloatRect& bounds) {
+	m_bounds = bounds;
 }
 
-const Song& SongRenderer::get_song() const {
-	return m_song;
+const sf::FloatRect& SongRenderer::get_bounds() const {
+	return m_bounds;
 }
 
 void SongRenderer::initialize() {
 	m_music_font.loadFromFile("data/bravura/otf/Bravura.otf");
-}
-
-void SongRenderer::set_max_width(float max_width) {
-	m_max_width = max_width;
-}
-
-float SongRenderer::get_max_width() const {
-	return m_max_width;
 }
 
 void SongRenderer::set_settings(const SheetMusicSettings& settings) {
@@ -43,14 +30,6 @@ SheetMusicSettings& SongRenderer::get_settings() {
 	return m_settings;
 }
 
-void SongRenderer::set_playing_tick(int tick) {
-	set_playing_position(static_cast<double>( tick ) / static_cast<double>( m_song.get_tick_count() ));
-}
-
-int SongRenderer::get_playing_tick() const {
-	return static_cast<int>( static_cast<double>( m_song.get_tick_count() ) * m_playing_position);
-}
-
 void SongRenderer::set_playing_position(double position) {
 	m_playing_position = std::clamp(position, 0.0, 1.0);
 }
@@ -59,14 +38,16 @@ double SongRenderer::get_playing_position() const {
 	return m_playing_position;
 }
 
-MusicalSymbol SongRenderer::symbol_factory(const MusicalGlyph& glyph) const {
-	return MusicalSymbol{ glyph, m_music_font, m_settings.get_font_size() };
+/*void SongRenderer::set_playing_tick(int tick) {
+	set_playing_position(static_cast<double>( tick ) / static_cast<double>( m_song.get_tick_count() ));
+}*/
+
+static int get_playing_tick(const Song& song, double position) {
+	return static_cast<int>( static_cast<double>( song.get_tick_count() ) * position);
 }
 
-void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
-
-	sf::Vector2f draw_position{};
+void SongRenderer::render(const Song& song, sf::RenderTarget& target, sf::RenderStates states) const {
+	sf::Vector2f draw_position{m_bounds.getPosition()};
 
 	LineShape bar{ 0.0f, 0.0f, 0.0f, m_settings.get_grand_staff_height() };
 	bar.set_color(m_settings.color);
@@ -84,21 +65,21 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	bool new_line{ true };
 
-	for ( auto& measure : m_song.get_grand_measures() ) {
+	for ( auto& measure : song.get_grand_measures() ) {
 		if ( new_line ) {
 			new_line = false;
-			draw_grand_staff(draw_position, m_max_width, target, states);
-			draw_position.x = m_settings.get_first_measure_position(m_song.get_key());
+			draw_grand_staff(song, draw_position, m_bounds.width, target, states);
+			draw_position.x = m_bounds.left + m_settings.get_first_measure_position(song.get_key());
 		}
 
-		const TimeSignature& time_signature{ m_song.get_time_signature() };
-		float beat_length{ m_settings.get_measure_width(false) / static_cast<float>( time_signature.get_numerator() ) };
+		const TimeSignature& time_signature{ song.get_time_signature() };
+		float beat_length{ m_settings.get_measure_width() / static_cast<float>( time_signature.get_numerator() ) };
 		float beat_position_y{ m_settings.get_staff_height() + m_settings.get_staff_spacing() / 2.0f };
 		for ( int b = 0; b < time_signature.get_numerator(); ++b ) {
 			beat.setPosition(draw_position);
 			beat.move(b * beat_length, beat_position_y);
 
-			if ( get_playing_tick() == tick_counter ) {
+			if ( get_playing_tick(song, m_playing_position) == tick_counter ) {
 				beat.setFillColor(m_settings.beat_on_color);
 			} else {
 				beat.setFillColor(m_settings.beat_off_color);
@@ -111,36 +92,40 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 				tick.setPosition(beat.getPosition());
 				tick.move(t * beat_length / 4.0f, 0.0f);
 
-				if ( get_playing_tick() == tick_counter ) {
+				if ( get_playing_tick(song, m_playing_position) == tick_counter ) {
 					tick.setFillColor(m_settings.beat_on_color);
 				} else {
 					tick.setFillColor(m_settings.beat_off_color);
 				}
-				
+
 				target.draw(tick, states);
 				++tick_counter;
 			}
 		}
 
-		draw_measure(measure.treble_measure, draw_position, 10, target, states);
-		draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
+		draw_measure(song, measure.treble_measure, draw_position, 10, target, states);
+		draw_measure(song, measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
-		if ( draw_position.x + ( m_settings.get_measure_width(true) + m_settings.get_measure_width(false) ) <= get_max_width() ) {
-			if ( &measure != &m_song.get_grand_measures().back() ) { // If not last measure
-				draw_position.x += m_settings.get_measure_width(false) + m_settings.get_bar_width() * 0.2f;
+		if ( draw_position.x + ( m_settings.get_measure_width() * 2 + m_settings.get_bar_width() ) <= m_bounds.width + m_bounds.left ) {
+			if ( &measure != &song.get_grand_measures().back() ) { // If not last measure
+				draw_position.x += m_settings.get_measure_width() + m_settings.get_bar_width() * 0.2f;
 				bar.setPosition(draw_position);
 				target.draw(bar, states);
 				draw_position.x += m_settings.get_bar_width() * 0.8f;
 			}
 		} else {
-			draw_position.x = 0.0f;
+			draw_position.x = m_bounds.left;
 			draw_position.y += m_settings.get_grand_staff_height() + m_settings.get_grand_staff_spacing();
 			new_line = true;
 		}
 	}
 }
 
-void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const {
+MusicalSymbol SongRenderer::symbol_factory(const MusicalGlyph& glyph) const {
+	return MusicalSymbol{ glyph, m_music_font, m_settings.get_font_size() };
+}
+
+void SongRenderer::draw_grand_staff(const Song& song, sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const {
 	sf::Vector2f draw_position{ position };
 
 	// Brace
@@ -152,7 +137,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	draw_position.x += brace.get_size().x + m_settings.get_grand_staff_brace_spacing();
 
 	// Horizontal line
-	LineShape horizontal_line{ 0.0f, 0.0f, width - draw_position.x, 0.0f };
+	LineShape horizontal_line{ 0.0f, 0.0f, width, 0.0f };
 	horizontal_line.set_color(m_settings.color);
 	horizontal_line.set_thickness(m_settings.get_line_thickness());
 
@@ -180,7 +165,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	vertical_line.setPosition(draw_position);
 	target.draw(vertical_line, states);
 
-	vertical_line.setPosition(draw_position + sf::Vector2f{ width - draw_position.x, 0.0f });
+	vertical_line.setPosition(draw_position + sf::Vector2f{ width, 0.0f });
 	target.draw(vertical_line, states);
 
 	// G clef
@@ -200,7 +185,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	target.draw(f_clef, states);
 
 	// Time signature
-	const TimeSignature& time_signature{ m_song.get_time_signature() };
+	const TimeSignature& time_signature{ song.get_time_signature() };
 
 	MusicalSymbol ts_numerator{ symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_numerator())) };
 	MusicalSymbol ts_denominator{ symbol_factory(DataUtility::int_to_time_signature_glyph(time_signature.get_denominator())) };
@@ -219,16 +204,14 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 	// Key signature
 	draw_position.x += ts_numerator.get_size().x + m_settings.get_key_signature_spacing();
-	draw_key_signature(m_song.get_key(), draw_position, target, states);
+	draw_key_signature(song, song.get_key(), draw_position, target, states);
 
 	draw_position.y += m_settings.get_staff_height() + m_settings.get_staff_spacing() + m_settings.get_line_spacing();
-	draw_key_signature(m_song.get_key(), draw_position, target, states);
+	draw_key_signature(song, song.get_key(), draw_position, target, states);
 }
 
-#include <iostream>
-
-void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
-	float measure_width{ m_settings.get_measure_width() / m_song.get_time_signature().get_ratio() };
+void SongRenderer::draw_measure(const Song& song, const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
+	float measure_width{ m_settings.get_measure_width() / song.get_time_signature().get_ratio() };
 
 	sf::Vector2f draw_position{ position };
 	int staff_middle_line = middle_c_offset - 4;
@@ -282,7 +265,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 
 			// Draw accidentals. Only necessary accidentals are drawn, even though every note is assigned an accidental.
 			if ( staff_line_accidentals[note.get_staff_position()] == Accidental::Null ) {
-				staff_line_accidentals[note.get_staff_position()] = m_song.get_scale().get_accidental(note.get_pitch_class());
+				staff_line_accidentals[note.get_staff_position()] = song.get_scale().get_accidental(note.get_pitch_class());
 			}
 
 			bool different_accidental = staff_line_accidentals[note.get_staff_position()] != note.get_accidental();
@@ -392,7 +375,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 	}
 }
 
-void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const {
+void SongRenderer::draw_key_signature(const Song& song, const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const {
 	float pitch_spacing{ m_settings.get_pitch_spacing() };
 	float accidental_spacing{ m_settings.get_key_signature_accidental_spacing() };
 	int accidental_count{ DataUtility::accidental_count_in_key(key) };

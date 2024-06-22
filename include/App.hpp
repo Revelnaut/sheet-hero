@@ -13,6 +13,7 @@ using json = nlohmann::json;
 
 #include "MidiEngine.hpp"
 #include <libremidi/libremidi.hpp>
+#include "Song.hpp"
 #include "SongRenderer.hpp"
 #include "effolkronium/random.hpp"
 
@@ -25,8 +26,9 @@ public:
 	sf::Font default_text_font{};
 	sf::RenderWindow window{};
 	bool is_fullscreen{ false };
+	Song song{};
 	SongRenderer song_renderer{};
-	float song_margin{ 100.0f };
+	float song_margin{ 100.0f };	
 
 	App();
 	~App();

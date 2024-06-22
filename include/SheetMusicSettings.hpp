@@ -40,7 +40,7 @@ struct SheetMusicSettings {
 	float get_key_signature_spacing() const;
 	float get_key_signature_accidental_spacing() const;
 	float get_bar_width() const;
-	float get_measure_width(bool include_bars = false) const;
+	float get_measure_width() const;
 	float get_first_measure_offset() const;
 	float get_first_measure_position(const Key& key) const;
 	float get_staff_height() const;

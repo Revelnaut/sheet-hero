@@ -28,7 +28,7 @@ int App::run() {
 						std::cout << "Generating..." << std::endl;
 						generate_demo_song();
 						std::cout << "Done!" << std::endl;
-						std::cout << "Song key: " << (int)song_renderer.get_song().get_key() << std::endl;
+						std::cout << "Song key: " << (int)song.get_key() << std::endl;
 					}
 				}
 			}
@@ -43,12 +43,11 @@ int App::run() {
 		}
 
 		ImGui::SFML::Update(window, deltaClock.restart());
-		//ImGui::ShowDemoWindow();
 		imgui_show_interface();
 
 		window.clear(window_color);
 
-		window.draw(song_renderer);
+		song_renderer.render(song, window, sf::RenderStates::Default);
 
 		ImGui::SFML::Render(window);
 		window.display();
@@ -58,8 +57,7 @@ int App::run() {
 }
 
 void App::generate_demo_song() {
-	song_renderer.set_song(generate_random_song(8, static_cast<Key>( Random::get(0, 29) )));
-	song_renderer.setPosition(song_margin, song_margin);
+	song = generate_random_song(8, static_cast<Key>( Random::get(0, 29) ));
 }
 
 Song App::generate_random_song(int measures, Key key, int tempo) {
@@ -98,7 +96,7 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
 
 				// Small chance for a random accidental
-				if ( Random::get<bool>(0.5) ) {
+				if ( Random::get<bool>(0.05) ) {
 					accidental = DataUtility::int_to_accidental(Random::get(-1, 1));
 				}
 				int octave = Random::get(4, 5);
@@ -167,7 +165,7 @@ void App::create_window(bool fullscreen) {
 
 void App::update_view(float width, float height) {
 	window.setView(sf::View{ sf::FloatRect{ 0.0f, 0.0f, width, height } });
-	song_renderer.set_max_width(width - song_margin * 2);
+	song_renderer.set_bounds(sf::FloatRect{ song_margin, song_margin, width - song_margin * 2, height - song_margin * 2});
 }
 
 void App::toggle_fullscreen() {
