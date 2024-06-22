@@ -198,7 +198,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 	int staff_middle_line = middle_c_offset - 4;
 	float staff_middle_position_y = position.y + m_settings.get_line_spacing() * 2;
 
-	Scale measure_scale{ m_song.get_scale() };
+	std::unordered_map<int, Accidental> staff_line_accidentals{};
 
 	for ( const NoteGroup& note_group : measure.get_note_groups() ) {
 		// Note head
@@ -243,6 +243,35 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			}
 
 			target.draw(note_head, states);
+
+			// Draw accidentals. Only necessary accidentals are drawn, even though every note is assigned an accidental.
+			if ( staff_line_accidentals[note.get_staff_position()] == Accidental::Null ) {
+				staff_line_accidentals[note.get_staff_position()] = m_song.get_scale().get_accidental(note.get_pitch_class());
+			}
+
+			bool different_accidental = staff_line_accidentals[note.get_staff_position()] != note.get_accidental();
+
+			if ( different_accidental ) {
+				MusicalSymbol accidental{ symbol_factory(MusicalGlyph::Null) };
+				accidental.use_font_baseline(true);
+
+				switch ( note.get_accidental() ) {
+				case Accidental::Flat:
+					accidental.set_glyph(MusicalGlyph::AccidentalFlatSmall);
+					break;
+				case Accidental::Natural:
+					accidental.set_glyph(MusicalGlyph::AccidentalNaturalSmall);
+					break;
+				case Accidental::Sharp:
+					accidental.set_glyph(MusicalGlyph::AccidentalSharpSmall);
+					break;
+				}
+				accidental.setPosition(note_head.getPosition() - sf::Vector2f(m_settings.get_note_accidental_offset(), m_settings.get_pitch_spacing() * 8));
+
+				target.draw(accidental, states);
+			}
+
+			staff_line_accidentals[note.get_staff_position()] = note.get_accidental();
 
 			previous_note_position = note.get_staff_position();
 		}

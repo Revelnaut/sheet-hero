@@ -44,7 +44,7 @@ int App::run() {
 
 		ImGui::SFML::Update(window, deltaClock.restart());
 		//ImGui::ShowDemoWindow();
-		//imgui_show_interface();
+		imgui_show_interface();
 
 		window.clear(window_color);
 
@@ -63,6 +63,8 @@ void App::generate_demo_song() {
 }
 
 Song App::generate_random_song(int measures, Key key, int tempo) {
+	key = Key::CMajor;
+
 	Song song{};
 	song.set_key(key);
 	song.set_tempo(tempo);
@@ -95,13 +97,12 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			int note_count = Random::get(1, 5);
 			for ( int i = 0; i < note_count; ++i ) {
 				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
-				Accidental accidental{ Accidental::Null };
+				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
 
 				// Small chance for a random accidental
-				/*if ( Random::get<bool>(0.05) ) {
-					accidental = static_cast<Accidental>( Random::get(0, 2) );
-				}*/
-
+				if ( Random::get<bool>(0.5) ) {
+					accidental = DataUtility::int_to_accidental(Random::get(-1, 1));
+				}
 				int octave = Random::get(4, 5);
 				ng.add_note(Note{ pitch_class, accidental, octave });
 			}
@@ -130,12 +131,12 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			int note_count = Random::get(1, 3);
 			for ( int i = 0; i < note_count; ++i ) {
 				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
-				Accidental accidental{ Accidental::Null };
+				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
 
 				// Small chance for a random accidental
-				/*if ( Random::get<bool>(0.05) ) {
-					accidental = static_cast<Accidental>( Random::get(0, 2) );
-				}*/
+				if ( Random::get<bool>(0.05) ) {
+					accidental = DataUtility::int_to_accidental(Random::get(-1, 1));
+				}
 
 				int octave = Random::get(2, 3);
 				ng.add_note(Note{ pitch_class, accidental, octave });
