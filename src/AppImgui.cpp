@@ -159,7 +159,7 @@ void App::imgui_settings_window() {
 
 void App::imgui_song_menu() {
 	if ( ImGui::Begin("Song") ) {
-		ImGui::SliderFloat("Song position", &song_renderer, &SongRenderer::get_playing_position, &SongRenderer::set_playing_position, 0.0, 1.0);
+		ImGui::SliderFloat("Song position", &song_position, 0.0f, 0.99999f, "%.5f");
 
 		auto& note_group = song.get_note_group_at_position(song_renderer.get_playing_position(), true);
 

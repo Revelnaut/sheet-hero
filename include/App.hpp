@@ -11,24 +11,27 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+#include "effolkronium/random.hpp"
+using Random = effolkronium::random_static;
+
 #include "MidiEngine.hpp"
-#include <libremidi/libremidi.hpp>
 #include "Song.hpp"
 #include "SongRenderer.hpp"
-#include "effolkronium/random.hpp"
-
-using Random = effolkronium::random_static;
 
 class App {
 public:
-	MidiEngine midi_engine{};
 	sf::Color window_color{ 0xF0F0F0FF };
-	sf::Font default_text_font{};
 	sf::RenderWindow window{};
-	bool is_fullscreen{ false };
+
+	MidiEngine midi_engine{};
 	Song song{};
 	SongRenderer song_renderer{};
-	float song_margin{ 100.0f };	
+	float song_margin{ 100.0f };
+
+	bool song_is_playing{ false };
+	float song_position{};
+	
+	bool is_fullscreen{ false };
 
 	App();
 	~App();
@@ -41,6 +44,9 @@ public:
 	void create_window(bool fullscreen);
 	void update_view(float width, float height);
 	void toggle_fullscreen();
+
+	void process(const sf::Time & delta);
+	void render();
 
 	void imgui_show_interface();
 	void imgui_midi_window();

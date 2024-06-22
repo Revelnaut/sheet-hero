@@ -1,10 +1,9 @@
 #include "App.hpp"
 #include "MusicalSymbol.hpp"
 #include "SheetMusicSettings.hpp"
+#include <algorithm>
 
-App::App() {
-	default_text_font.loadFromFile("data/fonts/opensans.ttf");
-}
+App::App() {}
 
 App::~App() {}
 
@@ -14,7 +13,7 @@ int App::run() {
 
 	generate_demo_song();
 
-	sf::Clock deltaClock;
+	sf::Clock delta_clock;
 	while ( window.isOpen() ) {
 		sf::Event event;
 		while ( window.pollEvent(event) ) {
@@ -26,6 +25,10 @@ int App::run() {
 				} else {
 					if ( event.key.code == sf::Keyboard::G ) {
 						generate_demo_song();
+					}
+
+					if ( event.key.code == sf::Keyboard::Space ) {
+						song_is_playing = !song_is_playing;
 					}
 				}
 			}
@@ -39,12 +42,11 @@ int App::run() {
 			}
 		}
 
-		ImGui::SFML::Update(window, deltaClock.restart());
-		imgui_show_interface();
+		sf::Time delta_time = delta_clock.restart();
+		process(delta_time);
 
 		window.clear(window_color);
-		song_renderer.render(song, window);
-		ImGui::SFML::Render(window);
+		render();
 		window.display();
 	}
 	ImGui::SFML::Shutdown();
@@ -168,4 +170,31 @@ void App::update_view(float width, float height) {
 
 void App::toggle_fullscreen() {
 	create_window(!is_fullscreen);
+}
+
+void App::process(const sf::Time & delta) {
+	ImGui::SFML::Update(window, delta);
+	imgui_show_interface();
+
+	// Update song position
+	if ( song_is_playing ) {
+		float beats = static_cast<float>( song.get_beat_count() );
+		float beats_per_second = static_cast<float>( song.get_tempo() ) / 60.0f;
+		float advance_per_second = beats_per_second / beats;
+
+		song_position += advance_per_second * delta.asSeconds();
+
+		if ( song_position >= 1.0f ) {
+			song_is_playing = false;
+			song_position = 0.0f;
+		}
+	}
+
+	song_position = std::clamp(song_position, 0.0f, 1.0f);
+	song_renderer.set_playing_position(song_position);
+}
+
+void App::render() {
+	song_renderer.render(song, window);
+	ImGui::SFML::Render(window);
 }

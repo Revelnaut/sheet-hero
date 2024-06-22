@@ -30,11 +30,11 @@ SheetMusicSettings& SongRenderer::get_settings() {
 	return m_settings;
 }
 
-void SongRenderer::set_playing_position(double position) {
-	m_playing_position = std::clamp(position, 0.0, 1.0);
+void SongRenderer::set_playing_position(float position) {
+	m_playing_position = std::clamp(position, 0.0f, 1.0f);
 }
 
-double SongRenderer::get_playing_position() const {
+float SongRenderer::get_playing_position() const {
 	return m_playing_position;
 }
 
@@ -42,8 +42,8 @@ double SongRenderer::get_playing_position() const {
 	set_playing_position(static_cast<double>( tick ) / static_cast<double>( m_song.get_tick_count() ));
 }*/
 
-static int get_playing_tick(const Song& song, double position) {
-	return static_cast<int>( static_cast<double>( song.get_tick_count() ) * position);
+static int get_playing_tick(const Song& song, float position) {
+	return static_cast<int>( static_cast<float>( song.get_tick_count() ) * position);
 }
 
 void SongRenderer::render(const Song& song, sf::RenderTarget& target, sf::RenderStates states) const {
