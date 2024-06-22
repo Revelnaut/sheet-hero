@@ -25,10 +25,7 @@ int App::run() {
 					toggle_fullscreen();
 				} else {
 					if ( event.key.code == sf::Keyboard::G ) {
-						std::cout << "Generating..." << std::endl;
 						generate_demo_song();
-						std::cout << "Done!" << std::endl;
-						std::cout << "Song key: " << (int)song.get_key() << std::endl;
 					}
 				}
 			}
@@ -46,9 +43,7 @@ int App::run() {
 		imgui_show_interface();
 
 		window.clear(window_color);
-
-		song_renderer.render(song, window, sf::RenderStates::Default);
-
+		song_renderer.render(song, window);
 		ImGui::SFML::Render(window);
 		window.display();
 	}
@@ -57,7 +52,10 @@ int App::run() {
 }
 
 void App::generate_demo_song() {
+	std::cout << "Generating..." << std::endl;
 	song = generate_random_song(8, static_cast<Key>( Random::get(0, 29) ));
+	std::cout << "Done!" << std::endl;
+	std::cout << "Song key: " << (int)song.get_key() << std::endl;
 }
 
 Song App::generate_random_song(int measures, Key key, int tempo) {
@@ -165,7 +163,7 @@ void App::create_window(bool fullscreen) {
 
 void App::update_view(float width, float height) {
 	window.setView(sf::View{ sf::FloatRect{ 0.0f, 0.0f, width, height } });
-	song_renderer.set_bounds(sf::FloatRect{ song_margin, song_margin, width - song_margin * 2, height - song_margin * 2});
+	song_renderer.set_bounds(sf::FloatRect{ song_margin, song_margin, width - song_margin * 2, height - song_margin * 2 });
 }
 
 void App::toggle_fullscreen() {

@@ -158,16 +158,15 @@ void App::imgui_settings_window() {
 }
 
 void App::imgui_song_menu() {
-	//if ( ImGui::Begin("Song") ) {
-	//	ImGui::SliderFloat("Song position", &song_renderer, &SongRenderer::get_playing_position, &SongRenderer::set_playing_position, 0.0, 1.0);
-	//	ImGui::SliderInt("Song position", &song_renderer, &SongRenderer::get_playing_tick, &SongRenderer::set_playing_tick, 0, song_renderer.get_song().get_tick_count() - 1);
+	if ( ImGui::Begin("Song") ) {
+		ImGui::SliderFloat("Song position", &song_renderer, &SongRenderer::get_playing_position, &SongRenderer::set_playing_position, 0.0, 1.0);
 
-	//	auto& note_group = song_renderer.get_song().get_note_group_at_position(song_renderer.get_playing_position(), true);
+		auto& note_group = song.get_note_group_at_position(song_renderer.get_playing_position(), true);
 
-	//	for ( auto& note : note_group.get_notes() ) {
-	//		ImGui::Text(note.to_string().c_str());
-	//	}
+		for ( auto& note : note_group.get_notes() ) {
+			ImGui::Text(note.to_string().c_str());
+		}
 
-	//	ImGui::End();
-	//}
+		ImGui::End();
+	}
 }
