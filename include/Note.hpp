@@ -20,7 +20,7 @@ public:
 	int get_id() const;
 private:
 	PitchClass m_pitch_class{ PitchClass::C };
-	Accidental m_accidental{ Accidental::Natural };
+	Accidental m_accidental{ Accidental::Null };
 	int m_octave{ 4 };
 	unsigned int m_id{};
 

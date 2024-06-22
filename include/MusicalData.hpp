@@ -11,6 +11,7 @@ enum class PitchClass {
 };
 
 enum class Accidental {
+	Null,
 	Flat,
 	Natural,
 	Sharp,
@@ -109,4 +110,5 @@ public:
 	static bool is_key_flat(const Key& key);
 	static MusicalGlyph int_to_time_signature_glyph(int index);
 	static MusicalGlyph value_to_notehead_glyph(Value value);
+	static Accidental int_to_accidental(int accidental);
 };

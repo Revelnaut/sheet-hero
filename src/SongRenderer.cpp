@@ -244,29 +244,6 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 
 			target.draw(note_head, states);
 
-			// Draw accidental, if it differs from the song's current key
-			bool accidental_in_scale = note.get_accidental() == measure_scale.get_accidental(note.get_pitch_class());
-			measure_scale.set_accidental(note.get_pitch_class(), note.get_accidental());
-
-			if ( accidental_in_scale == false ) {
-				MusicalSymbol accidental{ symbol_factory(MusicalGlyph::Null) };
-				accidental.use_font_baseline(true);
-
-				switch ( note.get_accidental() ) {
-				case Accidental::Flat:
-					accidental.set_glyph(MusicalGlyph::AccidentalFlatSmall);
-					break;
-				case Accidental::Natural:
-					accidental.set_glyph(MusicalGlyph::AccidentalNaturalSmall);
-					break;
-				case Accidental::Sharp:
-					accidental.set_glyph(MusicalGlyph::AccidentalSharpSmall);
-					break;
-				}
-				accidental.setPosition(note_head.getPosition() - sf::Vector2f(m_settings.get_note_accidental_offset(), m_settings.get_pitch_spacing() * 8));
-				target.draw(accidental, states);
-			}
-
 			previous_note_position = note.get_staff_position();
 		}
 

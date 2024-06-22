@@ -95,12 +95,12 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			int note_count = Random::get(1, 5);
 			for ( int i = 0; i < note_count; ++i ) {
 				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
-				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
+				Accidental accidental{ Accidental::Null };
 
 				// Small chance for a random accidental
-				if ( Random::get<bool>(0.05) ) {
+				/*if ( Random::get<bool>(0.05) ) {
 					accidental = static_cast<Accidental>( Random::get(0, 2) );
-				}
+				}*/
 
 				int octave = Random::get(4, 5);
 				ng.add_note(Note{ pitch_class, accidental, octave });
@@ -130,12 +130,12 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			int note_count = Random::get(1, 3);
 			for ( int i = 0; i < note_count; ++i ) {
 				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
-				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
+				Accidental accidental{ Accidental::Null };
 
 				// Small chance for a random accidental
-				if ( Random::get<bool>(0.05) ) {
+				/*if ( Random::get<bool>(0.05) ) {
 					accidental = static_cast<Accidental>( Random::get(0, 2) );
-				}
+				}*/
 
 				int octave = Random::get(2, 3);
 				ng.add_note(Note{ pitch_class, accidental, octave });

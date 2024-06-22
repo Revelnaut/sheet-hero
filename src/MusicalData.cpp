@@ -102,3 +102,12 @@ MusicalGlyph DataUtility::value_to_notehead_glyph(Value value) {
 	}
 	return MusicalGlyph::Null;
 }
+
+Accidental DataUtility::int_to_accidental(int accidental) {
+	switch ( accidental ) {
+	case -1: return Accidental::Flat;
+	case 0: return Accidental::Natural;
+	case 1: return Accidental::Sharp;
+	}
+	return Accidental::Null;
+}

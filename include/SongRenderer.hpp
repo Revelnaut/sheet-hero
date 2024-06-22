@@ -25,7 +25,7 @@ private:
 	SheetMusicSettings m_settings{};
 
 	Song m_song{};
-	float m_position_in_song{};
+	float m_playing_position{};
 
 	float m_max_width{ 0.0 };
 

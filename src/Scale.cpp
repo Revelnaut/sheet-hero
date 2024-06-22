@@ -44,23 +44,14 @@ const Accidental& Scale::get_accidental(const PitchClass& pitch_class) const {
 	return m_accidentals.at(pitch_class);
 }
 
-static Accidental int_to_accidental(int accidental) {
-	switch ( accidental ) {
-	case -1: return Accidental::Flat;
-	case 0: return Accidental::Natural;
-	case 1: return Accidental::Sharp;
-	}
-	return Accidental::Natural;
-}
-
 void Scale::set_accidentals(int c, int d, int e, int f, int g, int a, int b) {
-	m_accidentals[PitchClass::C] = int_to_accidental(c);
-	m_accidentals[PitchClass::D] = int_to_accidental(d);
-	m_accidentals[PitchClass::E] = int_to_accidental(e);
-	m_accidentals[PitchClass::F] = int_to_accidental(f);
-	m_accidentals[PitchClass::G] = int_to_accidental(g);
-	m_accidentals[PitchClass::A] = int_to_accidental(a);
-	m_accidentals[PitchClass::B] = int_to_accidental(b);
+	m_accidentals[PitchClass::C] = DataUtility::int_to_accidental(c);
+	m_accidentals[PitchClass::D] = DataUtility::int_to_accidental(d);
+	m_accidentals[PitchClass::E] = DataUtility::int_to_accidental(e);
+	m_accidentals[PitchClass::F] = DataUtility::int_to_accidental(f);
+	m_accidentals[PitchClass::G] = DataUtility::int_to_accidental(g);
+	m_accidentals[PitchClass::A] = DataUtility::int_to_accidental(a);
+	m_accidentals[PitchClass::B] = DataUtility::int_to_accidental(b);
 }
 
 void Scale::set_name(const std::string& name) {
