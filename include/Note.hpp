@@ -10,6 +10,15 @@ public:
 
 	Note& operator=(const Note& source);
 
+	friend bool operator==(const Note& note_1, const Note& note_2);
+	friend bool operator!=(const Note& note_1, const Note& note_2);
+
+	friend bool operator<(const Note& note_1, const Note& note_2);
+	friend bool operator>(const Note& note_1, const Note& note_2);
+
+	friend bool operator<=(const Note& note_1, const Note& note_2);
+	friend bool operator>=(const Note& note_1, const Note& note_2);
+
 	PitchClass get_pitch_class() const;
 	Accidental get_accidental() const;
 	int get_octave() const;

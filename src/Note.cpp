@@ -92,3 +92,29 @@ int Note::get_staff_position() const {
 int Note::get_id() const {
 	return m_id;
 }
+
+bool operator==(const Note& note_1, const Note& note_2) {
+	return note_1.m_accidental == note_2.m_accidental
+		&& note_1.m_octave == note_2.m_octave
+		&& note_1.m_pitch_class == note_2.m_pitch_class;
+}
+
+bool operator!=(const Note& note_1, const Note& note_2) {
+	return !(operator==(note_1, note_2));
+}
+
+bool operator<(const Note& note_1, const Note& note_2) {
+	return note_1.get_midi_pitch() < note_2.get_midi_pitch();
+}
+
+bool operator>(const Note& note_1, const Note& note_2) {
+	return operator<(note_2, note_1);
+}
+
+bool operator<=(const Note& note_1, const Note& note_2) {
+	return !( operator>(note_1, note_2) );
+}
+
+bool operator>=(const Note& note_1, const Note& note_2) {
+	return !( operator<(note_1, note_2) );
+}
