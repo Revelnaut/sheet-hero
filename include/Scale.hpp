@@ -9,7 +9,7 @@ public:
 	Scale();
 	Scale(Key key);
 	Scale(std::string name, int c, int d, int e, int f, int g, int a, int b);
-	
+
 	Scale(const Scale& source);
 	Scale& operator=(const Scale& source);
 

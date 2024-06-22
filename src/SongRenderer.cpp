@@ -64,22 +64,22 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	bool new_line{ true };
 
-	for (auto& measure : m_song.get_measures()) {
-		if (new_line) {
+	for ( auto& measure : m_song.get_measures() ) {
+		if ( new_line ) {
 			new_line = false;
 			draw_grand_staff(draw_position, m_max_width, target, states);
 			draw_position.x = m_settings.get_first_measure_position(m_song.get_key());
 		}
 
 		const TimeSignature& time_signature{ m_song.get_time_signature() };
-		float beat_length{ m_settings.get_measure_width(false) / static_cast<float>(time_signature.get_numerator()) };
+		float beat_length{ m_settings.get_measure_width(false) / static_cast<float>( time_signature.get_numerator() ) };
 		float beat_position_y{ m_settings.get_staff_height() + m_settings.get_staff_spacing() / 2.0f };
-		for (int b = 0; b < time_signature.get_numerator(); ++b) {
+		for ( int b = 0; b < time_signature.get_numerator(); ++b ) {
 			beat.setPosition(draw_position);
 			beat.move(b * beat_length, beat_position_y);
 			target.draw(beat, states);
 
-			for (int t = 1; t < 4; ++t) {
+			for ( int t = 1; t < 4; ++t ) {
 				tick.setPosition(beat.getPosition());
 				tick.move(t * beat_length / 4.0f, 0.0f);
 				target.draw(tick, states);
@@ -89,15 +89,14 @@ void SongRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		draw_measure(measure.treble_measure, draw_position, 10, target, states);
 		draw_measure(measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
-		if (draw_position.x + (m_settings.get_measure_width(true) + m_settings.get_measure_width(false)) <= get_max_width()) {
-			if (&measure != &m_song.get_measures().back()) { // If not last measure
+		if ( draw_position.x + ( m_settings.get_measure_width(true) + m_settings.get_measure_width(false) ) <= get_max_width() ) {
+			if ( &measure != &m_song.get_measures().back() ) { // If not last measure
 				draw_position.x += m_settings.get_measure_width(false) + m_settings.get_bar_width() * 0.2f;
 				bar.setPosition(draw_position);
 				target.draw(bar, states);
 				draw_position.x += m_settings.get_bar_width() * 0.8f;
 			}
-		}
-		else {
+		} else {
 			draw_position.x = 0.0f;
 			draw_position.y += m_settings.get_grand_staff_height() + m_settings.get_grand_staff_spacing();
 			new_line = true;
@@ -110,7 +109,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 	// Brace
 	MusicalSymbol brace{ symbol_factory(MusicalGlyph::Brace) };
-	brace.set_character_size(static_cast<unsigned int>(m_settings.get_grand_staff_height()));
+	brace.set_character_size(static_cast<unsigned int>( m_settings.get_grand_staff_height() ));
 	brace.setPosition(draw_position);
 	target.draw(brace, states);
 
@@ -123,9 +122,9 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 
 	// Treble staff
 	horizontal_line.setPosition(draw_position);
-	for (int i = 0; i < 5; ++i) {
+	for ( int i = 0; i < 5; ++i ) {
 		target.draw(horizontal_line, states);
-		if (i < 4) {
+		if ( i < 4 ) {
 			horizontal_line.move(sf::Vector2f{ 0.0f, m_settings.get_line_spacing() });
 		}
 	}
@@ -133,7 +132,7 @@ void SongRenderer::draw_grand_staff(sf::Vector2f position, float width, sf::Rend
 	horizontal_line.move(sf::Vector2f{ 0.0f, m_settings.get_staff_spacing() });
 
 	// Bass staff
-	for (int i = 0; i < 5; ++i) {
+	for ( int i = 0; i < 5; ++i ) {
 		target.draw(horizontal_line, states);
 		horizontal_line.move(sf::Vector2f{ 0.0f, m_settings.get_line_spacing() });
 	}
@@ -201,7 +200,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 
 	Scale measure_scale{ m_song.get_scale() };
 
-	for (const NoteGroup& note_group : measure.get_note_groups()) {
+	for ( const NoteGroup& note_group : measure.get_note_groups() ) {
 		// Note head
 		Value value{ note_group.get_value() };
 		MusicalSymbol note_head{ symbol_factory(DataUtility::value_to_notehead_glyph(value)) };
@@ -223,25 +222,23 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		bool note_offset{ true };
 		int previous_note_position{};
 
-		if (!stem_direction_up) {
+		if ( !stem_direction_up ) {
 			close_note_offset = -close_note_offset;
 		}
 
-		for (const Note& note : note_group.get_notes()) {
-			float note_y{ (middle_c_offset - note.get_staff_position()) * m_settings.get_pitch_spacing() };
+		for ( const Note& note : note_group.get_notes() ) {
+			float note_y{ ( middle_c_offset - note.get_staff_position() ) * m_settings.get_pitch_spacing() };
 			note_head.setPosition(draw_position + sf::Vector2f{ 0.0f, note_y });
 
-			if (note.get_staff_position() == previous_note_position + 1 && note_offset == false) {
+			if ( note.get_staff_position() == previous_note_position + 1 && note_offset == false ) {
 				note_offset = true;
 				note_head.move(close_note_offset, 0.0f);
-				if (stem_direction_up) {
+				if ( stem_direction_up ) {
 					ledger_line.set_point_2(ledger_line_point_x + close_note_offset, 0.0f);
-				}
-				else {
+				} else {
 					ledger_line.set_point_1(-ledger_line_point_x + close_note_offset, 0.0f);
 				}
-			}
-			else {
+			} else {
 				note_offset = false;
 			}
 
@@ -251,11 +248,11 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 			bool accidental_in_scale = note.get_accidental() == measure_scale.get_accidental(note.get_pitch_class());
 			measure_scale.set_accidental(note.get_pitch_class(), note.get_accidental());
 
-			if (accidental_in_scale == false) {
+			if ( accidental_in_scale == false ) {
 				MusicalSymbol accidental{ symbol_factory(MusicalGlyph::Null) };
 				accidental.use_font_baseline(true);
 
-				switch (note.get_accidental()) {
+				switch ( note.get_accidental() ) {
 				case Accidental::Flat:
 					accidental.set_glyph(MusicalGlyph::AccidentalFlatSmall);
 					break;
@@ -274,62 +271,59 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		}
 
 		// Draw ledger lines
-		if (note_group.get_staff_max() >= middle_c_offset + 2) {
-			for (int i = middle_c_offset + 2; i <= note_group.get_staff_max(); i += 2) {
-				ledger_line.setPosition(draw_position.x, position.y - (i - middle_c_offset) * m_settings.get_pitch_spacing());
+		if ( note_group.get_staff_max() >= middle_c_offset + 2 ) {
+			for ( int i = middle_c_offset + 2; i <= note_group.get_staff_max(); i += 2 ) {
+				ledger_line.setPosition(draw_position.x, position.y - ( i - middle_c_offset ) * m_settings.get_pitch_spacing());
 				target.draw(ledger_line, states);
 			}
 		}
 
-		if (note_group.get_staff_min() <= middle_c_offset - 10) {
-			for (int i = middle_c_offset - 10; i >= note_group.get_staff_min(); i -= 2) {
-				ledger_line.setPosition(draw_position.x, position.y - (i - middle_c_offset) * m_settings.get_pitch_spacing());
+		if ( note_group.get_staff_min() <= middle_c_offset - 10 ) {
+			for ( int i = middle_c_offset - 10; i >= note_group.get_staff_min(); i -= 2 ) {
+				ledger_line.setPosition(draw_position.x, position.y - ( i - middle_c_offset ) * m_settings.get_pitch_spacing());
 				target.draw(ledger_line, states);
 			}
 		}
 
 		// Draw stem
-		if (value != Value::Whole) {
+		if ( value != Value::Whole ) {
 			LineShape stem{ };
 			stem.set_thickness(m_settings.size / 25.0f);
 			stem.set_color(m_settings.color);
 
-			float bottom_note_y = draw_position.y + (middle_c_offset - note_group.get_staff_min()) * m_settings.get_pitch_spacing();
-			float top_note_y = draw_position.y + (middle_c_offset - note_group.get_staff_max()) * m_settings.get_pitch_spacing();
+			float bottom_note_y = draw_position.y + ( middle_c_offset - note_group.get_staff_min() ) * m_settings.get_pitch_spacing();
+			float top_note_y = draw_position.y + ( middle_c_offset - note_group.get_staff_max() ) * m_settings.get_pitch_spacing();
 			float stem_overflow = m_settings.get_pitch_spacing() * 7;
 			float stem_x = draw_position.x;
 			float stem_offset_to_note_x = note_head.get_size().x / 2 - stem.get_thickness() / 2;
 			float stem_offset_to_note_y = note_head.get_size().y / 4;
 
 
-			if (stem_direction_up) {
+			if ( stem_direction_up ) {
 				stem_x += stem_offset_to_note_x;
-			}
-			else {
+			} else {
 				stem_x -= stem_offset_to_note_x;
 			}
 
-			if (stem_direction_up) {
+			if ( stem_direction_up ) {
 				stem.set_points(stem_x, bottom_note_y - stem_offset_to_note_y, stem_x, top_note_y - stem_overflow);
-				if (stem.get_point_2().y > staff_middle_position_y) {
+				if ( stem.get_point_2().y > staff_middle_position_y ) {
 					stem.set_point_2(stem_x, staff_middle_position_y);
 				}
-			}
-			else {
+			} else {
 				stem.set_points(stem_x, top_note_y + stem_offset_to_note_y, stem_x, bottom_note_y + stem_overflow);
-				if (stem.get_point_2().y < staff_middle_position_y) {
+				if ( stem.get_point_2().y < staff_middle_position_y ) {
 					stem.set_point_2(stem_x, staff_middle_position_y);
 				}
 			}
 
 			target.draw(stem, states);
 
-			if (value == Value::Eight) {
+			if ( value == Value::Eight ) {
 				MusicalSymbol flag{ symbol_factory(MusicalGlyph::Null) };
-				if (stem_direction_up) {
+				if ( stem_direction_up ) {
 					flag.set_glyph(MusicalGlyph::Flag8thUp);
-				}
-				else {
+				} else {
 					flag.set_glyph(MusicalGlyph::Flag8thDown);
 				}
 				flag.use_font_baseline(true);
@@ -339,7 +333,7 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 		}
 
 		// Move the draw position forward according to the note's value/length
-		switch (value) {
+		switch ( value ) {
 		case Value::Whole:
 			draw_position.x += measure_width;
 			break;
@@ -356,72 +350,70 @@ void SongRenderer::draw_measure(const Measure& measure, sf::Vector2f position, i
 	}
 }
 
-void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const
-{
+void SongRenderer::draw_key_signature(const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const {
 	float pitch_spacing{ m_settings.get_pitch_spacing() };
 	float accidental_spacing{ m_settings.get_key_signature_accidental_spacing() };
 	int accidental_count{ DataUtility::accidental_count_in_key(key) };
 
-	if (DataUtility::is_key_sharp(key)) {
+	if ( DataUtility::is_key_sharp(key) ) {
 		MusicalSymbol sharp_accidental{ symbol_factory(MusicalGlyph::AccidentalSharp) };
 		sharp_accidental.use_font_baseline(true);
-		if (accidental_count > 0) {
+		if ( accidental_count > 0 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(0.0f, -pitch_spacing * 8));
 			target.draw(sharp_accidental, states);
 		}
-		if (accidental_count > 1) {
+		if ( accidental_count > 1 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing, -pitch_spacing * 5));
 			target.draw(sharp_accidental, states);
 		}
-		if (accidental_count > 2) {
+		if ( accidental_count > 2 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 2, -pitch_spacing * 9));
 			target.draw(sharp_accidental, states);
 		}
-		if (accidental_count > 3) {
+		if ( accidental_count > 3 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 3, -pitch_spacing * 6));
 			target.draw(sharp_accidental, states);
 		}
-		if (accidental_count > 4) {
+		if ( accidental_count > 4 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 4, -pitch_spacing * 3));
 			target.draw(sharp_accidental, states);
 		}
-		if (accidental_count > 5) {
+		if ( accidental_count > 5 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 5, -pitch_spacing * 7));
 			target.draw(sharp_accidental, states);
 		}
-		if (accidental_count > 6) {
+		if ( accidental_count > 6 ) {
 			sharp_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 6, -pitch_spacing * 4));
 			target.draw(sharp_accidental, states);
 		}
-	}
-	else if (DataUtility::is_key_flat(key)) {
+	} else if ( DataUtility::is_key_flat(key) ) {
 		MusicalSymbol flat_accidental{ symbol_factory(MusicalGlyph::AccidentalFlat) };
 		flat_accidental.use_font_baseline(true);
-		if (accidental_count > 0) {
+		if ( accidental_count > 0 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(0.0f, -pitch_spacing * 4));
 			target.draw(flat_accidental, states);
 		}
-		if (accidental_count > 1) {
+		if ( accidental_count > 1 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing, -pitch_spacing * 7));
 			target.draw(flat_accidental, states);
 		}
-		if (accidental_count > 2) {
+		if ( accidental_count > 2 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 2, -pitch_spacing * 3));
 			target.draw(flat_accidental, states);
 		}
-		if (accidental_count > 3) {
+		if ( accidental_count > 3 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 3, -pitch_spacing * 6));
 			target.draw(flat_accidental, states);
 		}
-		if (accidental_count > 4) {
+		if ( accidental_count > 4 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 4, -pitch_spacing * 2));
 			target.draw(flat_accidental, states);
 		}
-		if (accidental_count > 5) {
+		if ( accidental_count > 5 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 5, -pitch_spacing * 5));
 			target.draw(flat_accidental, states);
 		}
-		if (accidental_count > 6) {
+		if ( accidental_count > 6 ) {
 			flat_accidental.setPosition(position + sf::Vector2f(accidental_spacing * 6, -pitch_spacing * 1));
 			target.draw(flat_accidental, states);
 		}

@@ -11,8 +11,8 @@ MidiEngine::MidiEngine() {
 	};
 
 	m_midi_in = std::make_unique<libremidi::midi_in>(libremidi::midi_in{ input_configuration });
-	
-	for (int i = 0; i < 128; ++i) {
+
+	for ( int i = 0; i < 128; ++i ) {
 		m_pressed_note_states[i] = false;
 	}
 
@@ -22,8 +22,8 @@ MidiEngine::MidiEngine() {
 		.output_added = std::bind(&MidiEngine::output_port_added_callback, this, _1),
 		.output_removed = std::bind(&MidiEngine::output_port_removed_callback, this, _1)
 	};
-	
-	m_observer = std::make_unique<libremidi::observer>(libremidi::observer{observer_configuration});
+
+	m_observer = std::make_unique<libremidi::observer>(libremidi::observer{ observer_configuration });
 }
 
 MidiEngine::~MidiEngine() {}
@@ -40,12 +40,11 @@ void MidiEngine::note_off(int pitch, int velocity) {
 	m_pressed_note_states[pitch] = false;
 }
 
-std::vector<int> MidiEngine::get_pressed_notes() const
-{
+std::vector<int> MidiEngine::get_pressed_notes() const {
 	std::vector<int> pressed_notes{};
 
-	for (int i = 0; i < 128; ++i) {
-		if (m_pressed_note_states.at(i) == true) {
+	for ( int i = 0; i < 128; ++i ) {
+		if ( m_pressed_note_states.at(i) == true ) {
 			pressed_notes.push_back(i);
 		}
 	}
@@ -53,24 +52,20 @@ std::vector<int> MidiEngine::get_pressed_notes() const
 	return pressed_notes;
 }
 
-bool MidiEngine::is_pressed(int index) const
-{
+bool MidiEngine::is_pressed(int index) const {
 	return m_pressed_note_states.at(index) == true;
 }
 
-void MidiEngine::message_callback(libremidi::message&& message)
-{
-	if (message.size() > 0) {
+void MidiEngine::message_callback(libremidi::message&& message) {
+	if ( message.size() > 0 ) {
 		auto message_type = message[0];
-		if (message_type >= 0x90 && message_type <= 0x9F) {
-			if (message[2] == 0) { // Velocity is 0
+		if ( message_type >= 0x90 && message_type <= 0x9F ) {
+			if ( message[2] == 0 ) { // Velocity is 0
 				note_off(message[1], message[2]);
-			}
-			else {
+			} else {
 				note_on(message[1], message[2]);
 			}
-		}
-		else if (message_type >= 0x80 && message_type <= 0x8F) {
+		} else if ( message_type >= 0x80 && message_type <= 0x8F ) {
 			note_off(message[1], message[2]);
 		}
 	}
@@ -89,7 +84,7 @@ void MidiEngine::input_port_added_callback(const libremidi::input_port& port_id)
 	std::cout << "Added input device:" << std::endl;
 	print_port_info(port_id);
 
-	if (m_midi_in->is_port_open() == false) {
+	if ( m_midi_in->is_port_open() == false ) {
 		m_midi_in->open_port(port_id);
 	}
 }

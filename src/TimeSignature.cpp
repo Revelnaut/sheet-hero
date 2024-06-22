@@ -10,8 +10,7 @@ TimeSignature::TimeSignature(const TimeSignature& source)
 
 TimeSignature::~TimeSignature() {}
 
-TimeSignature& TimeSignature::operator=(const TimeSignature& source)
-{
+TimeSignature& TimeSignature::operator=(const TimeSignature& source) {
 	m_numerator = source.m_numerator;
 	m_denominator = source.m_denominator;
 
@@ -39,7 +38,6 @@ int TimeSignature::get_denominator() const {
 	return m_denominator;
 }
 
-float TimeSignature::get_ratio() const
-{
-	return static_cast<float>(m_numerator) / static_cast<float>(m_denominator);
+float TimeSignature::get_ratio() const {
+	return static_cast<float>( m_numerator ) / static_cast<float>( m_denominator );
 }

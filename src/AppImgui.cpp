@@ -1,17 +1,15 @@
 #include "App.hpp"
 
-void App::imgui_show_interface()
-{
+void App::imgui_show_interface() {
 	imgui_midi_window();
 	imgui_settings_window();
 }
 
-void App::imgui_midi_window()
-{
-	if (ImGui::Begin("Midi")) {
+void App::imgui_midi_window() {
+	if ( ImGui::Begin("Midi") ) {
 		imgui_piano_widget(midi_engine, ImVec2(800, 100));
 		ImGui::Text("Pressed midi keys:");
-		for (auto pitch : midi_engine.get_pressed_notes()) {
+		for ( auto pitch : midi_engine.get_pressed_notes() ) {
 			ImGui::Text("%i", pitch);
 		}
 
@@ -27,10 +25,10 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1);
 
-	for (int i = 0; i < 88; ++i) {
-		int key_in_octave = (i + 9) % 12;
+	for ( int i = 0; i < 88; ++i ) {
+		int key_in_octave = ( i + 9 ) % 12;
 		int midi_pitch = i + 21;
-		switch (key_in_octave) {
+		switch ( key_in_octave ) {
 		case 0:
 		case 2:
 		case 4:
@@ -38,10 +36,9 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 		case 7:
 		case 9:
 		case 11:
-			if (midi_engine.is_pressed(midi_pitch)) {
+			if ( midi_engine.is_pressed(midi_pitch) ) {
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-			}
-			else {
+			} else {
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
 			}
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -49,10 +46,10 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 			ImGui::SetNextItemAllowOverlap();
 			std::string id = "##piano_key_" + std::to_string(i);
 			ImGui::Button(id.c_str(), white_key_size);
-			if (ImGui::IsItemClicked()) {
+			if ( ImGui::IsItemClicked() ) {
 				midi_engine.note_on(midi_pitch, 128);
 			}
-			if (ImGui::IsItemDeactivated()) {
+			if ( ImGui::IsItemDeactivated() ) {
 				midi_engine.note_off(midi_pitch, 0);
 			}
 			current_position.x += white_key_size.x;
@@ -65,10 +62,10 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 	current_position = start_position;
 	current_position.x -= black_key_size.x / 2.0f;
 
-	for (int i = 0; i < 88; ++i) {
-		int key_in_octave = (i + 9) % 12;
+	for ( int i = 0; i < 88; ++i ) {
+		int key_in_octave = ( i + 9 ) % 12;
 		int midi_pitch = i + 21;
-		switch (key_in_octave) {
+		switch ( key_in_octave ) {
 		case 0:
 		case 2:
 		case 4:
@@ -83,10 +80,9 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 		case 6:
 		case 8:
 		case 10:
-			if (midi_engine.is_pressed(midi_pitch)) {
+			if ( midi_engine.is_pressed(midi_pitch) ) {
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.3f, 0.3f, 0.3f, 1.0f));
-			}
-			else {
+			} else {
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 			}
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
@@ -94,10 +90,10 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 			ImGui::SetCursorScreenPos(current_position);
 			std::string id = "##piano_key_" + std::to_string(i);
 			ImGui::Button(id.c_str(), black_key_size);
-			if (ImGui::IsItemClicked()) {
+			if ( ImGui::IsItemClicked() ) {
 				midi_engine.note_on(midi_pitch, 128);
 			}
-			if (ImGui::IsItemDeactivated()) {
+			if ( ImGui::IsItemDeactivated() ) {
 				midi_engine.note_off(midi_pitch, 0);
 			}
 			ImGui::PopStyleColor(3);
@@ -111,9 +107,8 @@ void App::imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size) {
 	ImGui::PopStyleVar(1);
 }
 
-void App::imgui_settings_window()
-{
-	if (ImGui::Begin("Settings")) {
+void App::imgui_settings_window() {
+	if ( ImGui::Begin("Settings") ) {
 		ImGui::SliderFloat("Brace spacing", &song_renderer.get_settings().grand_staff_brace_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Clef spacing", &song_renderer.get_settings().clef_spacing_scale, 0.0f, 10.0f, "%.1f");
 		ImGui::SliderFloat("Time signature spacing", &song_renderer.get_settings().time_signature_spacing_scale, 0.0f, 10.0f, "%.1f");

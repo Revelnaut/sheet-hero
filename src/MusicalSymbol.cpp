@@ -5,8 +5,7 @@ MusicalSymbol::MusicalSymbol() {}
 MusicalSymbol::MusicalSymbol(const MusicalGlyph& glyph, const sf::Font& font, unsigned int character_size) :
 	m_glyph{ glyph },
 	m_font{ &font },
-	m_character_size{ character_size }
-{}
+	m_character_size{ character_size } {}
 
 MusicalSymbol::MusicalSymbol(const MusicalSymbol& source) :
 	m_glyph{ source.m_glyph },
@@ -15,8 +14,7 @@ MusicalSymbol::MusicalSymbol(const MusicalSymbol& source) :
 	m_fill_color{ source.m_fill_color },
 	m_outline_color{ source.m_outline_color },
 	m_outline_thickness{ source.m_outline_thickness },
-	m_use_font_baseline{ source.m_use_font_baseline }
-{}
+	m_use_font_baseline{ source.m_use_font_baseline } {}
 
 MusicalSymbol::~MusicalSymbol() {}
 
@@ -80,34 +78,29 @@ float MusicalSymbol::get_outline_thickness() const {
 	return m_outline_thickness;
 }
 
-sf::FloatRect MusicalSymbol::get_local_bounds() const
-{
+sf::FloatRect MusicalSymbol::get_local_bounds() const {
 	sf::FloatRect bounds{};
-	if (m_font) {
-		auto glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
-		if (m_use_font_baseline) {
+	if ( m_font ) {
+		auto glyph_data = m_font->getGlyph(static_cast<sf::Uint32>( m_glyph ), m_character_size, false, m_outline_thickness);
+		if ( m_use_font_baseline ) {
 			bounds = glyph_data.bounds;
 			bounds.top += m_character_size;
-		}
-		else {
+		} else {
 			bounds = sf::FloatRect{ sf::Vector2f(0.0f, 0.0f), glyph_data.bounds.getSize() };
 		}
 	}
 	return bounds;
 }
 
-sf::FloatRect MusicalSymbol::get_global_bounds() const
-{
+sf::FloatRect MusicalSymbol::get_global_bounds() const {
 	return sf::FloatRect{ getPosition(), get_local_bounds().getSize() };
 }
 
-sf::Vector2f MusicalSymbol::get_size() const
-{
+sf::Vector2f MusicalSymbol::get_size() const {
 	return get_local_bounds().getSize();
 }
 
-sf::Vector2f MusicalSymbol::get_local_center() const
-{
+sf::Vector2f MusicalSymbol::get_local_center() const {
 	return sf::Vector2f{ get_size().x / 2.0f, get_size().y / 2.0f };
 	return sf::Vector2f{ get_size().x / 2.0f, get_size().y / 2.0f };
 }
@@ -121,14 +114,14 @@ bool MusicalSymbol::is_using_font_baseline() const {
 }
 
 void MusicalSymbol::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (m_font) {
+	if ( m_font ) {
 		states.transform *= getTransform();
 
-		sf::Glyph glyph_data = m_font->getGlyph(static_cast<sf::Uint32>(m_glyph), m_character_size, false, m_outline_thickness);
+		sf::Glyph glyph_data = m_font->getGlyph(static_cast<sf::Uint32>( m_glyph ), m_character_size, false, m_outline_thickness);
 
 		sf::Sprite symbol_renderer{};
-		if (m_use_font_baseline) {
-			symbol_renderer.setPosition(sf::Vector2f(0.0f, static_cast<float>(m_character_size)) + glyph_data.bounds.getPosition());
+		if ( m_use_font_baseline ) {
+			symbol_renderer.setPosition(sf::Vector2f(0.0f, static_cast<float>( m_character_size )) + glyph_data.bounds.getPosition());
 		}
 		symbol_renderer.setTexture(m_font->getTexture(m_character_size), false);
 		symbol_renderer.setTextureRect(glyph_data.textureRect);

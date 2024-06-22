@@ -21,16 +21,14 @@ std::vector<NoteGroup> const& Measure::get_note_groups() const {
 	return m_note_groups;
 }
 
-size_t Measure::get_note_group_count() const
-{
+size_t Measure::get_note_group_count() const {
 	return m_note_groups.size();
 }
 
-int Measure::free_space_in_eights(const TimeSignature& time_signature) const
-{
+int Measure::free_space_in_eights(const TimeSignature& time_signature) const {
 	int free_space = 8 * time_signature.get_numerator() / time_signature.get_denominator();
-	for (auto note_group : m_note_groups) {
-		switch (note_group.get_value()) {
+	for ( auto note_group : m_note_groups ) {
+		switch ( note_group.get_value() ) {
 		case Value::Whole: free_space -= 8; break;
 		case Value::Half: free_space -= 4; break;
 		case Value::Quarter: free_space -= 2; break;

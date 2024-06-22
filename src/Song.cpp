@@ -6,14 +6,12 @@ Song::Song(const Song& source)
 	: m_tempo{ source.m_tempo },
 	m_measures{ source.m_measures },
 	m_key{ source.m_key },
-	m_scale{source.m_scale},
-	m_time_signature{ source.m_time_signature }
-{}
+	m_scale{ source.m_scale },
+	m_time_signature{ source.m_time_signature } {}
 
 Song::~Song() {}
 
-Song& Song::operator=(const Song& source)
-{
+Song& Song::operator=(const Song& source) {
 	m_tempo = source.m_tempo;
 	m_measures = source.m_measures;
 	m_key = source.m_key;

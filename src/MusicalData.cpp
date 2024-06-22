@@ -1,8 +1,7 @@
 #include "MusicalData.hpp"
 
-int DataUtility::accidental_count_in_key(const Key& key)
-{
-	switch (key) {
+int DataUtility::accidental_count_in_key(const Key& key) {
+	switch ( key ) {
 	case Key::CMajor:
 	case Key::AMinor:
 		return 0;
@@ -45,9 +44,8 @@ int DataUtility::accidental_count_in_key(const Key& key)
 	return 0;
 }
 
-bool DataUtility::is_key_natural(const Key& key)
-{
-	switch (key) {
+bool DataUtility::is_key_natural(const Key& key) {
+	switch ( key ) {
 	case Key::CMajor:
 	case Key::AMinor:
 		return true;
@@ -55,9 +53,8 @@ bool DataUtility::is_key_natural(const Key& key)
 	return false;
 }
 
-bool DataUtility::is_key_sharp(const Key& key)
-{
-	switch (key) {
+bool DataUtility::is_key_sharp(const Key& key) {
+	switch ( key ) {
 	case Key::GMajor:
 	case Key::EMinor:
 	case Key::DMajor:
@@ -77,14 +74,12 @@ bool DataUtility::is_key_sharp(const Key& key)
 	return false;
 }
 
-bool DataUtility::is_key_flat(const Key& key)
-{
+bool DataUtility::is_key_flat(const Key& key) {
 	return !is_key_natural(key) && !is_key_sharp(key);
 }
 
-MusicalGlyph DataUtility::int_to_time_signature_glyph(int index)
-{
-	switch (index) {
+MusicalGlyph DataUtility::int_to_time_signature_glyph(int index) {
+	switch ( index ) {
 	case 0: return MusicalGlyph::TimeSignature0;
 	case 1: return MusicalGlyph::TimeSignature1;
 	case 2: return MusicalGlyph::TimeSignature2;
@@ -99,9 +94,8 @@ MusicalGlyph DataUtility::int_to_time_signature_glyph(int index)
 	return MusicalGlyph::Null;
 }
 
-MusicalGlyph DataUtility::value_to_notehead_glyph(Value value)
-{
-	switch (value) {
+MusicalGlyph DataUtility::value_to_notehead_glyph(Value value) {
+	switch ( value ) {
 	case Value::Whole: return MusicalGlyph::NoteheadWhole;
 	case Value::Half: return MusicalGlyph::NoteheadHalf;
 	default: return MusicalGlyph::NoteheadBlack;

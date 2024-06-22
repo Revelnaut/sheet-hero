@@ -45,14 +45,14 @@ int Note::get_octave() const {
 }
 
 int Note::get_midi_pitch() const {
-	return ((m_octave + 1) * 12) + get_pitch_relative_to_octave();
+	return ( ( m_octave + 1 ) * 12 ) + get_pitch_relative_to_octave();
 }
 
 int Note::get_pitch_relative_to_octave() const {
 	int accidental_value{ 0 };
 	int pitch_class_value{ 0 };
 
-	switch (m_pitch_class) {
+	switch ( m_pitch_class ) {
 	case PitchClass::C: pitch_class_value = 0; break;
 	case PitchClass::D: pitch_class_value = 2; break;
 	case PitchClass::E: pitch_class_value = 4; break;
@@ -62,7 +62,7 @@ int Note::get_pitch_relative_to_octave() const {
 	case PitchClass::B: pitch_class_value = 11; break;
 	}
 
-	switch (m_accidental) {
+	switch ( m_accidental ) {
 	case Accidental::Flat: accidental_value = -1; break;
 	case Accidental::Natural: accidental_value = 0; break;
 	case Accidental::Sharp: accidental_value = 1; break;
@@ -74,7 +74,7 @@ int Note::get_pitch_relative_to_octave() const {
 int Note::get_staff_position() const {
 	int position{ 0 };
 
-	switch (m_pitch_class) {
+	switch ( m_pitch_class ) {
 	case PitchClass::C: position = 0; break;
 	case PitchClass::D: position = 1; break;
 	case PitchClass::E: position = 2; break;
@@ -84,12 +84,11 @@ int Note::get_staff_position() const {
 	case PitchClass::B: position = 6; break;
 	}
 
-	position += (m_octave - 4) * 7;
+	position += ( m_octave - 4 ) * 7;
 
 	return position;
 }
 
-int Note::get_id() const
-{
+int Note::get_id() const {
 	return m_id;
 }

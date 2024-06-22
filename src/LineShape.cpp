@@ -8,16 +8,13 @@ LineShape::LineShape(const LineShape& source) :
 	m_point_1{ source.m_point_1 },
 	m_point_2{ source.m_point_2 },
 	m_thickness{ source.m_thickness },
-	m_color{ source.m_color }
-{}
+	m_color{ source.m_color } {}
 
 LineShape::LineShape(const sf::Vector2f& point_1, const sf::Vector2f& point_2) :
-	m_point_1{ point_1 }, m_point_2{ point_2 }
-{}
+	m_point_1{ point_1 }, m_point_2{ point_2 } {}
 
 LineShape::LineShape(float point_1_x, float point_1_y, float point_2_x, float point_2_y) :
-	m_point_1{ point_1_x, point_1_y }, m_point_2{ point_2_x, point_2_y }
-{}
+	m_point_1{ point_1_x, point_1_y }, m_point_2{ point_2_x, point_2_y } {}
 
 LineShape::~LineShape() {}
 
@@ -61,7 +58,7 @@ void LineShape::set_color(const sf::Color& color) {
 
 void LineShape::set_thickness(float thickness) {
 	m_thickness = thickness;
-	if (m_thickness < 1.0f) {
+	if ( m_thickness < 1.0f ) {
 		m_thickness = 1.0f;
 	}
 }
@@ -78,15 +75,14 @@ float LineShape::get_thickness() const {
 	return m_thickness;
 }
 
-const sf::Color& LineShape::get_color() const
-{
+const sf::Color& LineShape::get_color() const {
 	return m_color;
 }
 
 void LineShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 
-	float distance = std::sqrtf(std::powf((m_point_2.x - m_point_1.x), 2) + std::powf((m_point_2.y - m_point_1.y), 2));
+	float distance = std::sqrtf(std::powf(( m_point_2.x - m_point_1.x ), 2) + std::powf(( m_point_2.y - m_point_1.y ), 2));
 	float angle = atan2f(m_point_2.y - m_point_1.y, m_point_2.x - m_point_1.x);
 	angle *= 180.0f / std::numbers::pi; // Convert radians to degrees for SFML
 
@@ -95,6 +91,6 @@ void LineShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	rectangle.setFillColor(m_color);
 	rectangle.setOrigin(m_thickness / 2, m_thickness / 2);
 	rectangle.rotate(angle);
-	
+
 	target.draw(rectangle, states);
 }

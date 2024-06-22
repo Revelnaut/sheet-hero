@@ -38,22 +38,19 @@ Value const& NoteGroup::get_value() const {
 	return m_value;
 }
 
-float NoteGroup::get_staff_mid_point() const
-{
+float NoteGroup::get_staff_mid_point() const {
 	int staff_position_sum{};
-	for (const Note & note : m_notes) {
+	for ( const Note& note : m_notes ) {
 		staff_position_sum += note.get_staff_position();
 	}
-	return static_cast<float>(staff_position_sum) / static_cast<float>(m_notes.size());
+	return static_cast<float>( staff_position_sum ) / static_cast<float>( m_notes.size() );
 }
 
-int NoteGroup::get_staff_max() const
-{
+int NoteGroup::get_staff_max() const {
 	return m_notes.back().get_staff_position();
 }
 
-int NoteGroup::get_staff_min() const
-{
+int NoteGroup::get_staff_min() const {
 	return m_notes.front().get_staff_position();
 }
 

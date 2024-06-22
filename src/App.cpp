@@ -2,36 +2,29 @@
 #include "MusicalSymbol.hpp"
 #include "SheetMusicSettings.hpp"
 
-App::App()
-{
+App::App() {
 	default_text_font.loadFromFile("data/fonts/opensans.ttf");
 }
 
-App::~App()
-{
-}
+App::~App() {}
 
-int App::run()
-{
+int App::run() {
 	create_window(false);
 	ImGui::SFML::Init(window);
 
 	generate_demo_song();
 
 	sf::Clock deltaClock;
-	while (window.isOpen())
-	{
+	while ( window.isOpen() ) {
 		sf::Event event;
-		while (window.pollEvent(event))
-		{
+		while ( window.pollEvent(event) ) {
 			ImGui::SFML::ProcessEvent(window, event);
 
-			if (event.type == sf::Event::KeyPressed) {
-				if (event.key.alt && event.key.code == sf::Keyboard::Enter) {
+			if ( event.type == sf::Event::KeyPressed ) {
+				if ( event.key.alt && event.key.code == sf::Keyboard::Enter ) {
 					toggle_fullscreen();
-				}
-				else {
-					if (event.key.code == sf::Keyboard::G) {
+				} else {
+					if ( event.key.code == sf::Keyboard::G ) {
 						std::cout << "Generating..." << std::endl;
 						generate_demo_song();
 						std::cout << "Done!" << std::endl;
@@ -40,12 +33,12 @@ int App::run()
 				}
 			}
 
-			if (event.type == sf::Event::Closed) {
+			if ( event.type == sf::Event::Closed ) {
 				window.close();
 			}
 
-			if (event.type == sf::Event::Resized) {
-				update_view(static_cast<float>(event.size.width), static_cast<float>(event.size.height));
+			if ( event.type == sf::Event::Resized ) {
+				update_view(static_cast<float>( event.size.width ), static_cast<float>( event.size.height ));
 			}
 		}
 
@@ -65,7 +58,7 @@ int App::run()
 }
 
 void App::generate_demo_song() {
-	song_renderer.set_song(generate_random_song(32, static_cast<Key>(Random::get(0, 29))));
+	song_renderer.set_song(generate_random_song(32, static_cast<Key>( Random::get(0, 29) )));
 	song_renderer.setPosition(song_margin, song_margin);
 }
 
@@ -75,79 +68,73 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 	song.set_tempo(tempo);
 	song.set_time_signature({ 4, 4 });
 
-	for (int m = 0; m < measures; ++m) {
+	for ( int m = 0; m < measures; ++m ) {
 		GrandMeasure grand_measure;
 		Measure& treble = grand_measure.treble_measure;
 		Measure& bass = grand_measure.bass_measure;
 
-		while (treble.free_space_in_eights(song.get_time_signature()) > 0) {
+		while ( treble.free_space_in_eights(song.get_time_signature()) > 0 ) {
 			Value largest_option{};
 
-			if (treble.free_space_in_eights(song.get_time_signature()) == 8) {
+			if ( treble.free_space_in_eights(song.get_time_signature()) == 8 ) {
 				largest_option = Value::Whole;
-			}
-			else if (treble.free_space_in_eights(song.get_time_signature()) >= 4) {
+			} else if ( treble.free_space_in_eights(song.get_time_signature()) >= 4 ) {
 				largest_option = Value::Half;
-			}
-			else if (treble.free_space_in_eights(song.get_time_signature()) >= 2) {
+			} else if ( treble.free_space_in_eights(song.get_time_signature()) >= 2 ) {
 				largest_option = Value::Quarter;
-			}
-			else {
+			} else {
 				largest_option = Value::Eight;
 			}
 
-			Value value = static_cast<Value>(Random::get<int>(static_cast<int>(largest_option), static_cast<int>(Value::Eight)));
+			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( largest_option ), static_cast<int>( Value::Eight )) );
 			NoteGroup ng{ value };
 
 			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
 			Random::shuffle(staff_pitches);
 
 			int note_count = Random::get(1, 5);
-			for (int i = 0; i < note_count; ++i) {
-				PitchClass pitch_class{ static_cast<PitchClass>(staff_pitches[i]) };
+			for ( int i = 0; i < note_count; ++i ) {
+				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
 				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
-				
+
 				// Small chance for a random accidental
-				if (Random::get<bool>(0.05)) {
-					accidental = static_cast<Accidental>(Random::get(0, 2));
+				if ( Random::get<bool>(0.05) ) {
+					accidental = static_cast<Accidental>( Random::get(0, 2) );
 				}
-				
+
 				int octave = Random::get(4, 5);
 				ng.add_note(Note{ pitch_class, accidental, octave });
 			}
 			treble.add_note_group(ng);
 		}
 
-		while (bass.free_space_in_eights(song.get_time_signature()) > 0) {
+		while ( bass.free_space_in_eights(song.get_time_signature()) > 0 ) {
 			Value largest_option{};
 
-			if (bass.free_space_in_eights(song.get_time_signature()) == 8) {
+			if ( bass.free_space_in_eights(song.get_time_signature()) == 8 ) {
 				largest_option = Value::Whole;
-			}
-			else if (bass.free_space_in_eights(song.get_time_signature()) >= 4) {
+			} else if ( bass.free_space_in_eights(song.get_time_signature()) >= 4 ) {
 				largest_option = Value::Half;
-			}
-			else if (bass.free_space_in_eights(song.get_time_signature()) >= 2) {
+			} else if ( bass.free_space_in_eights(song.get_time_signature()) >= 2 ) {
 				largest_option = Value::Quarter;
-			}
-			else {
+			} else {
 				largest_option = Value::Eight;
 			}
 
-			Value value = static_cast<Value>(Random::get<int>(static_cast<int>(largest_option), static_cast<int>(Value::Eight)));
+			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( largest_option ), static_cast<int>( Value::Eight )) );
 			NoteGroup ng{ value };
 
 			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
 			Random::shuffle(staff_pitches);
 
 			int note_count = Random::get(1, 3);
-			for (int i = 0; i < note_count; ++i) {
-				PitchClass pitch_class{ static_cast<PitchClass>(staff_pitches[i]) };
+			for ( int i = 0; i < note_count; ++i ) {
+				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
 				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
 
 				// Small chance for a random accidental
-				if (Random::get<bool>(0.05)) {
-					accidental = static_cast<Accidental>(Random::get(0, 2));
+				if ( Random::get<bool>(0.05) ) {
+					accidental = static_cast<Accidental>( Random::get(0, 2) );
 				}
 
 				int octave = Random::get(2, 3);
@@ -167,15 +154,14 @@ void App::create_window(bool fullscreen) {
 	sf::VideoMode windowed_mode{ window_initial_size.x, window_initial_size.y };
 	sf::VideoMode fullscreen_mode{ sf::VideoMode::getFullscreenModes()[0] };
 
-	if (fullscreen) {
+	if ( fullscreen ) {
 		window.create(fullscreen_mode, window_title, sf::Style::Fullscreen);
-	}
-	else {
+	} else {
 		window.create(windowed_mode, window_title, sf::Style::Default);
 	}
 	window.setVerticalSyncEnabled(true);
 
-	update_view(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
+	update_view(static_cast<float>( window.getSize().x ), static_cast<float>( window.getSize().y ));
 
 	is_fullscreen = fullscreen;
 }
