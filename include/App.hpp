@@ -23,6 +23,10 @@ public:
 	sf::Color window_color{ 0xF0F0F0FF };
 	sf::RenderWindow window{};
 
+	sf::SoundBuffer click_sound{};
+	sf::Sound click_player{};
+	bool play_click{ true };
+
 	MidiEngine midi_engine{};
 	Song song{};
 	SongRenderer song_renderer{};
@@ -47,6 +51,7 @@ public:
 
 	void process(const sf::Time & delta);
 	void render();
+	void toggle_playing();
 
 	void imgui_show_interface();
 	void imgui_midi_window();

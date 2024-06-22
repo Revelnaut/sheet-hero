@@ -3,7 +3,10 @@
 #include "SheetMusicSettings.hpp"
 #include <algorithm>
 
-App::App() {}
+App::App() {
+	click_sound.loadFromFile("data/audio/click.wav");
+	click_player.setBuffer(click_sound);
+}
 
 App::~App() {}
 
@@ -28,7 +31,7 @@ int App::run() {
 					}
 
 					if ( event.key.code == sf::Keyboard::Space ) {
-						song_is_playing = !song_is_playing;
+						toggle_playing();
 					}
 				}
 			}
@@ -55,7 +58,7 @@ int App::run() {
 
 void App::generate_demo_song() {
 	std::cout << "Generating..." << std::endl;
-	song = generate_random_song(8, static_cast<Key>( Random::get(0, 29) ));
+	song = generate_random_song(8, static_cast<Key>( Random::get(0, 29) ), 60);
 	std::cout << "Done!" << std::endl;
 	std::cout << "Song key: " << (int)song.get_key() << std::endl;
 }
@@ -192,9 +195,25 @@ void App::process(const sf::Time & delta) {
 
 	song_position = std::clamp(song_position, 0.0f, 1.0f);
 	song_renderer.set_playing_position(song_position);
+
+	if ( song_is_playing ) {
+		if ( song.get_tick_at_position(song_position) % 4 == 0 ) {
+			if ( play_click ) {
+				click_player.play();
+				play_click = false;
+			}
+		} else {
+			play_click = true;
+		}
+	}
 }
 
 void App::render() {
 	song_renderer.render(song, window);
 	ImGui::SFML::Render(window);
+}
+
+void App::toggle_playing() {
+	song_is_playing = !song_is_playing;
+	play_click = true;
 }
