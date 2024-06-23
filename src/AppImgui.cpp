@@ -32,10 +32,17 @@ namespace ImGui {
 	}
 }
 
+void App::toggle_ui() {
+	show_ui = !show_ui;
+}
+
 void App::imgui_show_interface() {
-	//imgui_midi_window();
-	imgui_settings_window();
-	imgui_song_menu();
+	if ( show_ui ) {
+		ImGui::ShowDemoWindow();
+		imgui_midi_window();
+		imgui_settings_window();
+		imgui_song_menu();
+	}
 }
 
 void App::imgui_midi_window() {

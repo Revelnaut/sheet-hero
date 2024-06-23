@@ -36,6 +36,7 @@ public:
 	float song_position{};
 	
 	bool is_fullscreen{ false };
+	bool show_ui{ true };
 
 	App();
 	~App();
@@ -52,7 +53,8 @@ public:
 	void process(const sf::Time & delta);
 	void render();
 	void toggle_playing();
-
+	
+	void toggle_ui();
 	void imgui_show_interface();
 	void imgui_midi_window();
 	void imgui_piano_widget(MidiEngine& midi_engine, const ImVec2& size);

@@ -33,6 +33,10 @@ int App::run() {
 					if ( event.key.code == sf::Keyboard::Space ) {
 						toggle_playing();
 					}
+
+					if ( event.key.code == sf::Keyboard::Tab ) {
+						toggle_ui();
+					}
 				}
 			}
 
