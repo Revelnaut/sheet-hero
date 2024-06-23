@@ -63,6 +63,7 @@ enum class Key {
 };
 
 enum class NoteState {
+	Null,
 	Normal,
 	Correct,
 	Incorrect,

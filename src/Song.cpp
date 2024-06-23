@@ -29,22 +29,22 @@ const std::vector<GrandMeasure>& Song::get_grand_measures() const {
 	return m_grand_measures;
 }
 
-int Song::get_tick_at_position(double position) const {
-	return static_cast<int>( static_cast<double>( get_tick_count() ) * position );
+int Song::get_tick_at_position(float position) const {
+	return static_cast<int>( static_cast<float>( get_tick_count() ) * position );
 }
 
-int Song::get_beat_at_position(double position) const {
+int Song::get_beat_at_position(float position) const {
 	return get_tick_at_position(position) / 4;
 }
 
-const GrandMeasure& Song::get_grand_measure_at_position(double position) const {
+const GrandMeasure& Song::get_grand_measure_at_position(float position) const {
 	int index = get_beat_at_position(position) / get_time_signature().get_numerator();
 	return m_grand_measures[index];
 }
 
-const NoteGroup& Song::get_note_group_at_position(double position, bool treble_staff) const {
-	auto & grand_measure = get_grand_measure_at_position(position);
-	int tick = get_tick_at_position(position) % (get_time_signature().get_numerator() * 4);
+const NoteGroup& Song::get_note_group_at_position(float position, bool treble_staff) const {
+	auto& grand_measure = get_grand_measure_at_position(position);
+	int tick = get_tick_at_position(position) % ( get_time_signature().get_numerator() * 4 );
 
 	int i = 0;
 	int note_group_index = 0;
@@ -101,4 +101,23 @@ int Song::get_beat_count() const {
 
 int Song::get_tick_count() const {
 	return get_beat_count() * 4;
+}
+
+float Song::get_normalized_tick_length() const {
+	return 1.0f / static_cast<float>( get_tick_count() );
+}
+
+float Song::get_normalized_beat_length() const {
+	return 1.0f / static_cast<float>( get_beat_count() );
+}
+
+void Song::set_note_state(const Note& note, const NoteState& note_state) {
+	m_note_states[note.get_id()] = note_state;
+}
+
+const NoteState& Song::get_note_state(const Note& note) const {
+	if ( m_note_states.contains(note.get_id()) ) {
+		return m_note_states.at(note.get_id());
+	}
+	return NoteState::Null;
 }

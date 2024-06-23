@@ -27,7 +27,7 @@ public:
 	int get_pitch_relative_to_octave() const;
 	int get_staff_position() const;
 
-	int get_id() const;
+	unsigned int get_id() const;
 	std::string to_string() const;
 private:
 	PitchClass m_pitch_class{ PitchClass::C };

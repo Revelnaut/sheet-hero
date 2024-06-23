@@ -89,7 +89,7 @@ int Note::get_staff_position() const {
 	return position;
 }
 
-int Note::get_id() const {
+unsigned int Note::get_id() const {
 	return m_id;
 }
 

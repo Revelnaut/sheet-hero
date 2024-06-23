@@ -38,10 +38,6 @@ float SongRenderer::get_playing_position() const {
 	return m_playing_position;
 }
 
-/*void SongRenderer::set_playing_tick(int tick) {
-	set_playing_position(static_cast<double>( tick ) / static_cast<double>( m_song.get_tick_count() ));
-}*/
-
 static int get_playing_tick(const Song& song, float position) {
 	return static_cast<int>( static_cast<float>( song.get_tick_count() ) * position);
 }
@@ -259,6 +255,21 @@ void SongRenderer::draw_measure(const Song& song, const Measure& measure, sf::Ve
 				}
 			} else {
 				note_offset = false;
+			}
+
+			const NoteState& note_state = song.get_note_state(note);
+			
+			switch ( note_state ) {
+			case NoteState::Null:
+			case NoteState::Normal:
+				note_head.set_fill_color(m_settings.color);
+				break;
+			case NoteState::Correct:
+				note_head.set_fill_color(m_settings.correct_color);
+				break;
+			case NoteState::Incorrect:
+				note_head.set_fill_color(m_settings.incorrect_color);
+				break;
 			}
 
 			target.draw(note_head, states);
