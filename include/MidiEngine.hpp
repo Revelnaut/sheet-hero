@@ -19,15 +19,20 @@ public:
 	bool is_pressed(int index) const;
 private:
 	struct InputDevice {
-		std::unique_ptr<libremidi::midi_in> m_midi_in{};
-		std::unique_ptr<libremidi::input_port> m_port_in{};
+		std::unique_ptr<libremidi::midi_in> midi_in{};
+		std::unique_ptr<libremidi::input_port> port_in{};
 	};
 
-	std::unique_ptr<libremidi::observer> m_observer{};
-	std::unique_ptr<libremidi::midi_in> m_midi_in{};
-	std::map<int, bool> m_pressed_note_states{};
+	struct OutputDevice {
+		std::unique_ptr<libremidi::midi_out> midi_out{};
+		std::unique_ptr<libremidi::output_port> port_out{};
+	};
 
 	std::vector<InputDevice> m_input_devices{};
+	std::vector<OutputDevice> m_output_devices{};
+	std::unique_ptr<libremidi::observer> m_observer{};
+
+	std::map<int, bool> m_pressed_note_states{};
 
 	void message_callback(libremidi::message&& message);
 	void input_port_added_callback(const libremidi::input_port& port_id);

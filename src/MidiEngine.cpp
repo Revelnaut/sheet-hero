@@ -82,27 +82,27 @@ void MidiEngine::input_port_added_callback(const libremidi::input_port& port_id)
 	std::cout << "Added input device:" << std::endl;
 	print_port_info(port_id);
 
-	m_input_devices.push_back(InputDevice{ });
+	m_input_devices.push_back(InputDevice{});
 	InputDevice& new_device = m_input_devices.back();
 
 	using std::placeholders::_1;
 	libremidi::input_configuration input_configuration{
 		.on_message = std::bind(&MidiEngine::message_callback, this, _1)
 	};
-	new_device.m_midi_in = std::make_unique<libremidi::midi_in>(libremidi::midi_in{ input_configuration });
-	new_device.m_port_in = std::make_unique<libremidi::input_port>(port_id);
+	new_device.midi_in = std::make_unique<libremidi::midi_in>(libremidi::midi_in{ input_configuration });
+	new_device.port_in = std::make_unique<libremidi::input_port>(port_id);
 
-	new_device.m_midi_in->open_port(*new_device.m_port_in);
+	new_device.midi_in->open_port(*new_device.port_in);
 }
 
-void MidiEngine::input_port_removed_callback(const libremidi::input_port& port_id) {
+void MidiEngine::input_port_removed_callback(const libremidi::input_port& port) {
 	std::cout << "Removed input device:" << std::endl;
-	print_port_info(port_id);
+	print_port_info(port);
 
 	for ( int i = 0; i < m_input_devices.size(); ++i ) {
 		auto& device = m_input_devices.at(i);
-		if ( device.m_port_in->port == port_id.port ) {
-			device.m_midi_in->close_port();
+		if ( device.port_in->port == port.port ) {
+			device.midi_in->close_port();
 			m_input_devices.erase(m_input_devices.begin() + i);
 			break;
 		}
@@ -110,16 +110,38 @@ void MidiEngine::input_port_removed_callback(const libremidi::input_port& port_i
 
 	std::cout << "Devices left:" << std::endl;
 	for ( auto& device : m_input_devices ) {
-		print_port_info(*device.m_port_in);
+		print_port_info(*device.port_in);
 	}
 }
 
-void MidiEngine::output_port_added_callback(const libremidi::output_port& port_id) {
+void MidiEngine::output_port_added_callback(const libremidi::output_port& port) {
 	std::cout << "Added output device:" << std::endl;
-	print_port_info(port_id);
+	print_port_info(port);
+
+	m_output_devices.push_back(OutputDevice{});
+	OutputDevice& new_device = m_output_devices.back();
+
+	new_device.midi_out = std::make_unique<libremidi::midi_out>(libremidi::midi_out{});
+	new_device.port_out = std::make_unique<libremidi::output_port>(port);
+
+	new_device.midi_out->open_port(*new_device.port_out);
 }
 
-void MidiEngine::output_port_removed_callback(const libremidi::output_port& port_id) {
+void MidiEngine::output_port_removed_callback(const libremidi::output_port& port) {
 	std::cout << "Removed output device:" << std::endl;
-	print_port_info(port_id);
+	print_port_info(port);
+
+	for ( int i = 0; i < m_output_devices.size(); ++i ) {
+		auto& device = m_output_devices.at(i);
+		if ( device.port_out->port == port.port ) {
+			device.midi_out->close_port();
+			m_output_devices.erase(m_output_devices.begin() + i);
+			break;
+		}
+	}
+
+	std::cout << "Devices left:" << std::endl;
+	for ( auto& device : m_output_devices ) {
+		print_port_info(*device.port_out );
+	}
 }
