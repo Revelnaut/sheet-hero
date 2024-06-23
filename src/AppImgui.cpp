@@ -168,9 +168,14 @@ void App::imgui_song_menu() {
 	if ( ImGui::Begin("Song") ) {
 		ImGui::SliderFloat("Song position", &song_position, 0.0f, 0.99999f, "%.5f");
 
-		auto& note_group = song.get_note_group_at_position(song_renderer.get_playing_position(), true);
+		for ( auto& note : song.get_note_group_at_position(song_renderer.get_playing_position(), true).get_notes() ) {
+			ImGui::Text(note.to_string().c_str());
+		}
 
-		for ( auto& note : note_group.get_notes() ) {
+		ImGui::Text("");
+		ImGui::Text("Look ahead:");
+
+		for ( auto& note : song.get_note_group_at_position(song_renderer.get_playing_position() + song.get_normalized_beat_length() , true).get_notes() ) {
 			ImGui::Text(note.to_string().c_str());
 		}
 
