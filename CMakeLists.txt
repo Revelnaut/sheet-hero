@@ -27,6 +27,7 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/Scale.cpp
     ${SOURCE_DIR}/SheetMusicSettings.cpp
     ${SOURCE_DIR}/Song.cpp
+    ${SOURCE_DIR}/SongGenerator.cpp
     ${SOURCE_DIR}/SongRenderer.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
 )
@@ -43,6 +44,7 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/Scale.hpp
     ${INCLUDE_DIR}/SheetMusicSettings.hpp
     ${INCLUDE_DIR}/Song.hpp
+    ${INCLUDE_DIR}/SongGenerator.hpp
     ${INCLUDE_DIR}/SongRenderer.hpp
     ${INCLUDE_DIR}/TimeSignature.hpp
 
