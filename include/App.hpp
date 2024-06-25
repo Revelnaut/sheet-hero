@@ -17,6 +17,7 @@ using Random = effolkronium::random_static;
 #include "MidiEngine.hpp"
 #include "Song.hpp"
 #include "SongRenderer.hpp"
+#include "SongGenerator.hpp"
 
 class App {
 public:
@@ -29,6 +30,7 @@ public:
 
 	MidiEngine midi_engine{};
 	Song song{};
+	SongGenerator song_generator{};
 	SongRenderer song_renderer{};
 	float song_margin{ 100.0f };
 

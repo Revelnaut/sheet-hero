@@ -1,6 +1,7 @@
 #pragma once
 
 enum class PitchClass {
+	Null,
 	C,
 	D,
 	E,
@@ -18,6 +19,7 @@ enum class Accidental {
 };
 
 enum class Value {
+	Null,
 	Whole,
 	Half,
 	Quarter,
@@ -25,6 +27,7 @@ enum class Value {
 };
 
 enum class Key {
+	Null,
 	CMajor,
 
 	GMajor,

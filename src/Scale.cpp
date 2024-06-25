@@ -52,6 +52,7 @@ void Scale::set_accidentals(int c, int d, int e, int f, int g, int a, int b) {
 	m_accidentals[PitchClass::G] = DataUtility::int_to_accidental(g);
 	m_accidentals[PitchClass::A] = DataUtility::int_to_accidental(a);
 	m_accidentals[PitchClass::B] = DataUtility::int_to_accidental(b);
+	m_accidentals[PitchClass::Null] = Accidental::Null;
 }
 
 void Scale::set_name(const std::string& name) {

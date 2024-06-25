@@ -16,7 +16,6 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/sheet-hero.cpp
     ${SOURCE_DIR}/App.cpp
     ${SOURCE_DIR}/AppImgui.cpp
-    ${SOURCE_DIR}/GrandMeasure.cpp
     ${SOURCE_DIR}/LineShape.cpp
     ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
@@ -28,6 +27,7 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/SheetMusicSettings.cpp
     ${SOURCE_DIR}/Song.cpp
     ${SOURCE_DIR}/SongGenerator.cpp
+    ${SOURCE_DIR}/SongPlayer.cpp
     ${SOURCE_DIR}/SongRenderer.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
 )
@@ -45,6 +45,7 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/SheetMusicSettings.hpp
     ${INCLUDE_DIR}/Song.hpp
     ${INCLUDE_DIR}/SongGenerator.hpp
+    ${INCLUDE_DIR}/SongPlayer.hpp
     ${INCLUDE_DIR}/SongRenderer.hpp
     ${INCLUDE_DIR}/TimeSignature.hpp
 

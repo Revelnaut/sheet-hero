@@ -1,21 +1,27 @@
 #pragma once
 
 #include "MusicalData.hpp"
+#include "Song.hpp"
+#include <utility>
 
 class SongGenerator {
 public:
 	struct Configuration {
-		int treble_octave_min{ 3 };
-		int treble_octave_max{ 5 };
-		int bass_octave_min{ 1 };
-		int bass_octave_max{ 3 };
-
-		bool generate_treble{ true };
-		bool generate_bass{ true };
-
-		Value treble_value_min{ Value::Whole };
-		Value treble_value_max{ Value::Eight };
+		std::pair<int, int> tempo_range{ 60, 120 };
 	};
+
+	struct MeasureConfiguration {
+		std::pair<int, int> octave_range{};
+		std::pair<Value, Value> value_range{ Value::Whole, Value::Eight };
+		std::pair<int, int> note_group_size_range{ 1, 5 };
+
+		int max_semitones_between_two_notes{ 3 };
+	};
+
+	Song generate(int measure_count) const;
 private:
-	Configuration m_configuration{};
+	MeasureConfiguration m_treble_configuration{ .octave_range{3, 5} };
+	MeasureConfiguration m_bass_configuration{ .octave_range{1, 3} };
+
+	Measure generate_measure(const MeasureConfiguration& configuration) const;
 };

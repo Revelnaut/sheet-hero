@@ -17,15 +17,10 @@ public:
 	void set_settings(const SheetMusicSettings& settings);
 	SheetMusicSettings& get_settings();
 
-	void set_playing_position(float position);
-	float get_playing_position() const;
-
-	void render(const Song& song, sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const;
+	void render(const Song& song, float playing_position, sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const;
 private:
 	sf::Font m_music_font{};
 	SheetMusicSettings m_settings{};
-
-	float m_playing_position{};
 
 	sf::FloatRect m_bounds{};
 

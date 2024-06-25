@@ -94,10 +94,11 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( largest_option ), static_cast<int>( Value::Eight )) );
 			NoteGroup ng{ value };
 
-			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
+			std::vector<int> staff_pitches{ 1, 2, 3, 4, 5, 6, 7 };
 			Random::shuffle(staff_pitches);
 
-			int note_count = Random::get(1, 5);
+			//int note_count = Random::get(1, 5);
+			int note_count = 1;
 			for ( int i = 0; i < note_count; ++i ) {
 				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
 				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
@@ -128,10 +129,11 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( largest_option ), static_cast<int>( Value::Eight )) );
 			NoteGroup ng{ value };
 
-			std::vector<int> staff_pitches{ 0, 1, 2, 3, 4, 5, 6 };
+			std::vector<int> staff_pitches{ 1, 2, 3, 4, 5, 6, 7 };
 			Random::shuffle(staff_pitches);
 
-			int note_count = Random::get(1, 3);
+			//int note_count = Random::get(1, 3);
+			int note_count = 1;
 			for ( int i = 0; i < note_count; ++i ) {
 				PitchClass pitch_class{ static_cast<PitchClass>( staff_pitches[i] ) };
 				Accidental accidental{ song.get_scale().get_accidental(pitch_class) };
@@ -198,7 +200,6 @@ void App::process(const sf::Time & delta) {
 	}
 
 	song_position = std::clamp(song_position, 0.0f, 1.0f);
-	song_renderer.set_playing_position(song_position);
 
 	if ( song_is_playing ) {
 		if ( song.get_tick_at_position(song_position) % 4 == 0 ) {
@@ -213,7 +214,7 @@ void App::process(const sf::Time & delta) {
 }
 
 void App::render() {
-	song_renderer.render(song, window);
+	song_renderer.render(song, song_position, window);
 	ImGui::SFML::Render(window);
 }
 

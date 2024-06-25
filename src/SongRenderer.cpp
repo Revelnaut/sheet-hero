@@ -30,19 +30,11 @@ SheetMusicSettings& SongRenderer::get_settings() {
 	return m_settings;
 }
 
-void SongRenderer::set_playing_position(float position) {
-	m_playing_position = std::clamp(position, 0.0f, 1.0f);
-}
-
-float SongRenderer::get_playing_position() const {
-	return m_playing_position;
-}
-
 static int get_playing_tick(const Song& song, float position) {
 	return static_cast<int>( static_cast<float>( song.get_tick_count() ) * position);
 }
 
-void SongRenderer::render(const Song& song, sf::RenderTarget& target, sf::RenderStates states) const {
+void SongRenderer::render(const Song& song, float playing_position, sf::RenderTarget& target, sf::RenderStates states) const {
 	sf::Vector2f draw_position{m_bounds.getPosition()};
 
 	LineShape bar{ 0.0f, 0.0f, 0.0f, m_settings.get_grand_staff_height() };
@@ -75,7 +67,7 @@ void SongRenderer::render(const Song& song, sf::RenderTarget& target, sf::Render
 			beat.setPosition(draw_position);
 			beat.move(b * beat_length, beat_position_y);
 
-			if ( get_playing_tick(song, m_playing_position) == tick_counter ) {
+			if ( get_playing_tick(song, playing_position) == tick_counter ) {
 				beat.setFillColor(m_settings.beat_on_color);
 			} else {
 				beat.setFillColor(m_settings.beat_off_color);
@@ -88,7 +80,7 @@ void SongRenderer::render(const Song& song, sf::RenderTarget& target, sf::Render
 				tick.setPosition(beat.getPosition());
 				tick.move(t * beat_length / 4.0f, 0.0f);
 
-				if ( get_playing_tick(song, m_playing_position) == tick_counter ) {
+				if ( get_playing_tick(song, playing_position) == tick_counter ) {
 					tick.setFillColor(m_settings.beat_on_color);
 				} else {
 					tick.setFillColor(m_settings.beat_off_color);
@@ -225,7 +217,7 @@ void SongRenderer::draw_measure(const Song& song, const Measure& measure, sf::Ve
 		ledger_line.set_thickness(m_settings.get_line_thickness());
 		ledger_line.set_color(m_settings.color);
 
-		float ledger_line_point_x = note_head.get_size().x * 0.8;
+		float ledger_line_point_x = note_head.get_size().x * 0.8f;
 
 		ledger_line.set_point_1(-ledger_line_point_x, 0.0f);
 		ledger_line.set_point_2(ledger_line_point_x, 0.0f);
@@ -233,7 +225,7 @@ void SongRenderer::draw_measure(const Song& song, const Measure& measure, sf::Ve
 		bool stem_direction_up = note_group.get_staff_mid_point() <= staff_middle_line;
 
 		// Iterate through notes and draw them
-		float close_note_offset = note_head.get_size().x * 0.9;
+		float close_note_offset = note_head.get_size().x * 0.9f;
 		bool note_offset{ true };
 		int previous_note_position{};
 
