@@ -29,6 +29,6 @@ private:
 	MusicalSymbol symbol_factory(const MusicalGlyph& glyph) const;
 
 	void draw_grand_staff(const Song& song, sf::Vector2f position, float width, sf::RenderTarget& target, sf::RenderStates states) const;
-	void draw_measure(const Song& song, const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const;
+	void draw_measure(const Song& song, const Measure& measure, int number, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const;
 	void draw_key_signature(const Song& song, const Key& key, sf::Vector2f position, sf::RenderTarget& target, sf::RenderStates states) const;
 };

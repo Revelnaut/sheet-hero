@@ -49,6 +49,7 @@ void SongRenderer::render(const Song& song, float playing_position, sf::RenderTa
 	tick.setOrigin(tick.getRadius(), tick.getRadius());
 	tick.setFillColor(m_settings.beat_off_color);
 
+	int measure_counter{ 0 };
 	int tick_counter{ 0 };
 
 	bool new_line{ true };
@@ -68,7 +69,7 @@ void SongRenderer::render(const Song& song, float playing_position, sf::RenderTa
 			beat.move(b * beat_length, beat_position_y);
 
 			if ( get_playing_tick(song, playing_position) == tick_counter ) {
-				beat.setFillColor(m_settings.beat_on_color);
+				beat.setFillColor(m_settings.active_color);
 			} else {
 				beat.setFillColor(m_settings.beat_off_color);
 			}
@@ -81,7 +82,7 @@ void SongRenderer::render(const Song& song, float playing_position, sf::RenderTa
 				tick.move(t * beat_length / 4.0f, 0.0f);
 
 				if ( get_playing_tick(song, playing_position) == tick_counter ) {
-					tick.setFillColor(m_settings.beat_on_color);
+					tick.setFillColor(m_settings.active_color);
 				} else {
 					tick.setFillColor(m_settings.beat_off_color);
 				}
@@ -91,8 +92,8 @@ void SongRenderer::render(const Song& song, float playing_position, sf::RenderTa
 			}
 		}
 
-		draw_measure(song, measure.treble_measure, draw_position, 10, target, states);
-		draw_measure(song, measure.bass_measure, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
+		draw_measure(song, measure.treble_measure, measure_counter, draw_position, 10, target, states);
+		draw_measure(song, measure.bass_measure, measure_counter, draw_position + sf::Vector2f(0.0f, m_settings.get_staff_height() + m_settings.get_staff_spacing()), -2, target, states);
 
 		if ( draw_position.x + ( m_settings.get_measure_width() * 2 + m_settings.get_bar_width() ) <= m_bounds.width + m_bounds.left ) {
 			if ( &measure != &song.get_grand_measures().back() ) { // If not last measure
@@ -106,6 +107,8 @@ void SongRenderer::render(const Song& song, float playing_position, sf::RenderTa
 			draw_position.y += m_settings.get_grand_staff_height() + m_settings.get_grand_staff_spacing();
 			new_line = true;
 		}
+
+		++measure_counter;
 	}
 }
 
@@ -198,7 +201,7 @@ void SongRenderer::draw_grand_staff(const Song& song, sf::Vector2f position, flo
 	draw_key_signature(song, song.get_key(), draw_position, target, states);
 }
 
-void SongRenderer::draw_measure(const Song& song, const Measure& measure, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
+void SongRenderer::draw_measure(const Song& song, const Measure& measure, int number, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
 	float measure_width{ m_settings.get_measure_width() / song.get_time_signature().get_ratio() };
 
 	sf::Vector2f draw_position{ position };

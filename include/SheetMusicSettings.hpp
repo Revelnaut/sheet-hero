@@ -6,6 +6,7 @@ struct SheetMusicSettings {
 	sf::Color color{ sf::Color::Black };
 	sf::Color incorrect_color{ sf::Color::Red };
 	sf::Color correct_color{ sf::Color::Green };
+	sf::Color active_color{ sf::Color::Blue };
 
 	sf::Color beat_on_color{ sf::Color::Blue };
 	sf::Color beat_off_color{ {0xAAAAAAFF} };

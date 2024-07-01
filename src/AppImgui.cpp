@@ -166,18 +166,19 @@ void App::imgui_settings_window() {
 
 void App::imgui_song_menu() {
 	if ( ImGui::Begin("Song") ) {
-		ImGui::SliderFloat("Song position", &song_position, 0.0f, 0.99999f, "%.5f");
 
-		for ( auto& note : song.get_note_group_at_position(song_position, true).get_notes() ) {
-			ImGui::Text(note.to_string().c_str());
-		}
+		//ImGui::SliderFloat("Song position", &song_player, &SongPlayer::get_playing_position, &SongPlayer::set_playing_position, 0.0f, 0.99999f, "%.5f");
 
-		ImGui::Text("");
-		ImGui::Text("Look ahead:");
+		//for ( auto& note : song.get_note_group_at_position(song_position, true).get_notes() ) {
+		//	ImGui::Text(note.to_string().c_str());
+		//}
 
-		for ( auto& note : song.get_note_group_at_position(song_position + song.get_normalized_beat_length() , true).get_notes() ) {
-			ImGui::Text(note.to_string().c_str());
-		}
+		//ImGui::Text("");
+		//ImGui::Text("Look ahead:");
+
+		//for ( auto& note : song.get_note_group_at_position(song_position + song.get_normalized_beat_length() , true).get_notes() ) {
+		//	ImGui::Text(note.to_string().c_str());
+		//}
 
 		ImGui::End();
 	}

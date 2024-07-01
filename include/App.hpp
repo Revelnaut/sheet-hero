@@ -18,6 +18,7 @@ using Random = effolkronium::random_static;
 #include "Song.hpp"
 #include "SongRenderer.hpp"
 #include "SongGenerator.hpp"
+#include "SongPlayer.hpp"
 
 class App {
 public:
@@ -32,10 +33,8 @@ public:
 	Song song{};
 	SongGenerator song_generator{};
 	SongRenderer song_renderer{};
+	SongPlayer song_player{};
 	float song_margin{ 100.0f };
-
-	bool song_is_playing{ false };
-	float song_position{};
 	
 	bool is_fullscreen{ false };
 	bool show_ui{ true };
@@ -54,7 +53,6 @@ public:
 
 	void process(const sf::Time & delta);
 	void render();
-	void toggle_playing();
 	
 	void toggle_ui();
 	void imgui_show_interface();

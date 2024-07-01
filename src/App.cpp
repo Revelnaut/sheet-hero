@@ -31,7 +31,7 @@ int App::run() {
 					}
 
 					if ( event.key.code == sf::Keyboard::Space ) {
-						toggle_playing();
+						song_player.toggle_playing();
 					}
 
 					if ( event.key.code == sf::Keyboard::Tab ) {
@@ -185,24 +185,10 @@ void App::process(const sf::Time & delta) {
 	ImGui::SFML::Update(window, delta);
 	imgui_show_interface();
 
-	// Update song position
-	if ( song_is_playing ) {
-		float beats = static_cast<float>( song.get_beat_count() );
-		float beats_per_second = static_cast<float>( song.get_tempo() ) / 60.0f;
-		float advance_per_second = beats_per_second / beats;
+	song_player.process(song, delta);
 
-		song_position += advance_per_second * delta.asSeconds();
-
-		if ( song_position >= 1.0f ) {
-			song_is_playing = false;
-			song_position = 0.0f;
-		}
-	}
-
-	song_position = std::clamp(song_position, 0.0f, 1.0f);
-
-	if ( song_is_playing ) {
-		if ( song.get_tick_at_position(song_position) % 4 == 0 ) {
+	if ( song_player.is_playing() ) {
+		if ( song.get_tick_at_position(song_player.get_playing_position()) % 4 == 0 ) {
 			if ( play_click ) {
 				click_player.play();
 				play_click = false;
@@ -214,11 +200,6 @@ void App::process(const sf::Time & delta) {
 }
 
 void App::render() {
-	song_renderer.render(song, song_position, window);
+	song_renderer.render(song, song_player.get_playing_position(), window);
 	ImGui::SFML::Render(window);
-}
-
-void App::toggle_playing() {
-	song_is_playing = !song_is_playing;
-	play_click = true;
 }
