@@ -96,7 +96,7 @@ TimeSignature const& Song::get_time_signature() const {
 }
 
 int Song::get_beat_count() const {
-	return m_grand_measures.size() * m_time_signature.get_numerator();
+	return static_cast<int>(m_grand_measures.size()) * m_time_signature.get_numerator();
 }
 
 int Song::get_tick_count() const {
@@ -115,7 +115,7 @@ void Song::set_note_state(const Note& note, const NoteState& note_state) {
 	m_note_states[note.get_id()] = note_state;
 }
 
-const NoteState& Song::get_note_state(const Note& note) const {
+NoteState Song::get_note_state(const Note& note) const {
 	if ( m_note_states.contains(note.get_id()) ) {
 		return m_note_states.at(note.get_id());
 	}

@@ -183,7 +183,7 @@ void App::toggle_fullscreen() {
 
 void App::process(const sf::Time & delta) {
 	ImGui::SFML::Update(window, delta);
-	imgui_show_interface();
+	//imgui_show_interface();
 
 	song_player.process(song, delta);
 

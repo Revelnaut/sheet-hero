@@ -202,6 +202,7 @@ void SongRenderer::draw_grand_staff(const Song& song, sf::Vector2f position, flo
 }
 
 void SongRenderer::draw_measure(const Song& song, const Measure& measure, int number, sf::Vector2f position, int middle_c_offset, sf::RenderTarget& target, sf::RenderStates states) const {
+	int tick{ number * song.get_time_signature().get_numerator() * 4 };
 	float measure_width{ m_settings.get_measure_width() / song.get_time_signature().get_ratio() };
 
 	sf::Vector2f draw_position{ position };
@@ -367,15 +368,19 @@ void SongRenderer::draw_measure(const Song& song, const Measure& measure, int nu
 		switch ( value ) {
 		case Value::Whole:
 			draw_position.x += measure_width;
+			tick += 16;
 			break;
 		case Value::Half:
 			draw_position.x += measure_width / 2.0f;
+			tick += 8;
 			break;
 		case Value::Quarter:
 			draw_position.x += measure_width / 4.0f;
+			tick += 4;
 			break;
 		case Value::Eight:
 			draw_position.x += measure_width / 8.0f;
+			tick += 2;
 			break;
 		}
 	}

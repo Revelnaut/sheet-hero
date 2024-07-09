@@ -70,6 +70,7 @@ enum class NoteState {
 	Normal,
 	Correct,
 	Incorrect,
+	Active,
 };
 
 enum class MusicalGlyph {

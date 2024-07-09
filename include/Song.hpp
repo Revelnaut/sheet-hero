@@ -39,7 +39,7 @@ public:
 	float get_normalized_beat_length() const;
 
 	void set_note_state(const Note& note, const NoteState& note_state);
-	const NoteState& get_note_state(const Note& note) const;
+	NoteState get_note_state(const Note& note) const;
 private:
 	int m_tempo{ 120 };
 	TimeSignature m_time_signature{};

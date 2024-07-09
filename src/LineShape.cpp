@@ -84,7 +84,7 @@ void LineShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 	float distance = std::sqrtf(std::powf(( m_point_2.x - m_point_1.x ), 2) + std::powf(( m_point_2.y - m_point_1.y ), 2));
 	float angle = atan2f(m_point_2.y - m_point_1.y, m_point_2.x - m_point_1.x);
-	angle *= 180.0f / std::numbers::pi; // Convert radians to degrees for SFML
+	angle *= 180.0f / static_cast<float>(std::numbers::pi); // Convert radians to degrees for SFML
 
 	sf::RectangleShape rectangle{ sf::Vector2f{distance + m_thickness, m_thickness} };
 	rectangle.setPosition(m_point_1);
