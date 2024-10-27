@@ -155,7 +155,7 @@ void App::imgui_settings_window() {
 		ImGui::SliderFloat("Key signature spacing", &song_renderer.get_settings().key_signature_spacing_scale, 0.0f, 10.0f, "%.1f");
 		ImGui::SliderFloat("Key signature accidental spacing", &song_renderer.get_settings().key_signature_accidental_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Bar width", &song_renderer.get_settings().bar_width_scale, 0.0f, 10.0f, "%.1f");
-		ImGui::SliderFloat("Measure width", &song_renderer.get_settings().measure_width_scale, 0.0f, 4.0f, "%.1f");
+		ImGui::SliderFloat("Measure width", &song_renderer.get_settings().whole_note_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("First measure offset", &song_renderer.get_settings().first_measure_offset_scale, 0.0f, 10.0f, "%.1f");
 		ImGui::SliderFloat("Staff spacing", &song_renderer.get_settings().staff_spacing_scale, 0.0f, 4.0f, "%.1f");
 		ImGui::SliderFloat("Grand staff spacing", &song_renderer.get_settings().grand_staff_spacing_scale, 0.0f, 4.0f, "%.1f");

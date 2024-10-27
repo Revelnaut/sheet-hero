@@ -1,5 +1,11 @@
 #pragma once
 
+enum class Clef {
+	Null,
+	Treble,
+	Bass
+};
+
 enum class PitchClass {
 	Null,
 	C,
@@ -116,5 +122,6 @@ public:
 	static MusicalGlyph int_to_time_signature_glyph(int index);
 	static MusicalGlyph value_to_notehead_glyph(Value value);
 	static Accidental int_to_accidental(int accidental);
-	static int value_to_tick(Value value);
+	static float value_relative_size(Value value);
+	static int value_absolute_size(Value value, int resolution);
 };

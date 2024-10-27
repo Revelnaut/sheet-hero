@@ -17,7 +17,6 @@ using Random = effolkronium::random_static;
 #include "MidiEngine.hpp"
 #include "Song.hpp"
 #include "SongRenderer.hpp"
-#include "SongGenerator.hpp"
 #include "SongPlayer.hpp"
 
 class App {
@@ -31,7 +30,6 @@ public:
 
 	MidiEngine midi_engine{};
 	Song song{};
-	SongGenerator song_generator{};
 	SongRenderer song_renderer{};
 	SongPlayer song_player{};
 	float song_margin{ 100.0f };
@@ -45,7 +43,7 @@ public:
 	int run();
 
 	void generate_demo_song();
-	Song generate_random_song(int measures, Key key = Key::CMajor, int tempo = 120);
+	Song generate_random_song(int note_groups, Key key = Key::CMajor, int tempo = 120);
 
 	void create_window(bool fullscreen);
 	void update_view(float width, float height);

@@ -20,7 +20,7 @@ struct SheetMusicSettings {
 	float key_signature_accidental_spacing_scale{ 1.0f };
 
 	float bar_width_scale{ 1.0f };
-	float measure_width_scale{ 1.0f };
+	float whole_note_spacing_scale{ 1.0f };
 	float first_measure_offset_scale{ 1.0f };
 
 	float staff_spacing_scale{ 1.0f };
@@ -41,7 +41,7 @@ struct SheetMusicSettings {
 	float get_key_signature_spacing() const;
 	float get_key_signature_accidental_spacing() const;
 	float get_bar_width() const;
-	float get_measure_width() const;
+	float get_whole_note_spacing() const;
 	float get_first_measure_offset() const;
 	float get_first_measure_position(const Key& key) const;
 	float get_staff_height() const;

@@ -16,8 +16,8 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/sheet-hero.cpp
     ${SOURCE_DIR}/App.cpp
     ${SOURCE_DIR}/AppImgui.cpp
+    ${SOURCE_DIR}/GrandStaff.cpp
     ${SOURCE_DIR}/LineShape.cpp
-    ${SOURCE_DIR}/Measure.cpp
     ${SOURCE_DIR}/MidiEngine.cpp
     ${SOURCE_DIR}/MusicalData.cpp
     ${SOURCE_DIR}/MusicalSymbol.cpp
@@ -26,16 +26,15 @@ set(SOURCE_FILES
     ${SOURCE_DIR}/Scale.cpp
     ${SOURCE_DIR}/SheetMusicSettings.cpp
     ${SOURCE_DIR}/Song.cpp
-    ${SOURCE_DIR}/SongGenerator.cpp
     ${SOURCE_DIR}/SongPlayer.cpp
     ${SOURCE_DIR}/SongRenderer.cpp
+    ${SOURCE_DIR}/Staff.cpp
     ${SOURCE_DIR}/TimeSignature.cpp
 )
 set(HEADER_FILES
     ${INCLUDE_DIR}/App.hpp
-    ${INCLUDE_DIR}/GrandMeasure.hpp
+    ${INCLUDE_DIR}/GrandStaff.hpp
     ${INCLUDE_DIR}/LineShape.hpp
-    ${INCLUDE_DIR}/Measure.hpp
     ${INCLUDE_DIR}/MidiEngine.hpp
     ${INCLUDE_DIR}/MusicalData.hpp
     ${INCLUDE_DIR}/MusicalSymbol.hpp
@@ -44,9 +43,9 @@ set(HEADER_FILES
     ${INCLUDE_DIR}/Scale.hpp
     ${INCLUDE_DIR}/SheetMusicSettings.hpp
     ${INCLUDE_DIR}/Song.hpp
-    ${INCLUDE_DIR}/SongGenerator.hpp
     ${INCLUDE_DIR}/SongPlayer.hpp
     ${INCLUDE_DIR}/SongRenderer.hpp
+    ${INCLUDE_DIR}/Staff.hpp
     ${INCLUDE_DIR}/TimeSignature.hpp
 
     ${INCLUDE_DIR}/effolkronium/random.hpp

@@ -112,12 +112,16 @@ Accidental DataUtility::int_to_accidental(int accidental) {
 	return Accidental::Null;
 }
 
-int DataUtility::value_to_tick(Value value) {
+float DataUtility::value_relative_size(Value value) {
 	switch ( value ) {
-	case Value::Whole: return 16;
-	case Value::Half: return 8;
-	case Value::Quarter: return 4;
-	case Value::Eight: return 2;
+	case Value::Whole: return 1.0f;
+	case Value::Half: return 1.0f / 2.0f;
+	case Value::Quarter: return 1.0f / 4.0f;
+	case Value::Eight: return 1.0f / 8.0f;
 	}
-	return 0;
+	return 0.0f;
+}
+
+int DataUtility::value_absolute_size(Value value, int resolution) {
+	return value_relative_size(value) * resolution;
 }

@@ -5,6 +5,8 @@
 
 class NoteGroup {
 public:
+	static constexpr int WHOLE_NOTE_RESOLUTION = 256;
+
 	NoteGroup();
 	NoteGroup(Value value);
 	NoteGroup(const NoteGroup& source);
@@ -26,4 +28,4 @@ public:
 private:
 	std::vector<Note> m_notes{};
 	Value m_value{ Value::Whole };
-};
+}; 

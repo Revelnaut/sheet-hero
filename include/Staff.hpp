@@ -4,20 +4,22 @@
 #include "TimeSignature.hpp"
 #include <vector>
 
-class Measure {
+class Staff {
 public:
-	Measure();
-	Measure(const Measure& source);
-	~Measure();
+	Staff();
+	Staff(const Staff& source);
+	~Staff();
 
-	Measure& operator=(const Measure& source);
+	Staff& operator=(const Staff& source);
 
 	void add_note_group(const NoteGroup& note_group);
 	std::vector<NoteGroup> const& get_note_groups() const;
 
+	float get_whole_note_count() const;
 	size_t get_note_group_count() const;
 
-	int free_space_in_eights(const TimeSignature& time_signature) const;
+	const NoteGroup& note_group_at(float index) const;
+	const NoteGroup& note_group_at(int index, int resolution) const;
 private:
 	std::vector<NoteGroup> m_note_groups{};
 };

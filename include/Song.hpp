@@ -1,10 +1,25 @@
 #pragma once
 
+#include "GrandStaff.hpp"
 #include "MusicalData.hpp"
 #include "Scale.hpp"
-#include "GrandMeasure.hpp"
+#include "TimeSignature.hpp"
+#include "Note.hpp"
+#include "NoteGroup.hpp"
 #include <vector>
 #include <unordered_map>
+
+struct SongEvent {
+	enum class Event {
+		Null,
+		NoteBegin,
+		NoteSustain,
+		NoteEnd,
+	};
+
+	Event event{};
+	NoteGroup* note_group{};
+};
 
 class Song {
 public:
@@ -13,14 +28,6 @@ public:
 	~Song();
 
 	Song& operator=(const Song& source);
-
-	void add_grand_measure(const GrandMeasure& measure);
-	const std::vector<GrandMeasure>& get_grand_measures() const;
-
-	int get_tick_at_position(float position) const;
-	int get_beat_at_position(float position) const;
-	const GrandMeasure& get_grand_measure_at_position(float position) const;
-	const NoteGroup& get_note_group_at_position(float position, bool treble_staff) const;
 
 	void set_tempo(int tempo);
 	int get_tempo() const;
@@ -32,20 +39,19 @@ public:
 	void set_time_signature(const TimeSignature& time_signature);
 	TimeSignature const& get_time_signature() const;
 
-	int get_beat_count() const;
-	int get_tick_count() const;
-
-	float get_normalized_tick_length() const;
-	float get_normalized_beat_length() const;
-
 	void set_note_state(const Note& note, const NoteState& note_state);
 	NoteState get_note_state(const Note& note) const;
+
+	void set_grand_staff(const GrandStaff& grand_staff);
+	const GrandStaff& get_grand_staff() const;
+
+	SongEvent get_song_event_at(int index, int resolution);
 private:
 	int m_tempo{ 120 };
 	TimeSignature m_time_signature{};
 	Key m_key{ Key::CMajor };
 	Scale m_scale{ Key::CMajor };
 
-	std::vector<GrandMeasure> m_grand_measures{};
 	std::unordered_map<unsigned int, NoteState> m_note_states{};
+	GrandStaff m_grand_staff{};
 };

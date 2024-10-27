@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "MusicalSymbol.hpp"
 #include "SheetMusicSettings.hpp"
+#include "GrandStaff.hpp"
 #include <algorithm>
 
 App::App() {
@@ -67,31 +68,18 @@ void App::generate_demo_song() {
 	std::cout << "Song key: " << (int)song.get_key() << std::endl;
 }
 
-Song App::generate_random_song(int measures, Key key, int tempo) {
+Song App::generate_random_song(int note_groups, Key key, int tempo) {
 	Song song{};
 	song.set_key(key);
 	song.set_tempo(tempo);
-	song.set_time_signature({ 4, 4 });
+	song.set_time_signature({ 3, 4 });
 
-	for ( int m = 0; m < measures; ++m ) {
-		GrandMeasure grand_measure;
-		Measure& treble = grand_measure.treble_measure;
-		Measure& bass = grand_measure.bass_measure;
+		GrandStaff grand_staff;
+		Staff& treble = grand_staff.treble;
+		Staff& bass = grand_staff.bass;
 
-		while ( treble.free_space_in_eights(song.get_time_signature()) > 0 ) {
-			Value largest_option{};
-
-			if ( treble.free_space_in_eights(song.get_time_signature()) == 8 ) {
-				largest_option = Value::Whole;
-			} else if ( treble.free_space_in_eights(song.get_time_signature()) >= 4 ) {
-				largest_option = Value::Half;
-			} else if ( treble.free_space_in_eights(song.get_time_signature()) >= 2 ) {
-				largest_option = Value::Quarter;
-			} else {
-				largest_option = Value::Eight;
-			}
-
-			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( largest_option ), static_cast<int>( Value::Eight )) );
+		for (int i = 0; i < note_groups; ++i) {
+			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( Value::Whole ), static_cast<int>( Value::Eight )) );
 			NoteGroup ng{ value };
 
 			std::vector<int> staff_pitches{ 1, 2, 3, 4, 5, 6, 7 };
@@ -113,20 +101,8 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			treble.add_note_group(ng);
 		}
 
-		while ( bass.free_space_in_eights(song.get_time_signature()) > 0 ) {
-			Value largest_option{};
-
-			if ( bass.free_space_in_eights(song.get_time_signature()) == 8 ) {
-				largest_option = Value::Whole;
-			} else if ( bass.free_space_in_eights(song.get_time_signature()) >= 4 ) {
-				largest_option = Value::Half;
-			} else if ( bass.free_space_in_eights(song.get_time_signature()) >= 2 ) {
-				largest_option = Value::Quarter;
-			} else {
-				largest_option = Value::Eight;
-			}
-
-			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( largest_option ), static_cast<int>( Value::Eight )) );
+		for ( int i = 0; i < note_groups; ++i ) {
+			Value value = static_cast<Value>( Random::get<int>(static_cast<int>( Value::Whole ), static_cast<int>( Value::Eight )) );
 			NoteGroup ng{ value };
 
 			std::vector<int> staff_pitches{ 1, 2, 3, 4, 5, 6, 7 };
@@ -149,8 +125,7 @@ Song App::generate_random_song(int measures, Key key, int tempo) {
 			bass.add_note_group(ng);
 		}
 
-		song.add_grand_measure(grand_measure);
-	}
+		song.set_grand_staff(grand_staff);
 	return song;
 }
 
@@ -186,17 +161,6 @@ void App::process(const sf::Time & delta) {
 	//imgui_show_interface();
 
 	song_player.process(song, delta);
-
-	if ( song_player.is_playing() ) {
-		if ( song.get_tick_at_position(song_player.get_playing_position()) % 4 == 0 ) {
-			if ( play_click ) {
-				click_player.play();
-				play_click = false;
-			}
-		} else {
-			play_click = true;
-		}
-	}
 }
 
 void App::render() {
